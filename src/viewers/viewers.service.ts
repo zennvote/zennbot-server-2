@@ -13,4 +13,12 @@ export class ViewersService {
   getViewers(): Promise<Viewer[]> {
     return this.userRepository.find();
   }
+
+  getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
+    return this.userRepository.findOne({ where: { twitchId } });
+  }
+
+  getViewerByUsername(username: string): Promise<Viewer | undefined> {
+    return this.userRepository.findOne({ where: { username } });
+  }
 }
