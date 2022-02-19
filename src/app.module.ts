@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ViewersModule } from './viewers/viewers.module';
+import { SongsModule } from './songs/songs.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ViewersModule } from './viewers/viewers.module';
       logging: true,
     }),
     ViewersModule,
+    SongsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
