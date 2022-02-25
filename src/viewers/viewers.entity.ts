@@ -13,7 +13,7 @@ export class Viewer {
   username: string;
 
   @IsString()
-  @Column()
+  @Column({ nullable: true })
   twitchId?: string;
 
   @IsInt()
@@ -24,6 +24,6 @@ export class Viewer {
   @Column({ default: 0 })
   ticketPiece: number;
 
-  @Column()
+  @Column({ nullable: true })
   prefix?: string;
 }
