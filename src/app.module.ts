@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ViewersModule } from './viewers/viewers.module';
 import { SongsModule } from './songs/songs.module';
+import { TmiModule } from './tmi/tmi.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -22,6 +24,14 @@ import { SongsModule } from './songs/songs.module';
       keepConnectionAlive: true,
       logging: true,
     }),
+    TmiModule.forRoot({
+      identity: {
+        username: process.env.TMI_USERNAME,
+        password: process.env.TMI_PASSWORD,
+      },
+      channels: [process.env.TMI_CHANNEL],
+    }),
+    EventEmitterModule.forRoot(),
     ViewersModule,
     SongsModule,
   ],
