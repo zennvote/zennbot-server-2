@@ -1,0 +1,35 @@
+version: '3.0'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - zennbot-network
+
+  mongo:
+    image: mongo
+    volumes:
+      - ${HOME}/zennbot-docker/data/mongo:/var/lib/mongo/data
+    restart: always
+    networks:
+      zennbot-network:
+        aliases:
+          - zennbot-mongo
+
+  redis:
+    image: redis
+    volumes:
+      - ${HOME}/zennbot-docker/data/redis:/var/lib/redis/data
+    networks:
+      zennbot-network:
+        aliases:
+          - zennbot-redis
+  
+networks:
+  zennbot-network:
