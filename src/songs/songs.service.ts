@@ -1,25 +1,62 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import { CreateSongDto } from './dtos/create-song.dto';
+
 import Song from './songs.entity';
 
 @Injectable()
 export class SongsService {
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
-  async getRequestedSongs(): Promise<Song[]> {
-    const songsJson = await this.cacheManager.get<string>(
-      'songs:requested-songs',
-    );
+  async skipSong(): Promise<Song> {
+    const [song, ...remainSongs] = await this.getRequestedSongs();
+    const cooltimeSongs = await this.getCooltimeSongs();
 
-    return JSON.parse(songsJson);
+    await this.setRequestedSongs(remainSongs);
+    await this.setCooltimeSongs([...cooltimeSongs, song].slice(cooltimeSongs.length >= 4 ? 1 : 0));
+
+    return song;
   }
 
-  async setRequestedSongs(songs: Song[]): Promise<Song[]> {
+  async isCooltime(twitchId: string): Promise<boolean> {
+    const cooltimeSongs = await this.getCooltimeSongs();
+    const requestedSongs = await this.getRequestedSongs();
+
+    return [...cooltimeSongs, ...requestedSongs].slice(0, 4).some((song) => song.requestor === twitchId);
+  }
+
+  async enqueueSong(createSongDto: CreateSongDto): Promise<Song> {
+    const { title, requestor, requestorName, requestType } = createSongDto;
+    const song = new Song(title, requestor, requestorName, requestType);
+
+    const requestedSongs = await this.getRequestedSongs();
+    await this.setRequestedSongs([...requestedSongs, song]);
+
+    return song;
+  }
+
+  async getRequestedSongs(): Promise<Song[]> {
+    const songsJson = await this.cacheManager.get<string>('songs:requested-songs');
+
+    return JSON.parse(songsJson ?? '[]');
+  }
+
+  async getCooltimeSongs(): Promise<Song[]> {
+    const songsJson = await this.cacheManager.get<string>('songs:cooltime-songs');
+
+    return JSON.parse(songsJson ?? '[]');
+  }
+
+  private async setRequestedSongs(songs: Song[]): Promise<Song[]> {
     const songsJson = JSON.stringify(songs);
-    const result = await this.cacheManager.set(
-      'songs:requested-songs',
-      songsJson,
-    );
+    const result = await this.cacheManager.set('songs:requested-songs', songsJson);
+
+    return JSON.parse(result);
+  }
+
+  private async setCooltimeSongs(songs: Song[]): Promise<Song[]> {
+    const songsJson = JSON.stringify(songs);
+    const result = await this.cacheManager.set('songs:cooltime-songs', songsJson);
 
     return JSON.parse(result);
   }

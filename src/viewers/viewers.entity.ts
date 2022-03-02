@@ -1,7 +1,7 @@
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Index('username', ['username'], { unique: true })
+@Index('twitchId', ['twitchId'], { unique: true })
 @Entity()
 export class Viewer {
   @PrimaryGeneratedColumn()

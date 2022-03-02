@@ -8,5 +8,6 @@ import { ViewersService } from './viewers.service';
   imports: [TypeOrmModule.forFeature([Viewer])],
   providers: [ViewersService],
   controllers: [ViewersController],
+  exports: [ViewersService],
 })
 export class ViewersModule {}

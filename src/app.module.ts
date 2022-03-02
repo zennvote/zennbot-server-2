@@ -7,6 +7,8 @@ import { ViewersModule } from './viewers/viewers.module';
 import { SongsModule } from './songs/songs.module';
 import { TmiModule } from './tmi/tmi.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ManagerModule } from './managers/managers.module';
+import { SheetsModule } from './sheets/sheets.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EventEmitterModule.forRoot(),
     ViewersModule,
     SongsModule,
+    ManagerModule,
+    SheetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -40,6 +40,14 @@ export class ViewersService {
     return usernameViewer;
   }
 
+  async setPoints(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
+    this.userRepository.update({ twitchId }, points);
+  }
+
+  async setPointsWithUsername(username: string, points: { ticket?: number; ticketPiece?: number }) {
+    this.userRepository.update({ username }, points);
+  }
+
   getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
     return this.userRepository.findOne({ where: { twitchId } });
   }
