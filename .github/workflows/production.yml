@@ -1,0 +1,25 @@
+name: Production Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: DEPLOY
+    runs-on: ubuntu-18.04
+  
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Call AWS CodeDeploy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws deploy create-deployment \
+          --region ap-northeast-2 \
+          --application-name zennbot-deploy \
+          --deployment-group-name zennbot-deploy-group \
+          --github-location repository="zennvote/zennbot-server-2",commitId="${{ github.sha }}"
