@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ManagersService } from 'src/managers/managers.service';
 
@@ -12,6 +12,11 @@ export class ViewersController {
   @Get()
   async getViewers() {
     return await this.viewersService.getViewers();
+  }
+
+  @Post('/migrate')
+  async migrateViewers() {
+    return await this.viewersService.migrateFromSheets();
   }
 
   @OnEvent('command.조각')

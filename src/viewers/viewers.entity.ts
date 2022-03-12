@@ -1,5 +1,5 @@
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Index('twitchId', ['twitchId'], { unique: true })
 @Entity()
@@ -9,11 +9,11 @@ export class Viewer {
 
   @IsString()
   @IsNotEmpty()
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @IsString()
-  @Column({ nullable: true })
+  @Column({ unique: true, nullable: true })
   twitchId?: string;
 
   @IsInt()

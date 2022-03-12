@@ -36,3 +36,7 @@ lerna-debug.log*
 
 # custom
 .env*
+
+# Google Sheets Auth File
+credentials.json
+token.json

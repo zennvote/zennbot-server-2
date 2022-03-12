@@ -6,7 +6,7 @@ import { SheetRow } from './sheets.interface';
 export class SheetsService {
   constructor(@Inject('CLIENT') private readonly client: sheets_v4.Sheets) {}
 
-  private async getSheets(): Promise<SheetRow[]> {
+  public async getSheets(): Promise<SheetRow[]> {
     const spreadsheetId = process.env.SHEETS_ID;
     const range = process.env.SHEETS_RANGE;
 
@@ -18,11 +18,10 @@ export class SheetsService {
       .map<SheetRow>(
         (row, index): SheetRow => ({
           index: index + 2,
-          twitchId: row[0] || null,
-          username: row[1] || null,
+          username: row[0] || null,
           ticket: parseInt(row[2], 10),
-          ticketPiece: parseInt(row[3], 10),
-          etc: row[4] || null,
+          ticketPiece: parseInt(row[1], 10),
+          etc: row[3] || null,
         }),
       )
       .filter((row) => row.username !== null);

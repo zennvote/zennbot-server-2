@@ -37,7 +37,10 @@ import { SheetsModule } from './sheets/sheets.module';
     ViewersModule,
     SongsModule,
     ManagerModule,
-    SheetsModule,
+    SheetsModule.forRoot({
+      credentialsPath: process.env.SHEETS_CREDENTIALS_PATH,
+      tokenPath: process.env.SHEETS_TOKEN_PATH,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
