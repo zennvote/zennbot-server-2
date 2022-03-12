@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SheetsService } from 'src/sheets/sheets.service';
 import { Repository } from 'typeorm';
 import { Viewer } from './viewers.entity';
 
@@ -8,6 +9,7 @@ export class ViewersService {
   constructor(
     @InjectRepository(Viewer)
     private userRepository: Repository<Viewer>,
+    private readonly sheetsService: SheetsService,
   ) {}
 
   getViewers(): Promise<Viewer[]> {
@@ -54,5 +56,24 @@ export class ViewersService {
 
   getViewerByUsername(username: string): Promise<Viewer | undefined> {
     return this.userRepository.findOne({ where: { username } });
+  }
+
+  async migrateFromSheets() {
+    const sheetsRows = await this.sheetsService.getSheets();
+    const uniqueRows = sheetsRows.filter(
+      (row, index) => sheetsRows.findIndex((innerRow) => row.username === innerRow.username) === index,
+    );
+    const viewers = uniqueRows.map((row) => {
+      const viewer = new Viewer();
+      viewer.username = row.username;
+      viewer.ticket = row.ticket;
+      viewer.ticketPiece = row.ticketPiece;
+      if (row.etc) {
+        viewer.prefix = row.etc;
+      }
+      return viewer;
+    });
+
+    console.log(await this.userRepository.upsert(viewers, ['username']));
   }
 }
