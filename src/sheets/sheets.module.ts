@@ -1,5 +1,5 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { readFile, readFileSync } from 'fs';
+import { DynamicModule, Global, Module } from '@nestjs/common';
+import { readFileSync } from 'fs';
 import { google } from 'googleapis';
 import { SheetsService } from './sheets.service';
 
@@ -8,6 +8,7 @@ export type Options = {
   tokenPath: string;
 };
 
+@Global()
 @Module({})
 export class SheetsModule {
   static forRoot(option: Options): DynamicModule {
@@ -29,6 +30,7 @@ export class SheetsModule {
     return {
       module: SheetsModule,
       providers: [SheetsService, clientFactory],
+      exports: [SheetsService],
     };
   }
 }
