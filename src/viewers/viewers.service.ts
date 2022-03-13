@@ -74,6 +74,6 @@ export class ViewersService {
       return viewer;
     });
 
-    console.log(await this.userRepository.upsert(viewers, ['username']));
+    await this.userRepository.upsert(viewers, ['username']);
   }
 }
