@@ -1,11 +1,15 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import { Subject } from 'rxjs';
 import { CreateSongDto } from './dtos/create-song.dto';
 
 import Song from './songs.entity';
 
 @Injectable()
 export class SongsService {
+  private readonly requestedSongsSubject = new Subject<Song[]>();
+  public requestedSongsObserver = this.requestedSongsSubject.asObservable();
+
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
   async skipSong(): Promise<Song> {
@@ -50,6 +54,8 @@ export class SongsService {
   private async setRequestedSongs(songs: Song[]): Promise<Song[]> {
     const songsJson = JSON.stringify(songs);
     const result = await this.cacheManager.set('songs:requested-songs', songsJson);
+
+    this.requestedSongsSubject.next(songs);
 
     return JSON.parse(result);
   }

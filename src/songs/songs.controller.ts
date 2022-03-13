@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Sse } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { map } from 'rxjs';
 
 import { CommandPayload } from 'src/tmi/tmi.interface';
 import { ViewersService } from 'src/viewers/viewers.service';
@@ -14,6 +15,11 @@ export class SongsController {
   @Get()
   async getSongs() {
     return await this.songsService.getRequestedSongs();
+  }
+
+  @Sse('sse')
+  getSongsSse() {
+    return this.songsService.requestedSongsObserver.pipe(map((data) => JSON.stringify(data)));
   }
 
   @OnEvent('command.신청')
