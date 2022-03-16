@@ -51,6 +51,10 @@ export class SongsService {
     return JSON.parse(songsJson ?? '[]');
   }
 
+  async resetRequestedSongs(): Promise<void> {
+    await this.setRequestedSongs([]);
+  }
+
   async resetCooltimeSongs(): Promise<void> {
     await this.setCooltimeSongs([]);
   }

@@ -22,6 +22,12 @@ export class SongsController {
     return await this.songsService.skipSong();
   }
 
+  @Post('reset')
+  async resetSongs() {
+    await this.songsService.resetRequestedSongs();
+    await this.songsService.resetCooltimeSongs();
+  }
+
   @Get('cooltimes')
   async getCooltimeSongs() {
     return await this.songsService.getCooltimeSongs();
