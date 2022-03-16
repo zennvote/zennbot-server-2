@@ -1,4 +1,4 @@
-import { Controller, Get, Sse } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Sse } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { map } from 'rxjs';
 
@@ -15,6 +15,27 @@ export class SongsController {
   @Get()
   async getSongs() {
     return await this.songsService.getRequestedSongs();
+  }
+
+  @Post('skip')
+  async skipSong() {
+    return await this.songsService.skipSong();
+  }
+
+  @Post('reset')
+  async resetSongs() {
+    await this.songsService.resetRequestedSongs();
+    await this.songsService.resetCooltimeSongs();
+  }
+
+  @Get('cooltimes')
+  async getCooltimeSongs() {
+    return await this.songsService.getCooltimeSongs();
+  }
+
+  @Delete('cooltimes')
+  async deleteCooltimeSongs() {
+    return await this.songsService.resetCooltimeSongs();
   }
 
   @Sse('sse')
