@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ViewersController } from './viewers.controller';
-import { Viewer } from './viewers.entity';
+import { ViewersRepository } from './viewers.repository';
 import { ViewersService } from './viewers.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Viewer])],
-  providers: [ViewersService],
+  providers: [ViewersService, ViewersRepository],
   controllers: [ViewersController],
   exports: [ViewersService],
 })

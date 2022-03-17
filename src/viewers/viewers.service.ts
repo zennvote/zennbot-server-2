@@ -1,79 +1,49 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { SheetsService } from 'src/sheets/sheets.service';
-import { Repository } from 'typeorm';
 import { Viewer } from './viewers.entity';
+import { ViewersRepository } from './viewers.repository';
 
 @Injectable()
 export class ViewersService {
-  constructor(
-    @InjectRepository(Viewer)
-    private userRepository: Repository<Viewer>,
-    private readonly sheetsService: SheetsService,
-  ) {}
+  constructor(private viewersRepository: ViewersRepository, private readonly sheetsService: SheetsService) {}
 
   getViewers(): Promise<Viewer[]> {
-    return this.userRepository.find();
+    return this.viewersRepository.find();
   }
 
   async getViewer(twitchId: string, username: string): Promise<Viewer | undefined> {
-    const twitchIdViewer = await this.userRepository.findOne({
-      where: { twitchId },
-    });
+    const twitchIdViewer = await this.viewersRepository.findOne({ twitchId });
 
     if (twitchIdViewer) {
       if (twitchIdViewer.username !== username) {
-        twitchIdViewer.username = username;
-        this.userRepository.save(twitchIdViewer);
+        this.viewersRepository.update({ index: twitchIdViewer.index }, { username });
       }
       return twitchIdViewer;
     }
 
-    const usernameViewer = await this.userRepository.findOne({
-      where: { username },
-    });
+    const usernameViewer = await this.viewersRepository.findOne({ username });
     if (!usernameViewer) {
-      return usernameViewer;
+      return undefined;
     }
 
-    usernameViewer.twitchId = twitchId;
-    this.userRepository.save(usernameViewer);
+    this.viewersRepository.update({ index: usernameViewer.index }, { twitchId });
 
     return usernameViewer;
   }
 
   async setPoints(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.userRepository.update({ twitchId }, points);
+    this.viewersRepository.update({ twitchId }, points);
   }
 
   async setPointsWithUsername(username: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.userRepository.update({ username }, points);
+    this.viewersRepository.update({ username }, points);
   }
 
   getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
-    return this.userRepository.findOne({ where: { twitchId } });
+    return this.viewersRepository.findOne({ twitchId });
   }
 
   getViewerByUsername(username: string): Promise<Viewer | undefined> {
-    return this.userRepository.findOne({ where: { username } });
-  }
-
-  async migrateFromSheets() {
-    const sheetsRows = await this.sheetsService.getSheets();
-    const uniqueRows = sheetsRows.filter(
-      (row, index) => sheetsRows.findIndex((innerRow) => row.username === innerRow.username) === index,
-    );
-    const viewers = uniqueRows.map((row) => {
-      const viewer = new Viewer();
-      viewer.username = row.username;
-      viewer.ticket = row.ticket;
-      viewer.ticketPiece = row.ticketPiece;
-      if (row.etc) {
-        viewer.prefix = row.etc;
-      }
-      return viewer;
-    });
-
-    await this.userRepository.upsert(viewers, ['username']);
+    return this.viewersRepository.findOne({ username });
   }
 }

@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { client, Client, Options } from 'tmi.js';
+import { Client, Options } from 'tmi.js';
 import { TmiService } from './tmi.service';
 
 @Module({})

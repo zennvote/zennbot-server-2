@@ -1,29 +1,26 @@
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
-import { Column, Entity, Index, PrimaryGeneratedColumn, Unique } from 'typeorm';
-
-@Index('twitchId', ['twitchId'], { unique: true })
-@Entity()
-export class Viewer {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @Column({ unique: true })
+export interface ViewerInitializer {
+  index: number;
   username: string;
-
-  @IsString()
-  @Column({ unique: true, nullable: true })
   twitchId?: string;
-
-  @IsInt()
-  @Column({ default: 0 })
   ticket: number;
-
-  @IsInt()
-  @Column({ default: 0 })
   ticketPiece: number;
-
-  @Column({ nullable: true })
   prefix?: string;
+}
+
+export class Viewer {
+  index: number;
+  username: string;
+  twitchId?: string;
+  ticket: number;
+  ticketPiece: number;
+  prefix?: string;
+
+  constructor(initializer?: ViewerInitializer) {
+    this.index = initializer?.index;
+    this.username = initializer?.username;
+    this.twitchId = initializer?.twitchId;
+    this.ticket = initializer?.ticket;
+    this.ticketPiece = initializer?.ticketPiece;
+    this.prefix = initializer?.prefix;
+  }
 }
