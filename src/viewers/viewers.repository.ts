@@ -27,7 +27,16 @@ export class ViewersRepository {
     return viewer;
   }
 
-  async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<Viewer> {
-    return null;
+  async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<boolean> {
+    if (option.index !== undefined && Object.keys(option).length === 1) {
+      await this.sheetsService.updateSheets(option.index, value);
+    }
+    const viewer = await this.findOne(option);
+    if (!viewer) {
+      return false;
+    }
+
+    await this.sheetsService.updateSheets(viewer.index, value);
+    return true;
   }
 }
