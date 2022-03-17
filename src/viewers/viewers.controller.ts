@@ -14,11 +14,6 @@ export class ViewersController {
     return await this.viewersService.getViewers();
   }
 
-  @Post('/migrate')
-  async migrateViewers() {
-    return await this.viewersService.migrateFromSheets();
-  }
-
   @OnEvent('command.조각')
   async whoAmICommand(payload: CommandPayload) {
     const twitchId = payload.tags['username'];

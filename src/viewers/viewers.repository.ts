@@ -1,17 +1,24 @@
-import { Injectable } from "@nestjs/common";
-import { Viewer } from "./viewers.entity";
+import { Injectable } from '@nestjs/common';
+import { SheetsService } from 'src/sheets/sheets.service';
+import { Viewer } from './viewers.entity';
 
 @Injectable()
 export class ViewersRepository {
-  // async find(): Promise<Viewer> {
-  // }
+  constructor(private readonly sheetsService: SheetsService) {}
 
-  // async findOne(): Promise<Viewer> {
-  // }
+  async find(): Promise<Viewer[]> {
+    return [];
+  }
 
-  // async save(viewer: Viewer): Promise<Viewer> {
-  // }
+  async findOne(option: Partial<Viewer> = {}): Promise<Viewer> {
+    return null;
+  }
 
-  // async update(): Promise<Viewer> {
-  // }
+  async save(viewer: Viewer): Promise<Viewer> {
+    return null;
+  }
+
+  async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<Viewer> {
+    return null;
+  }
 }

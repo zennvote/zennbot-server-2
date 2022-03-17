@@ -1,25 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { SheetsService } from 'src/sheets/sheets.service';
 import { Repository } from 'typeorm';
 import { Viewer } from './viewers.entity';
+import { ViewersRepository } from './viewers.repository';
 
 @Injectable()
 export class ViewersService {
-  constructor(
-    @InjectRepository(Viewer)
-    private userRepository: Repository<Viewer>,
-    private readonly sheetsService: SheetsService,
-  ) {}
+  constructor(private userRepository: ViewersRepository, private readonly sheetsService: SheetsService) {}
 
   getViewers(): Promise<Viewer[]> {
     return this.userRepository.find();
   }
 
   async getViewer(twitchId: string, username: string): Promise<Viewer | undefined> {
-    const twitchIdViewer = await this.userRepository.findOne({
-      where: { twitchId },
-    });
+    const twitchIdViewer = await this.userRepository.findOne({ twitchId });
 
     if (twitchIdViewer) {
       if (twitchIdViewer.username !== username) {
@@ -29,9 +23,7 @@ export class ViewersService {
       return twitchIdViewer;
     }
 
-    const usernameViewer = await this.userRepository.findOne({
-      where: { username },
-    });
+    const usernameViewer = await this.userRepository.findOne({ username });
     if (!usernameViewer) {
       return usernameViewer;
     }
@@ -51,29 +43,10 @@ export class ViewersService {
   }
 
   getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
-    return this.userRepository.findOne({ where: { twitchId } });
+    return this.userRepository.findOne({ twitchId });
   }
 
   getViewerByUsername(username: string): Promise<Viewer | undefined> {
-    return this.userRepository.findOne({ where: { username } });
-  }
-
-  async migrateFromSheets() {
-    const sheetsRows = await this.sheetsService.getSheets();
-    const uniqueRows = sheetsRows.filter(
-      (row, index) => sheetsRows.findIndex((innerRow) => row.username === innerRow.username) === index,
-    );
-    const viewers = uniqueRows.map((row) => {
-      const viewer = new Viewer();
-      viewer.username = row.username;
-      viewer.ticket = row.ticket;
-      viewer.ticketPiece = row.ticketPiece;
-      if (row.etc) {
-        viewer.prefix = row.etc;
-      }
-      return viewer;
-    });
-
-    await this.userRepository.upsert(viewers, ['username']);
+    return this.userRepository.findOne({ username });
   }
 }
