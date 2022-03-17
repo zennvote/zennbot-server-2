@@ -8,7 +8,7 @@ export class SheetsService {
 
   public async getSheets(): Promise<SheetRow[]> {
     const spreadsheetId = process.env.SHEETS_ID;
-    const range = '시트1!B6:E';
+    const range = '시트1!A6:E';
 
     const {
       data: { values },
@@ -18,10 +18,11 @@ export class SheetsService {
       .map<SheetRow>(
         (row, index): SheetRow => ({
           index: index,
-          username: row[0],
-          ticket: parseInt(row[2], 10),
-          ticketPiece: parseInt(row[1], 10),
-          prefix: row[3] || null,
+          twitchId: row[0],
+          username: row[1],
+          ticketPiece: parseInt(row[2], 10),
+          ticket: parseInt(row[3], 10),
+          prefix: row[4] || null,
         }),
       )
       .filter((row) => row.username !== null);
@@ -33,6 +34,7 @@ export class SheetsService {
     const spreadsheetId = process.env.SHEETS_ID;
 
     const rangeMap: { [key: string]: string } = {
+      twitchId: 'A',
       username: 'B',
       ticket: 'C',
       ticketPiece: 'D',
@@ -41,7 +43,7 @@ export class SheetsService {
     const data = Object.entries(value)
       .filter(([key]) => key in rangeMap)
       .map(([key, value]) => ({
-        range: `시트1!${rangeMap[key]}${value}`,
+        range: `시트1!${rangeMap[key]}${index + 6}`,
         values: [[`${value}`]],
       }));
 
