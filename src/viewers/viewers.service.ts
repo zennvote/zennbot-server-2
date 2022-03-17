@@ -16,19 +16,17 @@ export class ViewersService {
 
     if (twitchIdViewer) {
       if (twitchIdViewer.username !== username) {
-        twitchIdViewer.username = username;
-        this.viewersRepository.save(twitchIdViewer);
+        this.viewersRepository.update({ index: twitchIdViewer.index }, { username });
       }
       return twitchIdViewer;
     }
 
     const usernameViewer = await this.viewersRepository.findOne({ username });
     if (!usernameViewer) {
-      return usernameViewer;
+      return undefined;
     }
 
-    usernameViewer.twitchId = twitchId;
-    this.viewersRepository.save(usernameViewer);
+    this.viewersRepository.update({ index: usernameViewer.index }, { twitchId });
 
     return usernameViewer;
   }

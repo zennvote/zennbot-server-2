@@ -27,10 +27,6 @@ export class ViewersRepository {
     return viewer;
   }
 
-  async save(viewer: Viewer): Promise<Viewer> {
-    return null;
-  }
-
   async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<Viewer> {
     return null;
   }
