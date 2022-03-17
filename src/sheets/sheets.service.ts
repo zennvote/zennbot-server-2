@@ -18,10 +18,10 @@ export class SheetsService {
       .map<SheetRow>(
         (row, index): SheetRow => ({
           index: index + 2,
-          username: row[0] || null,
+          username: row[0],
           ticket: parseInt(row[2], 10),
           ticketPiece: parseInt(row[1], 10),
-          etc: row[3] || null,
+          prefix: row[3] || null,
         }),
       )
       .filter((row) => row.username !== null);

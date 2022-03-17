@@ -3,5 +3,5 @@ export interface SheetRow {
   username: string;
   ticket: number;
   ticketPiece: number;
-  etc: string;
+  prefix?: string;
 }
