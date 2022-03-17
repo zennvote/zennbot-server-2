@@ -44,7 +44,7 @@ export class SheetsService {
       .filter(([key]) => key in rangeMap)
       .map(([key, value]) => ({
         range: `시트1!${rangeMap[key]}${index + 6}`,
-        values: [[`${value}`]],
+        values: [[value]],
       }));
 
     await this.client.spreadsheets.values.batchUpdate({
