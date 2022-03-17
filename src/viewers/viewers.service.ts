@@ -5,47 +5,47 @@ import { ViewersRepository } from './viewers.repository';
 
 @Injectable()
 export class ViewersService {
-  constructor(private userRepository: ViewersRepository, private readonly sheetsService: SheetsService) {}
+  constructor(private viewersRepository: ViewersRepository, private readonly sheetsService: SheetsService) {}
 
   getViewers(): Promise<Viewer[]> {
-    return this.userRepository.find();
+    return this.viewersRepository.find();
   }
 
   async getViewer(twitchId: string, username: string): Promise<Viewer | undefined> {
-    const twitchIdViewer = await this.userRepository.findOne({ twitchId });
+    const twitchIdViewer = await this.viewersRepository.findOne({ twitchId });
 
     if (twitchIdViewer) {
       if (twitchIdViewer.username !== username) {
         twitchIdViewer.username = username;
-        this.userRepository.save(twitchIdViewer);
+        this.viewersRepository.save(twitchIdViewer);
       }
       return twitchIdViewer;
     }
 
-    const usernameViewer = await this.userRepository.findOne({ username });
+    const usernameViewer = await this.viewersRepository.findOne({ username });
     if (!usernameViewer) {
       return usernameViewer;
     }
 
     usernameViewer.twitchId = twitchId;
-    this.userRepository.save(usernameViewer);
+    this.viewersRepository.save(usernameViewer);
 
     return usernameViewer;
   }
 
   async setPoints(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.userRepository.update({ twitchId }, points);
+    this.viewersRepository.update({ twitchId }, points);
   }
 
   async setPointsWithUsername(username: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.userRepository.update({ username }, points);
+    this.viewersRepository.update({ username }, points);
   }
 
   getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
-    return this.userRepository.findOne({ twitchId });
+    return this.viewersRepository.findOne({ twitchId });
   }
 
   getViewerByUsername(username: string): Promise<Viewer | undefined> {
-    return this.userRepository.findOne({ username });
+    return this.viewersRepository.findOne({ username });
   }
 }
