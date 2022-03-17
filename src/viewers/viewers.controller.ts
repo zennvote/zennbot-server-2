@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ManagersService } from 'src/managers/managers.service';
 

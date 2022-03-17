@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { channel } from 'diagnostics_channel';
 import { Client } from 'tmi.js';
 
 @Injectable()

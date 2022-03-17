@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { SheetsService } from 'src/sheets/sheets.service';
-import { Repository } from 'typeorm';
 import { Viewer } from './viewers.entity';
 import { ViewersRepository } from './viewers.repository';
 
