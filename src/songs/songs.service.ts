@@ -26,7 +26,7 @@ export class SongsService {
     const cooltimeSongs = await this.getCooltimeSongs();
     const requestedSongs = await this.getRequestedSongs();
 
-    return [...cooltimeSongs, ...requestedSongs].slice(0, 4).some((song) => song.requestor === twitchId);
+    return [...cooltimeSongs, ...requestedSongs].slice(-4).some((song) => song.requestor === twitchId);
   }
 
   async enqueueSong(createSongDto: CreateSongDto): Promise<Song> {
