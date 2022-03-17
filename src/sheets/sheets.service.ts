@@ -36,8 +36,8 @@ export class SheetsService {
     const rangeMap: { [key: string]: string } = {
       twitchId: 'A',
       username: 'B',
-      ticket: 'C',
-      ticketPiece: 'D',
+      ticketPiece: 'C',
+      ticket: 'D',
       prefix: 'E',
     };
     const data = Object.entries(value)
