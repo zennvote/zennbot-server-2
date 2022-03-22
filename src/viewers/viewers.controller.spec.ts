@@ -70,4 +70,53 @@ describe('ViewersController', () => {
       ]);
     });
   });
+
+  describe('COMMAND 조각', () => {
+    it('사용자의 정보를 반환해야 한다.', async () => {
+      service.getViewer = jest.fn(
+        async (): Promise<Viewer> =>
+          new Viewer({
+            index: 1,
+            ticket: 10,
+            ticketPiece: 12,
+            username: 'test-user-1',
+            prefix: 'test-prefix',
+          }),
+      );
+      const sendFn = jest.fn();
+
+      await controller.whoAmICommand({
+        message: '!조각',
+        args: [],
+        channel: 'channel',
+        tags: {
+          username: 'test-user-1',
+          'display-name': 'testuser',
+        },
+        send: sendFn,
+      });
+
+      expect(service.getViewer).toBeCalledWith('test-user-1', 'testuser');
+      expect(sendFn).toBeCalledWith('[test-prefix] testuser 티켓 10장 | 조각 12장 보유중');
+    });
+
+    it('사용자 정보가 없을 시 경고 메시지를 반환해야 한다', async () => {
+      service.getViewer = jest.fn(async () => undefined);
+      const sendFn = jest.fn();
+
+      await controller.whoAmICommand({
+        message: '!조각',
+        args: [],
+        channel: 'channel',
+        tags: {
+          username: 'test-user-1',
+          'display-name': 'testuser',
+        },
+        send: sendFn,
+      });
+
+      expect(service.getViewer).toBeCalledWith('test-user-1', 'testuser');
+      expect(sendFn).toBeCalledWith('testuser님의 데이터가 존재하지 않습니다!');
+    });
+  });
 });
