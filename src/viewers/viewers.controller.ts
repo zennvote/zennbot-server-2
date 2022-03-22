@@ -28,7 +28,7 @@ export class ViewersController {
     const { ticket, ticketPiece, prefix } = viewer;
     const formattedPrefix = prefix ? `[${prefix}] ` : '';
 
-    payload.send(`${formattedPrefix}${username} 티켓 ${ticket}장 | 조각${ticketPiece}장 보유중`);
+    payload.send(`${formattedPrefix}${username} 티켓 ${ticket}장 | 조각 ${ticketPiece}장 보유중`);
   }
 
   @OnEvent('command.지급')
