@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TmiService } from './tmi.service';
 
@@ -6,7 +7,19 @@ describe('TmiService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TmiService],
+      providers: [
+        TmiService,
+        {
+          provide: 'CLIENT',
+          useFactory: () => ({
+            on: jest.fn(),
+          }),
+        },
+        {
+          provide: EventEmitter2,
+          useFactory: () => ({}),
+        },
+      ],
     }).compile();
 
     service = module.get<TmiService>(TmiService);

@@ -1,3 +1,4 @@
+import { CACHE_MANAGER } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SongsService } from './songs.service';
 
@@ -6,7 +7,13 @@ describe('SongsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SongsService],
+      providers: [
+        SongsService,
+        {
+          provide: CACHE_MANAGER,
+          useFactory: () => ({}),
+        },
+      ],
     }).compile();
 
     service = module.get<SongsService>(SongsService);
