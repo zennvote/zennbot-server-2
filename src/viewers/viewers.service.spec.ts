@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ViewersRepository } from './viewers.repository';
 import { ViewersService } from './viewers.service';
 
 describe('ViewersService', () => {
@@ -6,7 +7,13 @@ describe('ViewersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ViewersService],
+      providers: [
+        ViewersService,
+        {
+          provide: ViewersRepository,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     service = module.get<ViewersService>(ViewersService);
