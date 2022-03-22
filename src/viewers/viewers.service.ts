@@ -30,12 +30,19 @@ export class ViewersService {
     return usernameViewer;
   }
 
-  async setPoints(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.viewersRepository.update({ twitchId }, points);
+  async setPoints(twitchId: string, username: string, points: { ticket?: number; ticketPiece?: number }) {
+    const twitchIdResult = await this.setPointsWithTwitchId(twitchId, points);
+    if (!twitchIdResult) {
+      await this.setPointsWithUsername(username, points);
+    }
+  }
+
+  async setPointsWithTwitchId(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
+    return await this.viewersRepository.update({ twitchId }, points);
   }
 
   async setPointsWithUsername(username: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.viewersRepository.update({ username }, points);
+    return await this.viewersRepository.update({ username }, points);
   }
 
   getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
