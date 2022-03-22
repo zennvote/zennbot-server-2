@@ -33,16 +33,16 @@ export class ViewersController {
 
   @OnEvent('command.지급')
   async givePointCommand(payload: CommandPayload) {
-    const twitchId = payload.tags['username'];
-
-    if (!(await this.managersService.isManager(twitchId))) {
-      return payload.send('권한이 없습니다!');
-    }
-
     const [inputType, name, inputPoint] = payload.args;
 
     if (payload.args.length < 2 || Number.isNaN(inputType) || (inputType !== '곡' && inputType !== '조각')) {
       return payload.send('잘못된 명령어 형식입니다. 다시 한번 확인해주세요!');
+    }
+
+    const twitchId = payload.tags['username'];
+
+    if (!(await this.managersService.isManager(twitchId))) {
+      return payload.send('권한이 없습니다!');
     }
 
     const point = parseInt(inputPoint, 10) || 1;
@@ -58,6 +58,10 @@ export class ViewersController {
       await this.viewersService.setPointsWithUsername(name, { ticketPiece: viewer.ticketPiece + point });
     }
 
-    payload.send(`${name}님에게 ${inputType} ${point}개를 지급하였습니다.`);
+    if (point < 0) {
+      payload.send(`${name}님의 ${inputType} ${-point}개를 차감하였습니다.`);
+    } else {
+      payload.send(`${name}님에게 ${inputType} ${point}개를 지급하였습니다.`);
+    }
   }
 }
