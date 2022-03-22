@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { SheetsService } from 'src/sheets/sheets.service';
 import { Viewer } from './viewers.entity';
 import { ViewersRepository } from './viewers.repository';
 
 @Injectable()
 export class ViewersService {
-  constructor(private viewersRepository: ViewersRepository, private readonly sheetsService: SheetsService) {}
+  constructor(private viewersRepository: ViewersRepository) {}
 
   getViewers(): Promise<Viewer[]> {
     return this.viewersRepository.find();
