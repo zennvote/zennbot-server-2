@@ -32,9 +32,11 @@ export class ViewersService {
 
   async setPoints(twitchId: string, username: string, points: { ticket?: number; ticketPiece?: number }) {
     const twitchIdResult = await this.setPointsWithTwitchId(twitchId, points);
-    if (!twitchIdResult) {
-      await this.setPointsWithUsername(username, points);
+    if (twitchIdResult) {
+      return twitchIdResult;
     }
+
+    return await this.setPointsWithUsername(username, points);
   }
 
   async setPointsWithTwitchId(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
