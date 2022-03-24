@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { SheetsService } from 'src/sheets/sheets.service';
 import { Viewer } from './viewers.entity';
 import { ViewersRepository } from './viewers.repository';
 
 @Injectable()
 export class ViewersService {
-  constructor(private viewersRepository: ViewersRepository, private readonly sheetsService: SheetsService) {}
+  constructor(private viewersRepository: ViewersRepository) {}
 
   getViewers(): Promise<Viewer[]> {
     return this.viewersRepository.find();
@@ -31,12 +30,21 @@ export class ViewersService {
     return usernameViewer;
   }
 
-  async setPoints(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.viewersRepository.update({ twitchId }, points);
+  async setPoints(twitchId: string, username: string, points: { ticket?: number; ticketPiece?: number }) {
+    const twitchIdResult = await this.setPointsWithTwitchId(twitchId, points);
+    if (twitchIdResult) {
+      return twitchIdResult;
+    }
+
+    return await this.setPointsWithUsername(username, points);
+  }
+
+  async setPointsWithTwitchId(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
+    return await this.viewersRepository.update({ twitchId }, points);
   }
 
   async setPointsWithUsername(username: string, points: { ticket?: number; ticketPiece?: number }) {
-    this.viewersRepository.update({ username }, points);
+    return await this.viewersRepository.update({ username }, points);
   }
 
   getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {

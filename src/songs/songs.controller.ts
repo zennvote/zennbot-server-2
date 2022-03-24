@@ -66,9 +66,9 @@ export class SongsController {
     const { ticket, ticketPiece } = viewer;
 
     if (ticket > 0) {
-      this.viewersService.setPoints(twitchId, { ticket: ticket - 1 });
+      this.viewersService.setPoints(twitchId, username, { ticket: ticket - 1 });
     } else if (ticketPiece > 2) {
-      this.viewersService.setPoints(twitchId, { ticketPiece: ticketPiece - 3 });
+      this.viewersService.setPoints(twitchId, username, { ticketPiece: ticketPiece - 3 });
     } else {
       return payload.send('포인트가 부족해요! !젠 조각 명령어로 보유 포인트를 확인해주세요~');
     }
