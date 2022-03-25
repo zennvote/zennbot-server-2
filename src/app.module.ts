@@ -9,6 +9,7 @@ import { TmiModule } from './tmi/tmi.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ManagerModule } from './managers/managers.module';
 import { SheetsModule } from './sheets/sheets.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { SheetsModule } from './sheets/sheets.module';
       credentialsPath: process.env.SHEETS_CREDENTIALS_PATH,
       tokenPath: process.env.SHEETS_TOKEN_PATH,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
