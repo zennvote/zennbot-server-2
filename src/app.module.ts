@@ -10,6 +10,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ManagerModule } from './managers/managers.module';
 import { SheetsModule } from './sheets/sheets.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UsersModule } from './users/users.module';
       tokenPath: process.env.SHEETS_TOKEN_PATH,
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
