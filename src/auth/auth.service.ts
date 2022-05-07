@@ -1,29 +1,16 @@
-import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-
-const saltRounds = 11;
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersSservice: UsersService) {}
+  constructor(private authRepository: AuthRepository, private usersService: UsersService) {}
 
   async validateUser(username: string, password: string) {
-    const user = await this.usersSservice.findOne(username);
-    const hashed = await this.getHashedPassword(password);
+    const user = await this.usersService.findOne(username);
 
-    if (!user || user.password !== hashed) {
-      return null;
-    }
-    const { password: _, ...result } = user;
+    const result = await this.authRepository.checkPassword(user, password);
 
     return result;
-  }
-
-  private async getHashedPassword(password: string) {
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashed = await bcrypt.hash(password, salt);
-
-    return hashed;
   }
 }
