@@ -9,10 +9,17 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserDataModel]), UsersModule, PassportModule],
-  providers: [AuthService, LocalStrategy, AuthRepository],
+  imports: [
+    TypeOrmModule.forFeature([UserDataModel]),
+    JwtModule.register({ secret: 'process.env.JWT_SECRET', signOptions: { expiresIn: '60m' } }),
+    UsersModule,
+    PassportModule,
+  ],
+  providers: [AuthService, LocalStrategy, AuthRepository, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
