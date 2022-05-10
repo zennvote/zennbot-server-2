@@ -5,8 +5,8 @@ on:
     types: [opened, reopened]
 
 jobs:
-  deploy:
-    name: DEPLOY
+  check:
+    name: Check-PR
     runs-on: ubuntu-18.04
   
     steps:
@@ -15,5 +15,5 @@ jobs:
     - name: Install Dependancy
       run: yarn
 
-    - name: Run test and make coverage
+    - name: Run test
       run: yarn test
