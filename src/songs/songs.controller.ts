@@ -18,11 +18,13 @@ export class SongsController {
     return await this.songsService.getRequestedSongs();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('skip')
   async skipSong() {
     return await this.songsService.skipSong();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('reset')
   async resetSongs() {
     await this.songsService.resetRequestedSongs();
@@ -34,6 +36,7 @@ export class SongsController {
     return await this.songsService.getCooltimeSongs();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('cooltimes')
   async deleteCooltimeSongs() {
     return await this.songsService.resetCooltimeSongs();
