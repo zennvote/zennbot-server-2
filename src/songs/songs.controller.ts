@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Post, Sse } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Sse, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { map } from 'rxjs';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 import { CommandPayload } from 'src/tmi/tmi.interface';
 import { ViewersService } from 'src/viewers/viewers.service';
