@@ -1,4 +1,4 @@
-name: Production Deploy
+name: Check Pull Request
 
 on:
   pull_request:
