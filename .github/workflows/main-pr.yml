@@ -1,0 +1,19 @@
+name: Production Deploy
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  deploy:
+    name: DEPLOY
+    runs-on: ubuntu-18.04
+  
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependancy
+      run: yarn
+
+    - name: Run test and make coverage
+      run: yarn test
