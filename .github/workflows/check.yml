@@ -1,12 +1,10 @@
-name: Check Pull Request
+name: Check Branches
 
-on:
-  pull_request:
-    types: [opened, reopened]
+on: push
 
 jobs:
   check:
-    name: Check-PR
+    name: Check
     runs-on: ubuntu-18.04
   
     steps:
