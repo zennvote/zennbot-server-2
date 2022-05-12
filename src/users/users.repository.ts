@@ -10,8 +10,15 @@ export class UsersRepository {
   constructor(@InjectRepository(UserDataModel) private userDataModelsRepository: Repository<UserDataModel>) {}
 
   async findByUsername(username: string): Promise<User | null> {
-    const result = this.userDataModelsRepository.findOne({ where: { username } });
+    const result = await this.userDataModelsRepository.findOne({ where: { username } });
+    if (!result) {
+      return null;
+    }
 
-    return result ?? null;
+    const user = new User();
+    user.id = result.id;
+    user.username = result.username;
+
+    return user;
   }
 }
