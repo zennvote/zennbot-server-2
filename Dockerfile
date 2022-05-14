@@ -8,6 +8,10 @@ RUN yarn build
 
 
 FROM node:16.4.2-alpine3.11
+
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+
 WORKDIR /usr/src/app
 COPY --from=builder /app ./
 
