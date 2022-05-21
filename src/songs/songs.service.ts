@@ -39,11 +39,13 @@ export class SongsService {
     return song;
   }
 
-  async deleteSong(index: number): Promise<void> {
+  async deleteSong(index: number): Promise<Song> {
     const songs = await this.getRequestedSongs();
-    const deleted = songs.splice(index, 1);
+    const [deleted] = songs.splice(index, 1);
 
-    await this.setRequestedSongs(deleted);
+    await this.setRequestedSongs(songs);
+
+    return deleted;
   }
 
   async getRequestedSongs(): Promise<Song[]> {

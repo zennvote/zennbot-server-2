@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Delete, Get, Param, Post, Sse, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Delete, Get, Param, Post, Query, Sse, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { map } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -55,8 +55,10 @@ export class SongsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':index')
-  async deleteSong(@Param('index') indexStr: string) {
+  async deleteSong(@Param('index') indexStr: string, @Query('refund') refundStr: string) {
+    const isRefund = refundStr !== undefined;
     const index = parseInt(indexStr, 10);
+
     if (isNaN(index) || index < 0) {
       throw new BadRequestException();
     }
@@ -66,7 +68,16 @@ export class SongsController {
       throw new BadRequestException();
     }
 
-    await this.songsService.deleteSong(index);
+    const deleted = await this.songsService.deleteSong(index);
+    if (isRefund && (deleted.requestType === RequestType.ticket || deleted.requestType === RequestType.ticketPiece)) {
+      const viewer = await this.viewersService.getViewer(deleted.requestor, deleted.requestorName);
+
+      if (deleted.requestType === RequestType.ticket) {
+        await this.viewersService.setPointsWithTwitchId(viewer.twitchId, { ticket: viewer.ticket + 1 });
+      } else {
+        await this.viewersService.setPointsWithTwitchId(viewer.twitchId, { ticketPiece: viewer.ticketPiece + 3 });
+      }
+    }
   }
 
   @Sse('sse')
