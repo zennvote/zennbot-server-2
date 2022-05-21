@@ -7,6 +7,8 @@ import { User } from 'src/users/entities/user.entity';
 import { UserDataModel } from 'src/users/entities/user.datamodel';
 import { InjectRepository } from '@nestjs/typeorm';
 
+const salt = 12;
+
 @Injectable()
 export class AuthRepository {
   constructor(@InjectRepository(UserDataModel) private userDataModelsRepository: Repository<UserDataModel>) {}
@@ -16,5 +18,9 @@ export class AuthRepository {
     const result = await bcrypt.compare(password, userDataModel.password);
 
     return result;
+  }
+
+  async createPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, salt);
   }
 }

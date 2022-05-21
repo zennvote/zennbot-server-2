@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -23,10 +23,11 @@ import { ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
-    UsersModule,
+    forwardRef(() => UsersModule),
     PassportModule,
   ],
   providers: [AuthService, LocalStrategy, AuthRepository, JwtStrategy],
   controllers: [AuthController],
+  exports: [AuthRepository],
 })
 export class AuthModule {}
