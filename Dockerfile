@@ -14,4 +14,4 @@ COPY --from=builder /app ./
 
 EXPOSE 3000
 
-CMD yarn migration:run ; yarn start:prod
+CMD yarn typeorm migration:run ; yarn start:prod
