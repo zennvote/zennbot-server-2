@@ -10,7 +10,4 @@ export class UserDataModel {
 
   @Column()
   password: string;
-
-  @Column()
-  salt: string;
 }
