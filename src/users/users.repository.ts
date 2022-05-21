@@ -21,4 +21,18 @@ export class UsersRepository {
 
     return user;
   }
+
+  async create(username: string, password: string) {
+    const datamodel = new UserDataModel();
+    datamodel.username = username;
+    datamodel.password = password;
+
+    const result = await this.userDataModelsRepository.save(datamodel);
+
+    const user = new User();
+    user.id = result.id;
+    user.username = result.username;
+
+    return user;
+  }
 }

@@ -21,10 +21,10 @@ describe('UserRepository', () => {
     it('username에 맞는 유저를 반환해야 한다.', async () => {
       await typeormRepository.save(
         typeormRepository.create([
-          { id: 1, username: 'testuser1', password: 'password1', salt: 'salt' },
-          { id: 2, username: 'testuser2', password: 'password2', salt: 'salt' },
-          { id: 3, username: 'testuser3', password: 'password3', salt: 'salt' },
-          { id: 4, username: 'testuser4', password: 'password4', salt: 'salt' },
+          { id: 1, username: 'testuser1', password: 'password1' },
+          { id: 2, username: 'testuser2', password: 'password2' },
+          { id: 3, username: 'testuser3', password: 'password3' },
+          { id: 4, username: 'testuser4', password: 'password4' },
         ]),
       );
 
@@ -38,10 +38,10 @@ describe('UserRepository', () => {
     it('username에 맞는 유저가 없을 시 null을 반환해야 한다.', async () => {
       await typeormRepository.save(
         typeormRepository.create([
-          { id: 1, username: 'testuser1', password: 'password1', salt: 'salt' },
-          { id: 2, username: 'testuser2', password: 'password2', salt: 'salt' },
-          { id: 3, username: 'testuser3', password: 'password3', salt: 'salt' },
-          { id: 4, username: 'testuser4', password: 'password4', salt: 'salt' },
+          { id: 1, username: 'testuser1', password: 'password1' },
+          { id: 2, username: 'testuser2', password: 'password2' },
+          { id: 3, username: 'testuser3', password: 'password3' },
+          { id: 4, username: 'testuser4', password: 'password4' },
         ]),
       );
 
