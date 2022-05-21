@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Sse, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Sse, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { map } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -40,6 +40,17 @@ export class SongsController {
   @Delete('cooltimes')
   async deleteCooltimeSongs() {
     return await this.songsService.resetCooltimeSongs();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':title')
+  async createSong(@Param('title') title: string) {
+    return await this.songsService.enqueueSong({
+      requestor: 'producerzenn',
+      requestorName: '프로듀서_젠',
+      requestType: RequestType.manual,
+      title,
+    });
   }
 
   @Sse('sse')
