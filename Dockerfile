@@ -14,6 +14,4 @@ COPY --from=builder /app ./
 
 EXPOSE 3000
 
-RUN yarn migration:run
-
-CMD yarn start:prod
+CMD yarn migration:run ; yarn start:prod
