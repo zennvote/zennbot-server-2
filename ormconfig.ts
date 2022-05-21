@@ -10,8 +10,8 @@ const config: TypeOrmModuleOptions = {
   synchronize: false,
   logging: true,
   entities: ['dist/**/*{.entity.js,.entity.ts}', 'dist/**/*{.datamodel.js,.datamodel.ts}'],
-  migrations: ['dist/migrations/*{.js,.ts}'],
-  subscribers: ['dist/subscribers/*{.js,.ts}'],
+  migrations: ['dist/src/migrations/*{.js,.ts}'],
+  subscribers: ['dist/src/subscribers/*{.js,.ts}'],
   cli: {
     migrationsDir: 'src/migrations',
   },
