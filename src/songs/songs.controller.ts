@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Sse, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Delete, Get, Param, Post, Query, Sse, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { map } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -40,6 +40,44 @@ export class SongsController {
   @Delete('cooltimes')
   async deleteCooltimeSongs() {
     return await this.songsService.resetCooltimeSongs();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':title')
+  async createSong(@Param('title') title: string) {
+    return await this.songsService.enqueueSong({
+      requestor: 'producerzenn',
+      requestorName: '프로듀서_젠',
+      requestType: RequestType.manual,
+      title,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':index')
+  async deleteSong(@Param('index') indexStr: string, @Query('refund') refundStr: string) {
+    const isRefund = refundStr !== undefined;
+    const index = parseInt(indexStr, 10);
+
+    if (isNaN(index) || index < 0) {
+      throw new BadRequestException();
+    }
+
+    const songs = await this.songsService.getRequestedSongs();
+    if (songs.length <= index) {
+      throw new BadRequestException();
+    }
+
+    const deleted = await this.songsService.deleteSong(index);
+    if (isRefund && (deleted.requestType === RequestType.ticket || deleted.requestType === RequestType.ticketPiece)) {
+      const viewer = await this.viewersService.getViewer(deleted.requestor, deleted.requestorName);
+
+      if (deleted.requestType === RequestType.ticket) {
+        await this.viewersService.setPointsWithTwitchId(viewer.twitchId, { ticket: viewer.ticket + 1 });
+      } else {
+        await this.viewersService.setPointsWithTwitchId(viewer.twitchId, { ticketPiece: viewer.ticketPiece + 3 });
+      }
+    }
   }
 
   @Sse('sse')
