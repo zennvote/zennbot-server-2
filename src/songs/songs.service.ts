@@ -39,6 +39,13 @@ export class SongsService {
     return song;
   }
 
+  async deleteSong(index: number): Promise<void> {
+    const songs = await this.getRequestedSongs();
+    const deleted = songs.splice(index, 1);
+
+    await this.setRequestedSongs(deleted);
+  }
+
   async getRequestedSongs(): Promise<Song[]> {
     const songsJson = await this.cacheManager.get<string>('songs:requested-songs');
 

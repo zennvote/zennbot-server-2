@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Sse, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Delete, Get, Param, Post, Sse, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { map } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -51,6 +51,22 @@ export class SongsController {
       requestType: RequestType.manual,
       title,
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':index')
+  async deleteSong(@Param('index') indexStr: string) {
+    const index = parseInt(indexStr, 10);
+    if (isNaN(index) || index < 0) {
+      throw new BadRequestException();
+    }
+
+    const songs = await this.songsService.getRequestedSongs();
+    if (songs.length <= index) {
+      throw new BadRequestException();
+    }
+
+    await this.songsService.deleteSong(index);
   }
 
   @Sse('sse')
