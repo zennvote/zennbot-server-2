@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,14 +12,17 @@ import { SheetsModule } from './sheets/sheets.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 
-import ormConfig from '../ormconfig';
+import { getConfigWithConfigService } from '../ormconfig';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(ormConfig),
+    TypeOrmModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => getConfigWithConfigService(configService),
+      inject: [ConfigService],
+    }),
     TmiModule.forRoot({
       identity: {
         username: process.env.TMI_USERNAME,
