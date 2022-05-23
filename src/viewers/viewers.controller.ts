@@ -1,8 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { ApiOkResponse } from '@nestjs/swagger';
 import { ManagersService } from 'src/managers/managers.service';
 
 import { CommandPayload } from 'src/tmi/tmi.interface';
+import { Viewer } from './viewers.entity';
 import { ViewersService } from './viewers.service';
 
 @Controller('viewers')
@@ -10,6 +12,7 @@ export class ViewersController {
   constructor(private readonly viewersService: ViewersService, private readonly managersService: ManagersService) {}
 
   @Get()
+  @ApiOkResponse({ type: [Viewer] })
   async getViewers() {
     return await this.viewersService.getViewers();
   }

@@ -1,11 +1,12 @@
 import { BadRequestException, Controller, Delete, Get, Param, Post, Query, Sse, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { map } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 import { CommandPayload } from 'src/tmi/tmi.interface';
 import { ViewersService } from 'src/viewers/viewers.service';
-import { RequestType } from './songs.entity';
+import Song, { RequestType } from './songs.entity';
 
 import { SongsService } from './songs.service';
 
@@ -14,24 +15,28 @@ export class SongsController {
   constructor(private readonly songsService: SongsService, private readonly viewersService: ViewersService) {}
 
   @Get()
+  @ApiOkResponse({ type: [Song] })
   async getSongs() {
     return await this.songsService.getRequestedSongs();
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('skip')
+  @ApiOkResponse({ type: Song })
   async skipSong() {
     return await this.songsService.skipSong();
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
+  @ApiOkResponse()
   async resetSongs() {
     await this.songsService.resetRequestedSongs();
     await this.songsService.resetCooltimeSongs();
   }
 
   @Get('cooltimes')
+  @ApiOkResponse({ type: [Song] })
   async getCooltimeSongs() {
     return await this.songsService.getCooltimeSongs();
   }
@@ -44,6 +49,7 @@ export class SongsController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':title')
+  @ApiCreatedResponse({ type: Song })
   async createSong(@Param('title') title: string) {
     return await this.songsService.enqueueSong({
       requestor: 'producerzenn',
@@ -81,6 +87,7 @@ export class SongsController {
   }
 
   @Sse('sse')
+  @ApiOkResponse({ type: [Song] })
   getSongsSse() {
     return this.songsService.requestedSongsObserver.pipe(map((data) => JSON.stringify(data)));
   }
