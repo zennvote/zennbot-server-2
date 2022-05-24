@@ -1,30 +1,38 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
+import { Injectable } from '@nestjs/common';
 import { Subject } from 'rxjs';
-import { CreateSongDto } from './dtos/create-song.dto';
 
+import { SongsRepository } from './songs.repository';
 import Song from './songs.entity';
+import { CreateSongDto } from './dtos/create-song.dto';
 
 @Injectable()
 export class SongsService {
   private readonly requestedSongsSubject = new Subject<Song[]>();
   public requestedSongsObserver = this.requestedSongsSubject.asObservable();
 
-  constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
+  constructor(private readonly songsRepository: SongsRepository) {}
+
+  async getRequestedSongs() {
+    return this.songsRepository.getRequestedSongs();
+  }
+
+  async getCooltimeSongs() {
+    return this.songsRepository.getCooltimeSongs();
+  }
 
   async skipSong(): Promise<Song> {
-    const [song, ...remainSongs] = await this.getRequestedSongs();
-    const cooltimeSongs = await this.getCooltimeSongs();
+    const [song, ...remainSongs] = await this.songsRepository.getRequestedSongs();
+    const cooltimeSongs = await this.songsRepository.getCooltimeSongs();
 
-    await this.setRequestedSongs(remainSongs);
-    await this.setCooltimeSongs([...cooltimeSongs, song].slice(cooltimeSongs.length >= 4 ? 1 : 0));
+    await this.songsRepository.setRequestedSongs(remainSongs);
+    await this.songsRepository.setCooltimeSongs([...cooltimeSongs, song].slice(cooltimeSongs.length >= 4 ? 1 : 0));
 
     return song;
   }
 
   async isCooltime(twitchId: string): Promise<boolean> {
-    const cooltimeSongs = await this.getCooltimeSongs();
-    const requestedSongs = await this.getRequestedSongs();
+    const cooltimeSongs = await this.songsRepository.getCooltimeSongs();
+    const requestedSongs = await this.songsRepository.getRequestedSongs();
 
     return [...cooltimeSongs, ...requestedSongs].slice(-4).some((song) => song.requestor === twitchId);
   }
@@ -33,54 +41,26 @@ export class SongsService {
     const { title, requestor, requestorName, requestType } = createSongDto;
     const song = new Song(title, requestor, requestorName, requestType);
 
-    const requestedSongs = await this.getRequestedSongs();
-    await this.setRequestedSongs([...requestedSongs, song]);
+    const requestedSongs = await this.songsRepository.getRequestedSongs();
+    await this.songsRepository.setRequestedSongs([...requestedSongs, song]);
 
     return song;
   }
 
   async deleteSong(index: number): Promise<Song> {
-    const songs = await this.getRequestedSongs();
+    const songs = await this.songsRepository.getRequestedSongs();
     const [deleted] = songs.splice(index, 1);
 
-    await this.setRequestedSongs(songs);
+    await this.songsRepository.setRequestedSongs(songs);
 
     return deleted;
   }
 
-  async getRequestedSongs(): Promise<Song[]> {
-    const songsJson = await this.cacheManager.get<string>('songs:requested-songs');
-
-    return JSON.parse(songsJson ?? '[]');
+  async resetRequestedSongs() {
+    await this.songsRepository.setRequestedSongs([]);
   }
 
-  async getCooltimeSongs(): Promise<Song[]> {
-    const songsJson = await this.cacheManager.get<string>('songs:cooltime-songs');
-
-    return JSON.parse(songsJson ?? '[]');
-  }
-
-  async resetRequestedSongs(): Promise<void> {
-    await this.setRequestedSongs([]);
-  }
-
-  async resetCooltimeSongs(): Promise<void> {
-    await this.setCooltimeSongs([]);
-  }
-
-  private async setRequestedSongs(songs: Song[]): Promise<Song[]> {
-    const songsJson = JSON.stringify(songs);
-    const result = await this.cacheManager.set('songs:requested-songs', songsJson);
-
-    this.requestedSongsSubject.next(songs);
-
-    return JSON.parse(result);
-  }
-
-  private async setCooltimeSongs(songs: Song[]): Promise<Song[]> {
-    const songsJson = JSON.stringify(songs);
-    const result = await this.cacheManager.set('songs:cooltime-songs', songsJson);
-
-    return JSON.parse(result);
+  async resetCooltimeSongs() {
+    await this.songsRepository.setCooltimeSongs([]);
   }
 }
