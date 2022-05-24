@@ -5,6 +5,7 @@ import { map } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 import { CommandPayload } from 'src/tmi/tmi.interface';
+import { isBusinessError } from 'src/util/business-error';
 import { ViewersService } from 'src/viewers/viewers.service';
 import Song, { RequestType } from './songs.entity';
 
@@ -17,7 +18,7 @@ export class SongsController {
   @Get()
   @ApiOkResponse({ type: [Song] })
   async getSongs() {
-    return await this.songsService.getRequestedSongs();
+    return await this.songsService.getSongs();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -31,8 +32,7 @@ export class SongsController {
   @Post('reset')
   @ApiOkResponse()
   async resetSongs() {
-    await this.songsService.resetRequestedSongs();
-    await this.songsService.resetCooltimeSongs();
+    return await this.songsService.resetSongs();
   }
 
   @Get('cooltimes')
@@ -44,7 +44,7 @@ export class SongsController {
   @UseGuards(JwtAuthGuard)
   @Delete('cooltimes')
   async deleteCooltimeSongs() {
-    return await this.songsService.resetCooltimeSongs();
+    return await this.songsService.resetCooltimes();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -69,21 +69,22 @@ export class SongsController {
       throw new BadRequestException();
     }
 
-    const songs = await this.songsService.getRequestedSongs();
-    if (songs.length <= index) {
+    const deleted = await this.songsService.deleteSong(index);
+    if (isBusinessError(deleted)) {
       throw new BadRequestException();
     }
 
-    const deleted = await this.songsService.deleteSong(index);
-    if (isRefund && (deleted.requestType === RequestType.ticket || deleted.requestType === RequestType.ticketPiece)) {
+    if (isRefund) {
       const viewer = await this.viewersService.getViewer(deleted.requestor, deleted.requestorName);
 
       if (deleted.requestType === RequestType.ticket) {
         await this.viewersService.setPointsWithTwitchId(viewer.twitchId, { ticket: viewer.ticket + 1 });
-      } else {
+      } else if (deleted.requestType === RequestType.ticketPiece) {
         await this.viewersService.setPointsWithTwitchId(viewer.twitchId, { ticketPiece: viewer.ticketPiece + 3 });
       }
     }
+
+    return deleted;
   }
 
   @Sse('sse')

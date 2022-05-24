@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { SongsRepository } from './songs.repository';
 import Song from './songs.entity';
 import { CreateSongDto } from './dtos/create-song.dto';
+import { BusinessError } from 'src/util/business-error';
 
 @Injectable()
 export class SongsService {
@@ -12,7 +13,7 @@ export class SongsService {
 
   constructor(private readonly songsRepository: SongsRepository) {}
 
-  async getRequestedSongs() {
+  async getSongs() {
     return this.songsRepository.getRequestedSongs();
   }
 
@@ -20,7 +21,7 @@ export class SongsService {
     return this.songsRepository.getCooltimeSongs();
   }
 
-  async skipSong(): Promise<Song> {
+  async skipSong() {
     const [song, ...remainSongs] = await this.songsRepository.getRequestedSongs();
     const cooltimeSongs = await this.songsRepository.getCooltimeSongs();
 
@@ -28,6 +29,15 @@ export class SongsService {
     await this.songsRepository.setCooltimeSongs([...cooltimeSongs, song].slice(cooltimeSongs.length >= 4 ? 1 : 0));
 
     return song;
+  }
+
+  async resetSongs() {
+    await this.songsRepository.setCooltimeSongs([]);
+    await this.songsRepository.setRequestedSongs([]);
+  }
+
+  async resetCooltimes() {
+    await this.songsRepository.setCooltimeSongs([]);
   }
 
   async isCooltime(twitchId: string): Promise<boolean> {
@@ -47,20 +57,15 @@ export class SongsService {
     return song;
   }
 
-  async deleteSong(index: number): Promise<Song> {
+  async deleteSong(index: number) {
     const songs = await this.songsRepository.getRequestedSongs();
-    const [deleted] = songs.splice(index, 1);
+    if (songs.length <= index) {
+      return new BusinessError('out-of-range');
+    }
 
+    const [deleted] = songs.splice(index, 1);
     await this.songsRepository.setRequestedSongs(songs);
 
     return deleted;
-  }
-
-  async resetRequestedSongs() {
-    await this.songsRepository.setRequestedSongs([]);
-  }
-
-  async resetCooltimeSongs() {
-    await this.songsRepository.setCooltimeSongs([]);
   }
 }
