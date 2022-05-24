@@ -48,6 +48,18 @@ export class SongsService {
     return deleted;
   }
 
+  async reindexSong(indexes: number[]): Promise<Song[] | null> {
+    const songs = await this.getRequestedSongs();
+    if (songs.length !== indexes.length) {
+      return null;
+    }
+
+    const reindexed = indexes.map((index) => songs[index]);
+    await this.setRequestedSongs(reindexed);
+
+    return reindexed;
+  }
+
   async getRequestedSongs(): Promise<Song[]> {
     const songsJson = await this.cacheManager.get<string>('songs:requested-songs');
 
