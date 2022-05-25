@@ -8,10 +8,11 @@ import { BusinessError } from 'src/util/business-error';
 
 @Injectable()
 export class SongsService {
-  private readonly requestedSongsSubject = new Subject<Song[]>();
-  public requestedSongsObserver = this.requestedSongsSubject.asObservable();
-
   constructor(private readonly songsRepository: SongsRepository) {}
+
+  get requestedSongsObserver() {
+    return this.songsRepository.requestedSongsObserver;
+  }
 
   async getSongs() {
     return this.songsRepository.getRequestedSongs();
@@ -24,6 +25,10 @@ export class SongsService {
   async skipSong() {
     const [song, ...remainSongs] = await this.songsRepository.getRequestedSongs();
     const cooltimeSongs = await this.songsRepository.getCooltimeSongs();
+
+    console.log('song', song);
+    console.log('remainSongs', remainSongs);
+    console.log('cooltimeSongs', cooltimeSongs);
 
     await this.songsRepository.setRequestedSongs(remainSongs);
     await this.songsRepository.setCooltimeSongs([...cooltimeSongs, song].slice(cooltimeSongs.length >= 4 ? 1 : 0));
