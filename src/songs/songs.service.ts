@@ -68,4 +68,24 @@ export class SongsService {
 
     return deleted;
   }
+
+  async resetRequestedSongs() {
+    await this.songsRepository.setRequestedSongs([]);
+  }
+
+  async reindexSong(indexes: number[]): Promise<Song[] | null> {
+    const songs = await this.songsRepository.getRequestedSongs();
+    if (songs.length !== indexes.length) {
+      return null;
+    }
+
+    const reindexed = indexes.map((index) => songs[index]);
+    await this.songsRepository.setRequestedSongs(reindexed);
+
+    return reindexed;
+  }
+
+  async resetCooltimeSongs() {
+    await this.songsRepository.setCooltimeSongs([]);
+  }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Delete, Get, Param, Post, Query, Sse, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query, Sse, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { map } from 'rxjs';
@@ -39,6 +39,13 @@ export class SongsController {
   @ApiOkResponse({ type: [Song] })
   async getCooltimeSongs() {
     return await this.songsService.getCooltimeSongs();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('reindex')
+  @ApiOkResponse({ type: [Song] })
+  async reindexSongs(@Body() indexes: number[]) {
+    return await this.songsService.reindexSong(indexes);
   }
 
   @UseGuards(JwtAuthGuard)
