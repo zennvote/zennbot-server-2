@@ -67,21 +67,9 @@ export class SongsService {
     }
 
     const reindexed = indexes.map((index) => songs[index]);
-    await this.setRequestedSongs(reindexed);
+    await this.songsRepository.setRequestedSongs(reindexed);
 
     return reindexed;
-  }
-
-  async getRequestedSongs(): Promise<Song[]> {
-    const songsJson = await this.cacheManager.get<string>('songs:requested-songs');
-
-    return JSON.parse(songsJson ?? '[]');
-  }
-
-  async getCooltimeSongs(): Promise<Song[]> {
-    const songsJson = await this.cacheManager.get<string>('songs:cooltime-songs');
-
-    return JSON.parse(songsJson ?? '[]');
   }
 
   async resetCooltimeSongs() {
