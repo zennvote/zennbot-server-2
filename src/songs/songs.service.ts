@@ -8,10 +8,11 @@ import { BusinessError } from 'src/util/business-error';
 
 @Injectable()
 export class SongsService {
-  private readonly requestedSongsSubject = new Subject<Song[]>();
-  public requestedSongsObserver = this.requestedSongsSubject.asObservable();
-
   constructor(private readonly songsRepository: SongsRepository) {}
+
+  get requestedSongsObserver() {
+    return this.songsRepository.requestedSongsObserver;
+  }
 
   async getSongs() {
     return this.songsRepository.getRequestedSongs();
