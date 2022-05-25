@@ -47,7 +47,7 @@ export class SongsRepository {
   private async setSongs(key: string, songs: Song[]) {
     const songsJson = JSON.stringify(songs);
 
-    await this.cacheManager.set('songs:requested-songs', songsJson);
+    await this.cacheManager.set(key, songsJson);
 
     return songs;
   }
