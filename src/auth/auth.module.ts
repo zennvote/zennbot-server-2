@@ -12,6 +12,7 @@ import { AuthRepository } from './auth.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigService } from '@nestjs/config';
+import { JwtRefreshStrategy } from './jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { ConfigService } from '@nestjs/config';
     forwardRef(() => UsersModule),
     PassportModule,
   ],
-  providers: [AuthService, LocalStrategy, AuthRepository, JwtStrategy],
+  providers: [AuthService, LocalStrategy, AuthRepository, JwtStrategy, JwtRefreshStrategy],
   controllers: [AuthController],
   exports: [AuthRepository],
 })
