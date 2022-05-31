@@ -40,3 +40,6 @@ lerna-debug.log*
 # Google Sheets Auth File
 credentials.json
 token.json
+
+# local cert file
+*.pem

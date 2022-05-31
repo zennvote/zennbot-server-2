@@ -29,7 +29,7 @@ export class AuthService {
         secret: process.env.JWT_SECRET,
         expiresIn: process.env.JWT_EXPIRES_IN,
       }),
-      refresh_token: this.jwtService.sign(refreshPayload, {
+      refreshToken: this.jwtService.sign(refreshPayload, {
         secret: process.env.JWT_REFRESH_SECRET,
         expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
       }),
