@@ -32,7 +32,7 @@ export class SongsController {
   @Post('reset')
   @ApiOkResponse()
   async resetSongs() {
-    return await this.songsService.resetSongs();
+    return await this.songsService.resetRequestedSongs();
   }
 
   @Get('cooltimes')
