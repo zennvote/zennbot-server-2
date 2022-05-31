@@ -22,9 +22,17 @@ export class AuthService {
 
   async login(user: User) {
     const payload = { username: user.username, sub: user.id };
+    const refreshPayload = { sub: user.id };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      }),
+      refreshToken: this.jwtService.sign(refreshPayload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+      }),
     };
   }
 }
