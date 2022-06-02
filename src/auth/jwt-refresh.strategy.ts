@@ -8,9 +8,7 @@ import { parse } from 'cookie';
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwtRefresh') {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (request) => (console.log(request.headers.cookie) as any) || parse(request?.headers?.cookie ?? '').RefreshToken,
-      ]),
+      jwtFromRequest: ExtractJwt.fromExtractors([(request) => parse(request?.headers?.cookie ?? '').RefreshToken]),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_REFRESH_SECRET,
     });
