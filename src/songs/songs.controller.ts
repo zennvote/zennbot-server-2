@@ -55,9 +55,9 @@ export class SongsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':title')
+  @Post()
   @ApiCreatedResponse({ type: Song })
-  async createSong(@Param('title') title: string) {
+  async createSong(@Body('title') title: string) {
     return await this.songsService.enqueueSong({
       requestor: 'producerzenn',
       requestorName: '프로듀서_젠',
