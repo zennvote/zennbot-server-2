@@ -1,4 +1,4 @@
-;import { createTestDbConnection } from 'src/test-utils';
+import { createTestDbConnection } from 'src/test-utils';
 import { Connection, Repository } from 'typeorm';
 import { UserDataModel } from './entities/user.datamodel';
 import { User } from './entities/user.entity';
@@ -48,6 +48,21 @@ describe('UserRepository', () => {
       const result = await repository.findByUsername('nouser');
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('create', () => {
+    it('새로운 유저를 생성할 수 있어야 한다.', async () => {
+      const result = await repository.create('testuser1', 'password1');
+
+      expect(result.username).toBe('testuser1');
+
+      const db = await typeormRepository.find();
+
+      expect(db).toHaveLength(1);
+      expect(db[0].id).toBe(result.id);
+      expect(db[0].username).toBe('testuser1');
+      expect(db[0].password).toBe('password1');
     });
   });
 });
