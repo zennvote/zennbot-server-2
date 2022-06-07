@@ -96,7 +96,10 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/{!(*.module),}.(t|j)s"
+    ],
+    "coveragePathIgnorePatterns": [
+      "src/migrations/*"
     ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
