@@ -30,6 +30,7 @@ export class ViewersRepository {
   async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<boolean> {
     if (option.index !== undefined && Object.keys(option).length === 1) {
       await this.sheetsService.updateSheets(option.index, value);
+      return true;
     }
     const viewer = await this.findOne(option);
     if (!viewer) {
