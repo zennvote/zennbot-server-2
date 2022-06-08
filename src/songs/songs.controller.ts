@@ -45,13 +45,19 @@ export class SongsController {
   @Post('reindex')
   @ApiOkResponse({ type: [Song] })
   async reindexSongs(@Body() indexes: number[]) {
-    return await this.songsService.reindexSong(indexes);
+    const result = await this.songsService.reindexSong(indexes);
+
+    if (isBusinessError(result)) {
+      throw new BadRequestException();
+    }
+
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('cooltimes')
   async deleteCooltimeSongs() {
-    return await this.songsService.resetCooltimes();
+    return await this.songsService.resetCooltimeSongs();
   }
 
   @UseGuards(JwtAuthGuard)
