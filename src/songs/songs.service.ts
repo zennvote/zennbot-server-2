@@ -37,10 +37,6 @@ export class SongsService {
     await this.songsRepository.setRequestedSongs([]);
   }
 
-  async resetCooltimes() {
-    await this.songsRepository.setCooltimeSongs([]);
-  }
-
   async isCooltime(twitchId: string): Promise<boolean> {
     const cooltimeSongs = await this.songsRepository.getCooltimeSongs();
     const requestedSongs = await this.songsRepository.getRequestedSongs();
@@ -74,10 +70,10 @@ export class SongsService {
     await this.songsRepository.setRequestedSongs([]);
   }
 
-  async reindexSong(indexes: number[]): Promise<Song[] | null> {
+  async reindexSong(indexes: number[]) {
     const songs = await this.songsRepository.getRequestedSongs();
     if (songs.length !== indexes.length) {
-      return null;
+      return new BusinessError('out-of-range');
     }
 
     const reindexed = indexes.map((index) => songs[index]);
