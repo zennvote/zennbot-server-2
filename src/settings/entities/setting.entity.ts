@@ -10,3 +10,7 @@ export class Setting {
   @IsNotEmpty()
   value: SettingValue;
 }
+
+export class FlagSetting extends Setting {
+  value: boolean;
+}
