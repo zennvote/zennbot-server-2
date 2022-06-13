@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SettingDataModel, SettingType } from './entities/setting.datamodel';
 import { FlagSetting } from './entities/setting.entity';
 
 @Injectable()
 export class SettingsRepository {
-  constructor(private readonly settingsDataModelRepository: Repository<SettingDataModel>) {}
+  constructor(
+    @InjectRepository(SettingDataModel) private readonly settingsDataModelRepository: Repository<SettingDataModel>,
+  ) {}
 
   async getSetting(key: string) {
     const result = await this.settingsDataModelRepository.findOne({ where: { key } });
