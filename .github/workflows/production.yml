@@ -3,13 +3,41 @@ name: Production Deploy
 on:
   push:
     branches:
+      - dockerize-local
       - main
 
 jobs:
   deploy:
-    name: DEPLOY
-    runs-on: ubuntu-18.04
+    name: Build Image
+    runs-on: ubuntu-latest
   
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Image
+      run: docker build -t zennbot-web .
+
+    - name: Tag Image
+      run: docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
+
+    - name: Push Image to ECR
+      run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
+  
+  coverage:
+    name: Calculate Image
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
 
@@ -24,14 +52,3 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage/coverage-final.json
-
-    - name: Call AWS CodeDeploy
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        aws deploy create-deployment \
-          --region ap-northeast-2 \
-          --application-name zennbot-deploy \
-          --deployment-group-name zennbot-deploy-group \
-          --github-location repository="zennvote/zennbot-server-2",commitId="${{ github.sha }}"
