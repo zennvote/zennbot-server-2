@@ -1,8 +1,12 @@
-import { Body, Controller, Get, NotFoundException, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Patch, UseGuards } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
+
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
 import { Setting } from './entities/setting.entity';
 import { SettingsService } from './settings.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('settings')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
