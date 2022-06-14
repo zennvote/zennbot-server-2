@@ -40,4 +40,23 @@ describe('SettingsRepository', () => {
       expect(result).toBeNull();
     });
   });
+
+  describe('setFlagSetting', () => {
+    it('key에 맞는 setting값을 갱신해야 한다.', async () => {
+      await typeormRepository.save({ key: 'setting1', type: SettingType.Flag, flagValue: false });
+
+      const result = await repository.setFlagSetting('setting1', true);
+
+      const actually = await typeormRepository.findOne({ where: { key: 'setting1' } });
+      expect(result).toBe(true);
+      expect(actually).toBeDefined();
+      expect(actually.flagValue).toBe(true);
+    });
+
+    it('key에 맞는 setting값이 없을 경우 false를 반환해야 한다', async () => {
+      const result = await repository.setFlagSetting('setting1', true);
+
+      expect(result).toBe(false);
+    });
+  });
 });

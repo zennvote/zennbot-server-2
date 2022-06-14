@@ -8,4 +8,8 @@ export class SettingsService {
   async getSetting(key: string) {
     return this.settingsRepository.getSetting(key);
   }
+
+  async updateSetting(key: string, value: boolean) {
+    return this.settingsRepository.setFlagSetting(key, value);
+  }
 }

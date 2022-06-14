@@ -25,4 +25,10 @@ export class SettingsRepository {
         return flagSetting;
     }
   }
+
+  async setFlagSetting(key: string, value: boolean) {
+    const result = await this.settingsDataModelRepository.update({ key }, { flagValue: value });
+
+    return result.affected > 0;
+  }
 }

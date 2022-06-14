@@ -38,4 +38,15 @@ describe('SettingsService', () => {
       expect(repository.getSetting).toBeCalledWith('setting1');
     });
   });
+
+  describe('updateSetting', () => {
+    it('key에 맞는 설정을 업데이트해야 함', async () => {
+      repository.setFlagSetting = jest.fn(async () => true);
+
+      const result = await service.updateSetting('setting1', false);
+
+      expect(result).toBe(true);
+      expect(repository.setFlagSetting).toBeCalledWith('setting1', false);
+    });
+  });
 });

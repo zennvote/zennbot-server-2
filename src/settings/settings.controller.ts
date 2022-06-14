@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Patch } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { Setting } from './entities/setting.entity';
 import { SettingsService } from './settings.service';
@@ -16,5 +16,11 @@ export class SettingsController {
     }
 
     return setting;
+  }
+
+  @Patch(':key')
+  @ApiOkResponse()
+  async updateSetting(@Param('key') key: string, @Body('value') value: boolean) {
+    return this.settingsService.updateSetting(key, value);
   }
 }
