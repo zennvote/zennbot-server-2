@@ -36,7 +36,7 @@ jobs:
       run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
   
   coverage:
-    name: Calculate Image
+    name: Calculate Coverage
     runs-on: ubuntu-latest
 
     steps:
