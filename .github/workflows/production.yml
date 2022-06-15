@@ -37,7 +37,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build Image
-      run: docker build --platform linux/arm64/v8 -t zennbot-web .
+      run: docker buildx build --platform linux/arm64/v8 -t zennbot-web .
 
     - name: Tag Image
       run: docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
