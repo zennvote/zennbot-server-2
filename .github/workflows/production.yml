@@ -22,6 +22,16 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
 
+    - uses: deptno/action-aws-ssm-to-dotenv@v1.3.1
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ap-northeast-2
+      with:
+        ssm-path: /ZENNBOT/PRODUCTION
+        output: .env
+        decryption: true
+
     - name: Login to ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
