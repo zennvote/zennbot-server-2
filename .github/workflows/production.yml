@@ -6,6 +6,10 @@ on:
       - dockerize-local
       - main
 
+env:
+  ECS_CLUSTER: zennbot-ecs
+  ECS_SERVICE: zennbot-ecs-service
+
 jobs:
   deploy:
     name: Build Image
@@ -44,6 +48,14 @@ jobs:
 
     - name: Push Image to ECR
       run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
+
+    - name: Deploy to Amazon ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: .aws/zennbot-ecs-td.json
+        cluster: ${{ env.ECS_CLUSTER }}
+        service: ${{ env.ECS_SERVICE }}
+        wait-for-service-stability: true
   
   coverage:
     name: Calculate Coverage
