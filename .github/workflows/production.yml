@@ -3,7 +3,6 @@ name: Production Deploy
 on:
   push:
     branches:
-      - dockerize-local
       - main
 
 env:
