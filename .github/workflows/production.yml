@@ -36,7 +36,7 @@ jobs:
         decryption: true
         
     - name: Add sha to env
-      run: echo -e $'\n'VERSION={{ env.GITHUB_SHA }} >> .env
+      run: echo -e $'\n'VERSION=${{ env.GITHUB_SHA }} >> .env
 
     - name: Login to ECR
       id: login-ecr
