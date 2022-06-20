@@ -51,6 +51,8 @@ export class SongsController {
     const result = await this.songsApplication.requestSong(title, twitchId, username);
     if (isBusinessError(result)) {
       switch (result.error) {
+        case 'request-disabled':
+          return;
         case 'viewer-not-exists':
           return payload.send('존재하지 않는 사용자입니다! 신규 등록을 요청해주세요');
         case 'in-cooltime':
