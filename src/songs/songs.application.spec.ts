@@ -66,9 +66,13 @@ describe('SongsApplication', () => {
       service.enqueueSong = jest.fn().mockResolvedValue(song);
       viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
       viewersService.payForSongRequest = jest.fn().mockResolvedValue(RequestType.ticket);
-      settingsService.getSetting = jest
-        .fn()
-        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
+      settingsService.getSetting = jest.fn(async (key: string) => {
+        if (key === 'request-enabled') {
+          return new FlagSetting({ key: 'request-enabled', value: true });
+        } else if (key === 'goldenbell-enabled') {
+          return new FlagSetting({ key: 'goldenbell-enabled', value: false });
+        }
+      });
     });
 
     it('신청곡이 신청되어야 한다.', async () => {
@@ -79,13 +83,16 @@ describe('SongsApplication', () => {
 
       expect(service.enqueueSong).toBeCalledWith(song);
       expect(viewersService.payForSongRequest).toBeCalledWith(viewer);
-      expect(settingsService.getSetting).toBeCalledWith('request-enabled');
     });
 
     it('신청곡이 비활성화되어있는 경우 에러가 발생해야 한다.', async () => {
-      settingsService.getSetting = jest
-        .fn()
-        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: false }));
+      settingsService.getSetting = jest.fn(async (key: string) => {
+        if (key === 'request-enabled') {
+          return new FlagSetting({ key: 'request-enabled', value: false });
+        } else if (key === 'goldenbell-enabled') {
+          return new FlagSetting({ key: 'goldenbell-enabled', value: false });
+        }
+      });
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -93,6 +100,27 @@ describe('SongsApplication', () => {
       expect(result).toMatchObject(new BusinessError('request-disabled'));
 
       expect(service.enqueueSong).not.toBeCalled();
+      expect(viewersService.payForSongRequest).not.toBeCalled();
+    });
+
+    it('골든벨이 활성화되어있는 경우 무료로 신청되어야 한다.', async () => {
+      const song = new Song('test song', 'testviewer', '테스트유저', RequestType.freemode);
+
+      service.enqueueSong = jest.fn().mockResolvedValue(song);
+      settingsService.getSetting = jest.fn(async (key: string) => {
+        if (key === 'request-enabled') {
+          return new FlagSetting({ key: 'request-enabled', value: true });
+        } else if (key === 'goldenbell-enabled') {
+          return new FlagSetting({ key: 'goldenbell-enabled', value: true });
+        }
+      });
+
+      const result = await app.requestSong('test song', 'testviewer', '테스트유저');
+
+      expect(result).toBeInstanceOf(Song);
+      expect(result).toMatchObject(song);
+
+      expect(service.enqueueSong).toBeCalledWith(song);
       expect(viewersService.payForSongRequest).not.toBeCalled();
     });
 
