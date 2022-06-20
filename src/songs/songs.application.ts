@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { SettingsService } from 'src/settings/settings.service';
 
 import { BusinessError, isBusinessError } from 'src/util/business-error';
 import { ViewersService } from 'src/viewers/viewers.service';
@@ -8,7 +9,11 @@ import { SongsService } from './songs.service';
 
 @Injectable()
 export class SongsApplication {
-  constructor(private readonly songsService: SongsService, private readonly viewersService: ViewersService) {}
+  constructor(
+    private readonly songsService: SongsService,
+    private readonly viewersService: ViewersService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   async getSongs() {
     return await this.songsService.getSongs();
@@ -19,6 +24,11 @@ export class SongsApplication {
   }
 
   async requestSong(title: string, twitchId: string, username: string) {
+    const { value: isRequestEnabled } = await this.settingsService.getSetting('request-enabled');
+    if (!isRequestEnabled) {
+      return new BusinessError('request-disabled');
+    }
+
     const viewer = await this.viewersService.getViewer(twitchId, username);
     if (!viewer) {
       return new BusinessError('viewer-not-exists');
@@ -29,9 +39,15 @@ export class SongsApplication {
       return new BusinessError('in-cooltime');
     }
 
-    const requestType = await this.viewersService.payForSongRequest(viewer);
-    if (isBusinessError(requestType)) {
-      return requestType;
+    const { value: isGoldenbellEnabled } = await this.settingsService.getSetting('goldenbell-enabled');
+    let requestType: RequestType = isGoldenbellEnabled ? RequestType.freemode : undefined;
+
+    if (!requestType) {
+      const result = await this.viewersService.payForSongRequest(viewer);
+      if (isBusinessError(result)) {
+        return result;
+      }
+      requestType = result;
     }
 
     return await this.songsService.enqueueSong({

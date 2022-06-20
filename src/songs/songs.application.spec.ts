@@ -1,4 +1,6 @@
 import { Test } from '@nestjs/testing';
+import { FlagSetting } from 'src/settings/entities/setting.entity';
+import { SettingsService } from 'src/settings/settings.service';
 import { BusinessError, isBusinessError } from 'src/util/business-error';
 import { Viewer } from 'src/viewers/viewers.entity';
 
@@ -12,21 +14,29 @@ describe('SongsApplication', () => {
   let app: SongsApplication;
   let service: SongsService;
   let viewersService: ViewersService;
+  let settingsService: SettingsService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [SongsApplication, { provide: SongsService, useValue: {} }, { provide: ViewersService, useValue: {} }],
+      providers: [
+        SongsApplication,
+        { provide: SongsService, useValue: {} },
+        { provide: ViewersService, useValue: {} },
+        { provide: SettingsService, useValue: {} },
+      ],
     }).compile();
 
     app = module.get(SongsApplication);
     service = module.get(SongsService);
     viewersService = module.get(ViewersService);
+    settingsService = module.get(SettingsService);
   });
 
   it('should be defined', () => {
     expect(app).toBeDefined();
     expect(service).toBeDefined();
     expect(viewersService).toBeDefined();
+    expect(settingsService).toBeDefined();
   });
 
   describe('getSongs', () => {
@@ -45,7 +55,10 @@ describe('SongsApplication', () => {
   });
 
   describe('requestSong', () => {
-    it('신청곡이 신청되어야 한다.', async () => {
+    const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
+    const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
+
+    beforeEach(() => {
       const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
       const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
 
@@ -53,7 +66,16 @@ describe('SongsApplication', () => {
       service.enqueueSong = jest.fn().mockResolvedValue(song);
       viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
       viewersService.payForSongRequest = jest.fn().mockResolvedValue(RequestType.ticket);
+      settingsService.getSetting = jest.fn(async (key: string) => {
+        if (key === 'request-enabled') {
+          return new FlagSetting({ key: 'request-enabled', value: true });
+        } else if (key === 'goldenbell-enabled') {
+          return new FlagSetting({ key: 'goldenbell-enabled', value: false });
+        }
+      });
+    });
 
+    it('신청곡이 신청되어야 한다.', async () => {
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
       expect(result).toBeInstanceOf(Song);
@@ -63,11 +85,47 @@ describe('SongsApplication', () => {
       expect(viewersService.payForSongRequest).toBeCalledWith(viewer);
     });
 
+    it('신청곡이 비활성화되어있는 경우 에러가 발생해야 한다.', async () => {
+      settingsService.getSetting = jest.fn(async (key: string) => {
+        if (key === 'request-enabled') {
+          return new FlagSetting({ key: 'request-enabled', value: false });
+        } else if (key === 'goldenbell-enabled') {
+          return new FlagSetting({ key: 'goldenbell-enabled', value: false });
+        }
+      });
+
+      const result = await app.requestSong('test song', 'testviewer', '테스트유저');
+
+      expect(isBusinessError(result)).toBe(true);
+      expect(result).toMatchObject(new BusinessError('request-disabled'));
+
+      expect(service.enqueueSong).not.toBeCalled();
+      expect(viewersService.payForSongRequest).not.toBeCalled();
+    });
+
+    it('골든벨이 활성화되어있는 경우 무료로 신청되어야 한다.', async () => {
+      const song = new Song('test song', 'testviewer', '테스트유저', RequestType.freemode);
+
+      service.enqueueSong = jest.fn().mockResolvedValue(song);
+      settingsService.getSetting = jest.fn(async (key: string) => {
+        if (key === 'request-enabled') {
+          return new FlagSetting({ key: 'request-enabled', value: true });
+        } else if (key === 'goldenbell-enabled') {
+          return new FlagSetting({ key: 'goldenbell-enabled', value: true });
+        }
+      });
+
+      const result = await app.requestSong('test song', 'testviewer', '테스트유저');
+
+      expect(result).toBeInstanceOf(Song);
+      expect(result).toMatchObject(song);
+
+      expect(service.enqueueSong).toBeCalledWith(song);
+      expect(viewersService.payForSongRequest).not.toBeCalled();
+    });
+
     it('시청자 정보를 찾을 수 없는 경우 에러가 발생해야 한다.', async () => {
-      service.isCooltime = jest.fn().mockResolvedValue(false);
-      service.enqueueSong = jest.fn();
       viewersService.getViewer = jest.fn().mockResolvedValue(null);
-      viewersService.payForSongRequest = jest.fn();
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -79,12 +137,7 @@ describe('SongsApplication', () => {
     });
 
     it('쿨타임인 경우 에러가 발생해야 한다.', async () => {
-      const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
-
       service.isCooltime = jest.fn().mockResolvedValue(true);
-      service.enqueueSong = jest.fn();
-      viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
-      viewersService.payForSongRequest = jest.fn();
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -96,11 +149,6 @@ describe('SongsApplication', () => {
     });
 
     it('포인트가 부족할 경우 에러가 발생해야 한다.', async () => {
-      const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
-
-      service.isCooltime = jest.fn().mockResolvedValue(false);
-      service.enqueueSong = jest.fn();
-      viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
       viewersService.payForSongRequest = jest.fn().mockResolvedValue(new BusinessError('no-points'));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
