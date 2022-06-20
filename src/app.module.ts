@@ -37,6 +37,8 @@ import { getConfigWithConfigService } from '../ormconfig';
     SheetsModule.forRoot({
       credentialsPath: process.env.SHEETS_CREDENTIALS_PATH,
       tokenPath: process.env.SHEETS_TOKEN_PATH,
+      credentials: process.env.SHEETS_CREDENTIALS,
+      token: process.env.SHEETS_TOKEN,
     }),
     UsersModule,
     AuthModule,
