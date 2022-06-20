@@ -1,4 +1,6 @@
 import { Test } from '@nestjs/testing';
+import { FlagSetting } from 'src/settings/entities/setting.entity';
+import { SettingsService } from 'src/settings/settings.service';
 import { BusinessError, isBusinessError } from 'src/util/business-error';
 import { Viewer } from 'src/viewers/viewers.entity';
 
@@ -12,21 +14,29 @@ describe('SongsApplication', () => {
   let app: SongsApplication;
   let service: SongsService;
   let viewersService: ViewersService;
+  let settingsService: SettingsService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [SongsApplication, { provide: SongsService, useValue: {} }, { provide: ViewersService, useValue: {} }],
+      providers: [
+        SongsApplication,
+        { provide: SongsService, useValue: {} },
+        { provide: ViewersService, useValue: {} },
+        { provide: SettingsService, useValue: {} },
+      ],
     }).compile();
 
     app = module.get(SongsApplication);
     service = module.get(SongsService);
     viewersService = module.get(ViewersService);
+    settingsService = module.get(SettingsService);
   });
 
   it('should be defined', () => {
     expect(app).toBeDefined();
     expect(service).toBeDefined();
     expect(viewersService).toBeDefined();
+    expect(settingsService).toBeDefined();
   });
 
   describe('getSongs', () => {
@@ -53,6 +63,9 @@ describe('SongsApplication', () => {
       service.enqueueSong = jest.fn().mockResolvedValue(song);
       viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
       viewersService.payForSongRequest = jest.fn().mockResolvedValue(RequestType.ticket);
+      settingsService.getSetting = jest
+        .fn()
+        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -61,6 +74,28 @@ describe('SongsApplication', () => {
 
       expect(service.enqueueSong).toBeCalledWith(song);
       expect(viewersService.payForSongRequest).toBeCalledWith(viewer);
+      expect(settingsService.getSetting).toBeCalledWith('request-enabled');
+    });
+
+    it('신청곡이 비활성화되어있는 경우 에러가 발생해야 한다.', async () => {
+      const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
+      const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
+
+      service.isCooltime = jest.fn().mockResolvedValue(false);
+      service.enqueueSong = jest.fn().mockResolvedValue(song);
+      viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
+      viewersService.payForSongRequest = jest.fn().mockResolvedValue(RequestType.ticket);
+      settingsService.getSetting = jest
+        .fn()
+        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: false }));
+
+      const result = await app.requestSong('test song', 'testviewer', '테스트유저');
+
+      expect(isBusinessError(result)).toBe(true);
+      expect(result).toMatchObject(new BusinessError('request-disabled'));
+
+      expect(service.enqueueSong).not.toBeCalled();
+      expect(viewersService.payForSongRequest).not.toBeCalled();
     });
 
     it('시청자 정보를 찾을 수 없는 경우 에러가 발생해야 한다.', async () => {
@@ -68,6 +103,9 @@ describe('SongsApplication', () => {
       service.enqueueSong = jest.fn();
       viewersService.getViewer = jest.fn().mockResolvedValue(null);
       viewersService.payForSongRequest = jest.fn();
+      settingsService.getSetting = jest
+        .fn()
+        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -85,6 +123,9 @@ describe('SongsApplication', () => {
       service.enqueueSong = jest.fn();
       viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
       viewersService.payForSongRequest = jest.fn();
+      settingsService.getSetting = jest
+        .fn()
+        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -102,6 +143,9 @@ describe('SongsApplication', () => {
       service.enqueueSong = jest.fn();
       viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
       viewersService.payForSongRequest = jest.fn().mockResolvedValue(new BusinessError('no-points'));
+      settingsService.getSetting = jest
+        .fn()
+        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
