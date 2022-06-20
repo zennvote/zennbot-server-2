@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { RequestType } from 'src/songs/songs.entity';
+import { BusinessError } from 'src/util/business-error';
 import { Viewer } from './viewers.entity';
 import { ViewersRepository } from './viewers.repository';
 
@@ -37,6 +39,32 @@ export class ViewersService {
     }
 
     return await this.setPointsWithUsername(username, points);
+  }
+
+  async refundPoints(twitchId: string, requestType: RequestType.ticket | RequestType.ticketPiece) {
+    const viewer = await this.viewersRepository.findOne({ twitchId });
+    if (!viewer) {
+      return new BusinessError('viewer-not-exists');
+    }
+
+    if (requestType === RequestType.ticket) {
+      await this.viewersRepository.update({ twitchId }, { ticket: viewer.ticket + 1 });
+    } else {
+      await this.viewersRepository.update({ twitchId }, { ticketPiece: viewer.ticketPiece + 3 });
+    }
+  }
+
+  async payForSongRequest(viewer: Viewer) {
+    const { index, ticket, ticketPiece } = viewer;
+
+    if (ticket >= 1) {
+      await this.viewersRepository.update({ index }, { ticket: ticket - 1 });
+      return RequestType.ticket;
+    } else if (ticketPiece >= 3) {
+      await this.viewersRepository.update({ index }, { ticketPiece: ticketPiece - 3 });
+      return RequestType.ticketPiece;
+    }
+    return new BusinessError('no-points');
   }
 
   async setPointsWithTwitchId(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
