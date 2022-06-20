@@ -7,7 +7,7 @@ on:
 
 env:
   ECS_CLUSTER: zennbot-ecs
-  ECS_SERVICE: zennbot-ecs-service
+  ECS_SERVICE: image-deploy
 
 jobs:
   deploy:
