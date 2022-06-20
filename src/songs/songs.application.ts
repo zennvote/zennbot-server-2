@@ -39,9 +39,15 @@ export class SongsApplication {
       return new BusinessError('in-cooltime');
     }
 
-    const requestType = await this.viewersService.payForSongRequest(viewer);
-    if (isBusinessError(requestType)) {
-      return requestType;
+    const { value: isGoldenbellEnabled } = await this.settingsService.getSetting('goldenbell-enabled');
+    let requestType: RequestType = isGoldenbellEnabled ? RequestType.freemode : undefined;
+
+    if (!requestType) {
+      const result = await this.viewersService.payForSongRequest(viewer);
+      if (isBusinessError(result)) {
+        return result;
+      }
+      requestType = result;
     }
 
     return await this.songsService.enqueueSong({
