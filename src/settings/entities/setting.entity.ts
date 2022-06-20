@@ -13,4 +13,11 @@ export class Setting {
 
 export class FlagSetting extends Setting {
   value: boolean;
+
+  constructor({ key, value }: { key?: string; value?: boolean } = {}) {
+    super();
+
+    this.key = key;
+    this.value = value;
+  }
 }
