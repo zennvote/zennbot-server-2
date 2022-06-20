@@ -55,7 +55,10 @@ describe('SongsApplication', () => {
   });
 
   describe('requestSong', () => {
-    it('신청곡이 신청되어야 한다.', async () => {
+    const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
+    const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
+
+    beforeEach(() => {
       const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
       const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
 
@@ -66,7 +69,9 @@ describe('SongsApplication', () => {
       settingsService.getSetting = jest
         .fn()
         .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
+    });
 
+    it('신청곡이 신청되어야 한다.', async () => {
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
       expect(result).toBeInstanceOf(Song);
@@ -78,13 +83,6 @@ describe('SongsApplication', () => {
     });
 
     it('신청곡이 비활성화되어있는 경우 에러가 발생해야 한다.', async () => {
-      const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
-      const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
-
-      service.isCooltime = jest.fn().mockResolvedValue(false);
-      service.enqueueSong = jest.fn().mockResolvedValue(song);
-      viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
-      viewersService.payForSongRequest = jest.fn().mockResolvedValue(RequestType.ticket);
       settingsService.getSetting = jest
         .fn()
         .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: false }));
@@ -99,13 +97,7 @@ describe('SongsApplication', () => {
     });
 
     it('시청자 정보를 찾을 수 없는 경우 에러가 발생해야 한다.', async () => {
-      service.isCooltime = jest.fn().mockResolvedValue(false);
-      service.enqueueSong = jest.fn();
       viewersService.getViewer = jest.fn().mockResolvedValue(null);
-      viewersService.payForSongRequest = jest.fn();
-      settingsService.getSetting = jest
-        .fn()
-        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -117,15 +109,7 @@ describe('SongsApplication', () => {
     });
 
     it('쿨타임인 경우 에러가 발생해야 한다.', async () => {
-      const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
-
       service.isCooltime = jest.fn().mockResolvedValue(true);
-      service.enqueueSong = jest.fn();
-      viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
-      viewersService.payForSongRequest = jest.fn();
-      settingsService.getSetting = jest
-        .fn()
-        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
@@ -137,15 +121,7 @@ describe('SongsApplication', () => {
     });
 
     it('포인트가 부족할 경우 에러가 발생해야 한다.', async () => {
-      const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
-
-      service.isCooltime = jest.fn().mockResolvedValue(false);
-      service.enqueueSong = jest.fn();
-      viewersService.getViewer = jest.fn().mockResolvedValue(viewer);
       viewersService.payForSongRequest = jest.fn().mockResolvedValue(new BusinessError('no-points'));
-      settingsService.getSetting = jest
-        .fn()
-        .mockResolvedValue(new FlagSetting({ key: 'request-enabled', value: true }));
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
 
