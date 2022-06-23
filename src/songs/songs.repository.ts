@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { Subject } from 'rxjs';
 
@@ -9,6 +9,8 @@ const CooltimeSongsKey = 'songs:cooltime-songs';
 
 @Injectable()
 export class SongsRepository {
+  private readonly logger = new Logger(SongsRepository.name);
+
   private readonly requestedSongsSubject = new Subject<Song[]>();
   public requestedSongsObserver = this.requestedSongsSubject.asObservable();
 
@@ -24,6 +26,9 @@ export class SongsRepository {
 
   private async getSongs(key: string) {
     const songsJson = await this.cacheManager.get<string>(key);
+    
+    this.logger.verbose('Get songs', key, songsJson);
+
     const results: any[] = JSON.parse(songsJson ?? '[]');
     const songs = results.map(
       (result) => new Song(result.title, result.requestor, result.requestorName, result.requestType),
@@ -46,6 +51,8 @@ export class SongsRepository {
 
   private async setSongs(key: string, songs: Song[]) {
     const songsJson = JSON.stringify(songs);
+
+    this.logger.verbose('Set songs', key, songsJson);
 
     await this.cacheManager.set(key, songsJson);
 
