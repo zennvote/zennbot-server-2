@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BusinessError } from 'src/util/business-error';
+import { BusinessError, isBusinessError } from 'src/util/business-error';
 import Song, { RequestType } from './songs.entity';
 import { SongsRepository } from './songs.repository';
 import { SongsService } from './songs.service';
@@ -69,6 +69,10 @@ describe('SongsService', () => {
 
       const result = await service.skipSong();
 
+      expect(isBusinessError(result)).toBe(false);
+      if (isBusinessError(result)) {
+        return;
+      }
       expect(result.title).toBe('target song');
       expect(repository.setCooltimeSongs).toBeCalledWith([
         new Song('cooltime song 1', 'viewer1', '시청자1', RequestType.ticket),
@@ -95,6 +99,10 @@ describe('SongsService', () => {
 
       const result = await service.skipSong();
 
+      expect(isBusinessError(result)).toBe(false);
+      if (isBusinessError(result)) {
+        return;
+      }
       expect(result.title).toBe('target song');
       expect(repository.setCooltimeSongs).toBeCalledWith([
         new Song('cooltime song 2', 'viewer2', '시청자2', RequestType.ticket),
@@ -103,6 +111,28 @@ describe('SongsService', () => {
         new Song('target song', 'viewer1', '시청자1', RequestType.ticket),
       ]);
       expect(repository.setRequestedSongs).toBeCalledWith([]);
+    });
+
+    it('비어있는 상태에서 넘길 경우 에러를 발생시켜야 한다.', async () => {
+      repository.getCooltimeSongs = jest.fn(async () => [
+        new Song('cooltime song 1', 'viewer1', '시청자1', RequestType.ticket),
+        new Song('cooltime song 2', 'viewer2', '시청자2', RequestType.ticket),
+        new Song('cooltime song 3', 'viewer3', '시청자3', RequestType.ticket),
+        new Song('cooltime song 4', 'viewer4', '시청자4', RequestType.ticket),
+      ]);
+      repository.getRequestedSongs = jest.fn(async () => []);
+      repository.setCooltimeSongs = jest.fn();
+      repository.setRequestedSongs = jest.fn();
+
+      const result = await service.skipSong();
+
+      expect(isBusinessError(result)).toBe(true);
+      if (!isBusinessError(result)) {
+        return;
+      }
+      expect(result.error).toBe('empty-list');
+      expect(repository.setCooltimeSongs).not.toBeCalled();
+      expect(repository.setRequestedSongs).not.toBeCalled();
     });
   });
 
