@@ -26,6 +26,10 @@ export class SongsService {
     const [song, ...remainSongs] = await this.songsRepository.getRequestedSongs();
     const cooltimeSongs = await this.songsRepository.getCooltimeSongs();
 
+    if (!song) {
+      return new BusinessError('empty-list');
+    }
+
     await this.songsRepository.setRequestedSongs(remainSongs);
     await this.songsRepository.setCooltimeSongs([...cooltimeSongs, song].slice(cooltimeSongs.length >= 4 ? 1 : 0));
 

@@ -102,7 +102,12 @@ export class SongsController {
   @Post('skip')
   @ApiOkResponse({ type: Song })
   async skipSong() {
-    return await this.songsApplication.skipSong();
+    const result = await this.songsApplication.skipSong();
+    if (isBusinessError(result)) {
+      throw new BadRequestException();
+    }
+
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
