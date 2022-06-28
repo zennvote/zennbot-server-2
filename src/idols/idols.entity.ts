@@ -11,7 +11,7 @@ export interface IdolInitializer {
   threeSize?: string;
   hometown?: string;
   cv?: string;
-  intruduction: string;
+  introduction: string;
 }
 
 export class Idol {
@@ -39,7 +39,7 @@ export class Idol {
 
   cv: string;
 
-  intruduction: string;
+  introduction: string;
 
   constructor(initializer?: IdolInitializer) {
     this.firstName = initializer?.firstName;
@@ -54,6 +54,6 @@ export class Idol {
     this.threeSize = initializer?.threeSize;
     this.hometown = initializer?.hometown;
     this.cv = initializer?.cv;
-    this.intruduction = initializer?.intruduction;
+    this.introduction = initializer?.introduction;
   }
 }
