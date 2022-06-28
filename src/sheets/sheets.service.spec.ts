@@ -4,6 +4,12 @@ import { sheets_v4 } from 'googleapis';
 import { SheetsService } from './sheets.service';
 
 describe('SheetsService', () => {
+  const sheetsRequest = {
+    spreadsheetId: 'sheets',
+    columns: ['twitchId', 'username', 'ticketPiece', 'ticket', 'prefix'] as const,
+    startRow: 6,
+  };
+
   let service: SheetsService;
   let sheetsClient: sheets_v4.Sheets;
 
@@ -31,12 +37,12 @@ describe('SheetsService', () => {
       ];
       sheetsClient.spreadsheets.values.get = jest.fn().mockResolvedValue({ data: { values } });
 
-      const result = await service.getSheets();
+      const result = await service.getSheets(sheetsRequest);
 
       expect(result).toMatchObject([
-        { index: 0, twitchId: 'testviewer1', username: '테스트유저1', ticketPiece: 14, ticket: 9 },
-        { index: 1, twitchId: 'testviewer2', username: '테스트유저2', ticketPiece: 0, ticket: 7, prefix: '테스트' },
-        { index: 2, twitchId: 'testviewer3', username: '테스트유저3', ticketPiece: 3, ticket: 13 },
+        { index: 0, twitchId: 'testviewer1', username: '테스트유저1', ticketPiece: '14', ticket: '9' },
+        { index: 1, twitchId: 'testviewer2', username: '테스트유저2', ticketPiece: '0', ticket: '7', prefix: '테스트' },
+        { index: 2, twitchId: 'testviewer3', username: '테스트유저3', ticketPiece: '3', ticket: '13' },
       ]);
     });
   });
@@ -46,13 +52,13 @@ describe('SheetsService', () => {
       const batchUpdateMock = jest.fn();
       sheetsClient.spreadsheets.values.batchUpdate = batchUpdateMock;
 
-      await service.updateSheets(7, { ticket: 12, ticketPiece: 16, twitchId: 'testviewer7' });
+      await service.updateSheets(sheetsRequest, 7, { ticket: 12, ticketPiece: 16, twitchId: 'testviewer7' });
 
       expect(batchUpdateMock).toBeCalled();
       expect(batchUpdateMock.mock.calls[0][0].requestBody.data).toIncludeAllMembers([
-        { range: '시트1!A13', values: [['testviewer7']] },
-        { range: '시트1!C13', values: [[16]] },
-        { range: '시트1!D13', values: [[12]] },
+        { range: '!A13', values: [['testviewer7']] },
+        { range: '!C13', values: [[16]] },
+        { range: '!D13', values: [[12]] },
       ]);
     });
   });
