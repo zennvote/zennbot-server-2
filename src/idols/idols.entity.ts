@@ -1,7 +1,7 @@
 export interface IdolInitializer {
   firstName?: string;
-  lastName: string;
-  company: string;
+  lastName?: string;
+  company?: string;
   unit?: string;
   type?: string;
   birthday?: string;
@@ -11,7 +11,7 @@ export interface IdolInitializer {
   threeSize?: string;
   hometown?: string;
   cv?: string;
-  introduction: string;
+  introduction?: string;
 }
 
 export class Idol {
