@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 
 import { getConfigWithConfigService } from '../ormconfig';
 import { SettingsModule } from './settings/settings.module';
+import { IdolsModule } from './idols/idols.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { SettingsModule } from './settings/settings.module';
     UsersModule,
     AuthModule,
     SettingsModule,
+    IdolsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
