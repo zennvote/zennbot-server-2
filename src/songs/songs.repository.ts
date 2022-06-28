@@ -27,7 +27,7 @@ export class SongsRepository {
   private async getSongs(key: string) {
     const songsJson = await this.cacheManager.get<string>(key);
 
-    this.logger.verbose('Get songs', key, songsJson);
+    this.logger.verbose(`Get songs:${key} : ${songsJson}`);
 
     const results: any[] = JSON.parse(songsJson ?? '[]');
     const songs = results.map(
@@ -53,7 +53,7 @@ export class SongsRepository {
     const filtered = songs.filter((song) => song && song instanceof Song);
     const songsJson = JSON.stringify(filtered);
 
-    this.logger.verbose('Set songs', key, songsJson);
+    this.logger.verbose(`Set songs:${key} : ${songsJson}`);
 
     await this.cacheManager.set(key, songsJson);
 
