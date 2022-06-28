@@ -1,51 +1,57 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { sheets_v4 } from 'googleapis';
-import { SheetRow } from './sheets.interface';
+import { SheetsRequest } from './sheets.interface';
+
+const s = (value: number) => String.fromCharCode(value);
 
 @Injectable()
 export class SheetsService {
   constructor(@Inject('CLIENT') private readonly client: sheets_v4.Sheets) {}
 
-  public async getSheets(): Promise<SheetRow[]> {
-    const spreadsheetId = process.env.SHEETS_ID;
-    const range = '시트1!A6:E';
+  public async getSheets<T extends ReadonlyArray<string>>(request: SheetsRequest<T>) {
+    const { spreadsheetId, columns } = request;
+    const sheetsName = '';
+    const startColumn = request.startColumn ?? 1;
+    const startRow = request.startRow ?? 1;
+
+    const range = `${sheetsName}!${s(64 + startColumn)}${startRow}:${s(64 + startColumn + columns.length)}`;
 
     const {
       data: { values },
     } = await this.client.spreadsheets.values.get({ spreadsheetId, range });
 
-    const result = values
-      .map<SheetRow>(
-        (row, index): SheetRow => ({
-          index: index,
-          twitchId: row[0],
-          username: row[1],
-          ticketPiece: parseInt(row[2], 10),
-          ticket: parseInt(row[3], 10),
-          prefix: row[4] || null,
-        }),
-      )
-      .filter((row) => row.username !== null);
+    const result = values.map((row, index) => ({
+      index,
+      ...(Object.fromEntries(
+        row
+          .map((value, keyIndex) => {
+            return columns[keyIndex] ? [columns[keyIndex], value as string] : undefined;
+          })
+          .filter((value) => value),
+      ) as { [key in T[number]]: string | undefined }),
+    }));
 
     return result;
   }
 
-  public async updateSheets(index: number, value: Partial<SheetRow>) {
-    const spreadsheetId = process.env.SHEETS_ID;
+  public async updateSheets<T extends ReadonlyArray<string>>(
+    request: SheetsRequest<T>,
+    index: number,
+    values: { [key in T[number]]?: any },
+  ) {
+    const { spreadsheetId, columns } = request;
+    const sheetsName = '';
+    const startColumn = request.startColumn ?? 1;
+    const startRow = request.startRow ?? 1;
 
-    const rangeMap: { [key: string]: string } = {
-      twitchId: 'A',
-      username: 'B',
-      ticketPiece: 'C',
-      ticket: 'D',
-      prefix: 'E',
-    };
-    const data = Object.entries(value)
-      .filter(([key]) => key in rangeMap)
-      .map(([key, value]) => ({
-        range: `시트1!${rangeMap[key]}${index + 6}`,
+    const columnTable = Object.fromEntries(columns.map((column, index) => [column, s(64 + startColumn + index)]));
+
+    const data = Object.entries(values).map(([key, value]) => {
+      return {
+        range: `${sheetsName}!${columnTable[key]}${index + startRow}`,
         values: [[value]],
-      }));
+      };
+    });
 
     await this.client.spreadsheets.values.batchUpdate({
       spreadsheetId,

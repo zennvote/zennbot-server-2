@@ -2,19 +2,36 @@ import { Injectable } from '@nestjs/common';
 import { SheetsService } from 'src/sheets/sheets.service';
 import { Viewer } from './viewers.entity';
 
+type ViewerRow = {
+  index: number;
+  username?: string;
+  twitchId?: string;
+  ticket?: string;
+  ticketPiece?: string;
+  prefix?: string;
+};
+
 @Injectable()
 export class ViewersRepository {
   constructor(private readonly sheetsService: SheetsService) {}
 
+  private readonly sheetsInfo = {
+    spreadsheetId: process.env.SHEETS_ID,
+    columns: ['twitchId', 'username', 'ticketPiece', 'ticket', 'prefix'] as const,
+    startRow: 6,
+  };
+
   async find(): Promise<Viewer[]> {
-    const rows = await this.sheetsService.getSheets();
-    const viewers = rows.map((row) => new Viewer(row));
+    const rows = await this.sheetsService.getSheets(this.sheetsInfo);
+
+    const viewers = rows.filter((row) => row.username).map((row) => this.rowToViewer(row));
 
     return viewers;
   }
 
   async findOne(option: Partial<Viewer> = {}): Promise<Viewer | null> {
-    const rows = await this.sheetsService.getSheets();
+    const rows = await this.sheetsService.getSheets(this.sheetsInfo);
+
     const row = rows.find((row) => {
       return Object.entries(option).every(([key, value]) => row[key] === value);
     });
@@ -22,14 +39,14 @@ export class ViewersRepository {
       return null;
     }
 
-    const viewer = new Viewer(row);
+    const viewer = new Viewer(this.rowToViewer(row));
 
     return viewer;
   }
 
   async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<boolean> {
     if (option.index !== undefined && Object.keys(option).length === 1) {
-      await this.sheetsService.updateSheets(option.index, value);
+      await this.sheetsService.updateSheets(this.sheetsInfo, option.index, value);
       return true;
     }
     const viewer = await this.findOne(option);
@@ -37,7 +54,18 @@ export class ViewersRepository {
       return false;
     }
 
-    await this.sheetsService.updateSheets(viewer.index, value);
+    await this.sheetsService.updateSheets(this.sheetsInfo, viewer.index, value);
     return true;
+  }
+
+  private rowToViewer(row: ViewerRow) {
+    return new Viewer({
+      index: row.index,
+      username: row.username,
+      twitchId: row.twitchId,
+      ticket: Number.parseInt(row.ticket, 10),
+      ticketPiece: Number.parseInt(row.ticketPiece, 10),
+      prefix: row.prefix,
+    });
   }
 }
