@@ -14,7 +14,11 @@ export class AuthController {
   async login(@Request() req: any, @Response() res: ResponseType) {
     const { access_token, refreshToken } = await this.authService.login(req.user);
 
-    res.cookie('RefreshToken', refreshToken, { httpOnly: true, secure: true, domain: process.env.COOKIE_DOMAIN });
+    res.cookie('RefreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      domain: process.env.COOKIE_DOMAIN,
+    });
 
     return res.json({ access_token });
   }
