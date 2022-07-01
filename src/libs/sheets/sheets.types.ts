@@ -5,3 +5,5 @@ export interface SheetsRequest<T extends ReadonlyArray<string>> {
   startColumn?: number;
   sheetsName?: string;
 }
+
+export const SHEETS_CLIENT = 'SHEETS_CLIENT';

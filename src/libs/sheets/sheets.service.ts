@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { sheets_v4 } from 'googleapis';
-import { SheetsRequest } from './sheets.interface';
+import { SheetsRequest, SHEETS_CLIENT } from './sheets.types';
 
 const s = (value: number) => String.fromCharCode(value);
 
 @Injectable()
 export class SheetsService {
-  constructor(@Inject('CLIENT') private readonly client: sheets_v4.Sheets) {}
+  constructor(@Inject(SHEETS_CLIENT) private readonly client: sheets_v4.Sheets) {}
 
   public async getSheets<T extends ReadonlyArray<string>>(request: SheetsRequest<T>) {
     const { spreadsheetId, columns } = request;
