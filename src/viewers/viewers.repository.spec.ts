@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SheetsService } from 'src/sheets/sheets.service';
+import { SheetsService } from 'src/libs/sheets/sheets.service';
 import { Viewer } from './viewers.entity';
 import { ViewersRepository } from './viewers.repository';
 

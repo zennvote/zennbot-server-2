@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SheetsModule } from 'src/sheets/sheets.module';
+import { SheetsModule } from 'src/libs/sheets/sheets.module';
 import { IdolsRepository } from './idols.repository';
 import { IdolsService } from './idols.service';
 import { IdolsController } from './idols.controller';

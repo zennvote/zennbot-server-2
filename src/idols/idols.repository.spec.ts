@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { SheetsService } from 'src/sheets/sheets.service';
+import { SheetsService } from 'src/libs/sheets/sheets.service';
 import { Idol } from './idols.entity';
 import { IdolsRepository } from './idols.repository';
 
