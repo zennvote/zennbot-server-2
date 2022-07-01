@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 import { isBusinessError } from 'src/util/business-error';
 import { IdolsApplication } from './idols.application';
@@ -8,7 +8,7 @@ import { IdolsApplication } from './idols.application';
 export class IdolsController {
   constructor(private readonly idolsApplication: IdolsApplication) {}
 
-  @OnEvent('command.아이돌')
+  @OnCommand('아이돌')
   async searchIdol(payload: CommandPayload) {
     const keyword = payload.args.join(' ');
 

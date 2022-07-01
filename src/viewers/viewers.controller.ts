@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { ManagersService } from 'src/managers/managers.service';
 
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 import { Viewer } from './viewers.entity';
 import { ViewersService } from './viewers.service';
+import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 
 @Controller('viewers')
 export class ViewersController {
@@ -17,7 +17,7 @@ export class ViewersController {
     return await this.viewersService.getViewers();
   }
 
-  @OnEvent('command.조각')
+  @OnCommand('조각')
   async whoAmICommand(payload: CommandPayload) {
     const twitchId = payload.tags['username'];
     const username = payload.tags['display-name'];
@@ -34,7 +34,7 @@ export class ViewersController {
     payload.send(`${formattedPrefix}${username} 티켓 ${ticket}장 | 조각 ${ticketPiece}장 보유중`);
   }
 
-  @OnEvent('command.지급')
+  @OnCommand('지급')
   async givePointCommand(payload: CommandPayload) {
     const [inputType, name, inputPoint] = payload.args;
 

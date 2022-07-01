@@ -11,7 +11,6 @@ import {
   Sse,
   UseGuards,
 } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { map } from 'rxjs';
 
@@ -21,6 +20,7 @@ import { CommandPayload } from 'src/libs/tmi/tmi.types';
 
 import Song, { RequestType } from './songs.entity';
 import { SongsApplication } from './songs.application';
+import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 
 @Controller('songs')
 export class SongsController {
@@ -38,7 +38,7 @@ export class SongsController {
     return this.songsApplication.getSongsObserver().pipe(map((data) => JSON.stringify(data)));
   }
 
-  @OnEvent('command.신청')
+  @OnCommand('신청')
   async requestSongCommand(payload: CommandPayload) {
     if (payload.args.length <= 0) {
       return payload.send('곡명을 입력해주세요!');
