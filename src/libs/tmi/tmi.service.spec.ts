@@ -1,6 +1,7 @@
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TmiService } from './tmi.service';
+import { TMI_CLIENT } from './tmi.types';
 
 describe('TmiService', () => {
   let service: TmiService;
@@ -10,7 +11,7 @@ describe('TmiService', () => {
       providers: [
         TmiService,
         {
-          provide: 'CLIENT',
+          provide: TMI_CLIENT,
           useFactory: () => ({
             on: jest.fn(),
           }),
