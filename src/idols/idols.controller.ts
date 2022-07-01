@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { CommandPayload } from 'src/tmi/tmi.interface';
+import { CommandPayload } from 'src/libs/tmi/tmi.interface';
 import { isBusinessError } from 'src/util/business-error';
 import { IdolsApplication } from './idols.application';
 

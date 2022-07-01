@@ -17,7 +17,7 @@ import { map } from 'rxjs';
 
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { isBusinessError } from 'src/util/business-error';
-import { CommandPayload } from 'src/tmi/tmi.interface';
+import { CommandPayload } from 'src/libs/tmi/tmi.interface';
 
 import Song, { RequestType } from './songs.entity';
 import { SongsApplication } from './songs.application';

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommandPayload } from 'src/tmi/tmi.interface';
+import { CommandPayload } from 'src/libs/tmi/tmi.interface';
 import { BusinessError } from 'src/util/business-error';
 import { IdolsApplication } from './idols.application';
 import { IdolsController } from './idols.controller';
