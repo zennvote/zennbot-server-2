@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import 'jest-extended';
 import { sheets_v4 } from 'googleapis';
 import { SheetsService } from './sheets.service';
+import { SHEETS_CLIENT } from './sheets.types';
 
 describe('SheetsService', () => {
   const sheetsRequest = {
@@ -15,11 +16,11 @@ describe('SheetsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SheetsService, { provide: 'CLIENT', useValue: { spreadsheets: { values: {} } } }],
+      providers: [SheetsService, { provide: SHEETS_CLIENT, useValue: { spreadsheets: { values: {} } } }],
     }).compile();
 
     service = module.get<SheetsService>(SheetsService);
-    sheetsClient = module.get<sheets_v4.Sheets>('CLIENT');
+    sheetsClient = module.get<sheets_v4.Sheets>(SHEETS_CLIENT);
   });
 
   it('should be defined', () => {

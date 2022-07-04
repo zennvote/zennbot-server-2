@@ -2,6 +2,7 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { google } from 'googleapis';
 import { SheetsService } from './sheets.service';
+import { SHEETS_CLIENT } from './sheets.types';
 
 export type Options = {
   credentials?: string;
@@ -15,7 +16,7 @@ export type Options = {
 export class SheetsModule {
   static forRoot(option: Options): DynamicModule {
     const clientFactory = {
-      provide: 'CLIENT',
+      provide: SHEETS_CLIENT,
       useFactory: async () => {
         const credentials = JSON.parse(option.credentials ?? readFileSync(option.credentialsPath, 'utf8'));
         const token = JSON.parse(option.token ?? readFileSync(option.tokenPath, 'utf8'));

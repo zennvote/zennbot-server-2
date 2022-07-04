@@ -6,13 +6,13 @@ import { UsersModule } from 'src/users/users.module';
 import { UserDataModel } from 'src/users/entities/user.datamodel';
 
 import { AuthService } from './auth.service';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
-import { JwtRefreshStrategy } from './jwt-refresh.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 
 @Module({
   imports: [

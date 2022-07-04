@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SheetsService } from 'src/sheets/sheets.service';
+import { SheetsService } from 'src/libs/sheets/sheets.service';
 import { Idol } from './idols.entity';
 
 @Injectable()

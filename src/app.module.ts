@@ -5,10 +5,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ViewersModule } from './viewers/viewers.module';
 import { SongsModule } from './songs/songs.module';
-import { TmiModule } from './tmi/tmi.module';
+import { TmiModule } from './libs/tmi/tmi.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ManagerModule } from './managers/managers.module';
-import { SheetsModule } from './sheets/sheets.module';
+import { SheetsModule } from './libs/sheets/sheets.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 

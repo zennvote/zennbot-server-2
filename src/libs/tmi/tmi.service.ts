@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Client } from 'tmi.js';
+import { TMI_CLIENT } from './tmi.types';
 
 @Injectable()
 export class TmiService {
-  constructor(@Inject('CLIENT') private client: Client, private eventEmitter: EventEmitter2) {
+  constructor(@Inject(TMI_CLIENT) private client: Client, private eventEmitter: EventEmitter2) {
     client.on('message', (channel, tags, fullMessage, self) => {
       if (self || !fullMessage.startsWith('!')) {
         return;
