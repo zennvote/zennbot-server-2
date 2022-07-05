@@ -77,7 +77,7 @@ describe('ViewersRepository', () => {
 
   describe('update', () => {
     const sheetsInfo = {
-      spreadsheetId: undefined,
+      spreadsheetId: '',
       columns: ['twitchId', 'username', 'ticketPiece', 'ticket', 'prefix'] as const,
       startRow: 6,
     };

@@ -12,7 +12,7 @@ export class ViewersService {
     return this.viewersRepository.find();
   }
 
-  async getViewer(twitchId: string, username: string): Promise<Viewer | undefined> {
+  async getViewer(twitchId: string, username: string) {
     const twitchIdViewer = await this.viewersRepository.findOne({ twitchId });
 
     if (twitchIdViewer) {
@@ -24,7 +24,7 @@ export class ViewersService {
 
     const usernameViewer = await this.viewersRepository.findOne({ username });
     if (!usernameViewer) {
-      return undefined;
+      return null;
     }
 
     this.viewersRepository.update({ index: usernameViewer.index }, { twitchId });

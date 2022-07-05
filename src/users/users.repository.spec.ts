@@ -30,6 +30,11 @@ describe('UserRepository', () => {
 
       const result = await repository.findByUsername('testuser2');
 
+      expect(result).not.toBeNull();
+      if (!result) {
+        return;
+      }
+
       expect(result).toBeInstanceOf(User);
       expect(result.id).toBe(2);
       expect(result.username).toBe('testuser2');
