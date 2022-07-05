@@ -6,11 +6,11 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class Manager {
   @PrimaryGeneratedColumn()
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @IsString()
   @IsNotEmpty()
   @Column({ unique: true })
   @ApiProperty()
-  twitchId: string;
+  twitchId!: string;
 }

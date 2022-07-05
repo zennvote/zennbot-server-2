@@ -22,6 +22,10 @@ export class ViewersController {
     const twitchId = payload.tags['username'];
     const username = payload.tags['display-name'];
 
+    if (!twitchId || !username) {
+      return;
+    }
+
     const viewer = await this.viewersService.getViewer(twitchId, username);
 
     if (!viewer) {
@@ -43,6 +47,10 @@ export class ViewersController {
     }
 
     const twitchId = payload.tags['username'];
+
+    if (!twitchId) {
+      return;
+    }
 
     if (!(await this.managersService.isManager(twitchId))) {
       return payload.send('권한이 없습니다!');

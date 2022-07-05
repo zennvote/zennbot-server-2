@@ -8,7 +8,7 @@ import { ViewersRepository } from './viewers.repository';
 export class ViewersService {
   constructor(private viewersRepository: ViewersRepository) {}
 
-  getViewers(): Promise<Viewer[]> {
+  getViewers() {
     return this.viewersRepository.find();
   }
 
@@ -75,11 +75,11 @@ export class ViewersService {
     return await this.viewersRepository.update({ username }, points);
   }
 
-  getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
+  getViewerByTwitchId(twitchId: string) {
     return this.viewersRepository.findOne({ twitchId });
   }
 
-  getViewerByUsername(username: string): Promise<Viewer | undefined> {
+  getViewerByUsername(username: string) {
     return this.viewersRepository.findOne({ username });
   }
 }

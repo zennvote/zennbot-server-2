@@ -24,7 +24,7 @@ export class SongsApplication {
   }
 
   async requestSong(title: string, twitchId: string, username: string) {
-    const { value: isRequestEnabled } = await this.settingsService.getSetting('request-enabled');
+    const isRequestEnabled = (await this.settingsService.getSetting('request-enabled'))?.value ?? false;
     if (!isRequestEnabled) {
       return new BusinessError('request-disabled');
     }
@@ -39,8 +39,8 @@ export class SongsApplication {
       return new BusinessError('in-cooltime');
     }
 
-    const { value: isGoldenbellEnabled } = await this.settingsService.getSetting('goldenbell-enabled');
-    let requestType: RequestType = isGoldenbellEnabled ? RequestType.freemode : undefined;
+    const isGoldenbellEnabled = (await this.settingsService.getSetting('goldenbell-enabled'))?.value ?? false;
+    let requestType = isGoldenbellEnabled ? RequestType.freemode : undefined;
 
     if (!requestType) {
       const result = await this.viewersService.payForSongRequest(viewer);

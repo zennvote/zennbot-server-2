@@ -9,6 +9,8 @@ export class SheetsService {
   constructor(@Inject(SHEETS_CLIENT) private readonly client: sheets_v4.Sheets) {}
 
   public async getSheets<T extends ReadonlyArray<string>>(request: SheetsRequest<T>) {
+    type RowType = { [key in T[number]]: string | undefined };
+
     const { spreadsheetId, columns } = request;
     const sheetsName = '';
     const startColumn = request.startColumn ?? 1;
@@ -20,6 +22,10 @@ export class SheetsService {
       data: { values },
     } = await this.client.spreadsheets.values.get({ spreadsheetId, range });
 
+    if (!values) {
+      return [] as ({ index: number } & RowType)[];
+    }
+
     const result = values.map((row, index) => ({
       index,
       ...(Object.fromEntries(
@@ -27,8 +33,8 @@ export class SheetsService {
           .map((value, keyIndex) => {
             return columns[keyIndex] ? [columns[keyIndex], value as string] : undefined;
           })
-          .filter((value) => value),
-      ) as { [key in T[number]]: string | undefined }),
+          .filter((value): value is string[] => value !== undefined),
+      ) as RowType),
     }));
 
     return result;

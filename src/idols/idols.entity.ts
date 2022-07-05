@@ -15,46 +15,36 @@ export interface IdolInitializer {
 }
 
 export class Idol {
-  firstName: string;
-
-  lastName: string;
-
-  company: string;
-
-  unit: string;
-
-  type: string;
-
-  birthday: string;
-
-  age: string;
-
-  height: string;
-
-  weight: string;
-
-  threeSize: string;
-
-  hometown: string;
-
-  cv: string;
-
-  introduction: string;
+  firstName!: string;
+  lastName!: string;
+  company!: string;
+  unit!: string;
+  type!: string;
+  birthday!: string;
+  age!: string;
+  height!: string;
+  weight!: string;
+  threeSize!: string;
+  hometown!: string;
+  cv!: string;
+  introduction!: string;
 
   constructor(initializer?: IdolInitializer) {
-    this.firstName = initializer?.firstName;
-    this.lastName = initializer?.lastName;
-    this.company = initializer?.company;
-    this.unit = initializer?.unit;
-    this.type = initializer?.type;
-    this.birthday = initializer?.birthday;
-    this.age = initializer?.age;
-    this.height = initializer?.height;
-    this.weight = initializer?.weight;
-    this.threeSize = initializer?.threeSize;
-    this.hometown = initializer?.hometown;
-    this.cv = initializer?.cv;
-    this.introduction = initializer?.introduction;
+    if (initializer) {
+      this.firstName = initializer?.firstName ?? this.firstName;
+      this.lastName = initializer?.lastName ?? this.lastName;
+      this.company = initializer?.company ?? this.company;
+      this.unit = initializer?.unit ?? this.unit;
+      this.type = initializer?.type ?? this.type;
+      this.birthday = initializer?.birthday ?? this.birthday;
+      this.age = initializer?.age ?? this.age;
+      this.height = initializer?.height ?? this.height;
+      this.weight = initializer?.weight ?? this.weight;
+      this.threeSize = initializer?.threeSize ?? this.threeSize;
+      this.hometown = initializer?.hometown ?? this.hometown;
+      this.cv = initializer?.cv ?? this.cv;
+      this.introduction = initializer?.introduction ?? this.introduction;
+    }
   }
 
   get stringified() {

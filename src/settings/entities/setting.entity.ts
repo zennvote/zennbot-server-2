@@ -5,19 +5,23 @@ type SettingValue = boolean;
 export class Setting {
   @IsString()
   @IsNotEmpty()
-  key: string;
+  key!: string;
 
   @IsNotEmpty()
-  value: SettingValue;
+  value!: SettingValue;
 }
 
 export class FlagSetting extends Setting {
-  value: boolean;
+  value!: boolean;
 
   constructor({ key, value }: { key?: string; value?: boolean } = {}) {
     super();
 
-    this.key = key;
-    this.value = value;
+    if (key) {
+      this.key = key;
+    }
+    if (value) {
+      this.value = value;
+    }
   }
 }

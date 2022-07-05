@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class User {
-  id: number;
+  id!: number;
 
   @IsString()
   @IsNotEmpty()
-  username: string;
+  username!: string;
 }

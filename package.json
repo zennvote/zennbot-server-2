@@ -37,12 +37,14 @@
     "@nestjs/swagger": "^5.2.1",
     "@nestjs/typeorm": "^8.0.3",
     "@nestjs/websockets": "^8.3.1",
+    "@types/joi": "^17.2.3",
     "bcrypt": "^5.0.1",
     "cache-manager": "^3.6.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cookie": "^0.5.0",
     "googleapis": "^95.0.0",
+    "joi": "^17.6.0",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -107,6 +109,8 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "setupFilesAfterEnv": ["jest-extended/all"]
+    "setupFilesAfterEnv": [
+      "jest-extended/all"
+    ]
   }
 }
