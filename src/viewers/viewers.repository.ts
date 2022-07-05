@@ -16,12 +16,12 @@ export class ViewersRepository {
   constructor(private readonly sheetsService: SheetsService) {}
 
   private readonly sheetsInfo = {
-    spreadsheetId: process.env.SHEETS_ID,
+    spreadsheetId: process.env.SHEETS_ID ?? '',
     columns: ['twitchId', 'username', 'ticketPiece', 'ticket', 'prefix'] as const,
     startRow: 6,
   };
 
-  async find(): Promise<Viewer[]> {
+  async find() {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
 
     const viewers = rows.filter((row) => row.username).map((row) => this.rowToViewer(row));
@@ -29,7 +29,7 @@ export class ViewersRepository {
     return viewers;
   }
 
-  async findOne(option: Partial<Viewer> = {}): Promise<Viewer | null> {
+  async findOne(option: Partial<Viewer> = {}) {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
 
     const row = rows.find((row) => {
@@ -39,7 +39,7 @@ export class ViewersRepository {
       return null;
     }
 
-    const viewer = new Viewer(this.rowToViewer(row));
+    const viewer = this.rowToViewer(row);
 
     return viewer;
   }
@@ -59,12 +59,16 @@ export class ViewersRepository {
   }
 
   private rowToViewer(row: ViewerRow) {
+    if (!row.username) {
+      return null;
+    }
+
     return new Viewer({
       index: row.index,
       username: row.username,
       twitchId: row.twitchId,
-      ticket: Number.parseInt(row.ticket, 10),
-      ticketPiece: Number.parseInt(row.ticketPiece, 10),
+      ticket: Number.parseInt(row.ticket ?? '0', 10),
+      ticketPiece: Number.parseInt(row.ticketPiece ?? '0', 10),
       prefix: row.prefix,
     });
   }

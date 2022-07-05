@@ -18,8 +18,12 @@ export class SheetsModule {
     const clientFactory = {
       provide: SHEETS_CLIENT,
       useFactory: async () => {
-        const credentials = JSON.parse(option.credentials ?? readFileSync(option.credentialsPath, 'utf8'));
-        const token = JSON.parse(option.token ?? readFileSync(option.tokenPath, 'utf8'));
+        if ((!option.credentials && !option.credentialsPath) || (!option.token && !option.tokenPath)) {
+          throw new Error('No token for tmi.js');
+        }
+
+        const credentials = JSON.parse(option.credentials ?? readFileSync(option.credentialsPath ?? '', 'utf8'));
+        const token = JSON.parse(option.token ?? readFileSync(option.tokenPath ?? '', 'utf8'));
 
         const { client_id: id, client_secret: secret, redirect_uris: uris } = credentials.installed;
         const authClient = new google.auth.OAuth2(id, secret, uris[0]);

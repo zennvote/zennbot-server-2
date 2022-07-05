@@ -15,6 +15,10 @@ export class AuthRepository {
 
   async checkPassword(user: User, password: string): Promise<boolean> {
     const userDataModel = await this.userDataModelsRepository.findOne(user.id);
+    if (!userDataModel) {
+      return false;
+    }
+
     const result = await bcrypt.compare(password, userDataModel.password);
 
     return result;

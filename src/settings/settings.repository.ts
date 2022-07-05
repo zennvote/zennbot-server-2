@@ -29,6 +29,6 @@ export class SettingsRepository {
   async setFlagSetting(key: string, value: boolean) {
     const result = await this.settingsDataModelRepository.update({ key }, { flagValue: value });
 
-    return result.affected > 0;
+    return (result.affected ?? 0) > 0;
   }
 }

@@ -8,11 +8,11 @@ import { ViewersRepository } from './viewers.repository';
 export class ViewersService {
   constructor(private viewersRepository: ViewersRepository) {}
 
-  getViewers(): Promise<Viewer[]> {
+  getViewers() {
     return this.viewersRepository.find();
   }
 
-  async getViewer(twitchId: string, username: string): Promise<Viewer | undefined> {
+  async getViewer(twitchId: string, username: string) {
     const twitchIdViewer = await this.viewersRepository.findOne({ twitchId });
 
     if (twitchIdViewer) {
@@ -24,7 +24,7 @@ export class ViewersService {
 
     const usernameViewer = await this.viewersRepository.findOne({ username });
     if (!usernameViewer) {
-      return undefined;
+      return null;
     }
 
     this.viewersRepository.update({ index: usernameViewer.index }, { twitchId });
@@ -75,11 +75,11 @@ export class ViewersService {
     return await this.viewersRepository.update({ username }, points);
   }
 
-  getViewerByTwitchId(twitchId: string): Promise<Viewer | undefined> {
+  getViewerByTwitchId(twitchId: string) {
     return this.viewersRepository.findOne({ twitchId });
   }
 
-  getViewerByUsername(username: string): Promise<Viewer | undefined> {
+  getViewerByUsername(username: string) {
     return this.viewersRepository.findOne({ username });
   }
 }

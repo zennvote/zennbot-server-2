@@ -50,11 +50,12 @@ describe('ViewersService', () => {
   describe('getViewer', () => {
     it('twitchId로 사용자를 조회할 수 있어야 한다', async () => {
       const expected = getTestViewer();
-      repository.findOne = jest.fn(async ({ twitchId }) => {
+      repository.findOne = jest.fn(async (viewer) => {
+        const { twitchId } = viewer ?? {};
         if (twitchId) {
           return expected;
         } else {
-          return undefined;
+          return null;
         }
       });
       repository.update = jest.fn();
@@ -68,11 +69,12 @@ describe('ViewersService', () => {
 
     it('twitchId로 사용자를 조회되지 않으면 username으로 조회할 수 있어야 한다', async () => {
       const expected = getTestViewer();
-      repository.findOne = jest.fn(async ({ username }) => {
+      repository.findOne = jest.fn(async (viewer) => {
+        const { username } = viewer ?? {};
         if (username) {
           return expected;
         } else {
-          return undefined;
+          return null;
         }
       });
       repository.update = jest.fn();
@@ -88,11 +90,12 @@ describe('ViewersService', () => {
 
     it('username이 변경된 유저를 조회할 경우 갱신해야 한다', async () => {
       const expected = getTestViewer();
-      repository.findOne = jest.fn(async ({ twitchId }) => {
+      repository.findOne = jest.fn(async (viewer) => {
+        const { twitchId } = viewer ?? {};
         if (twitchId) {
           return expected;
         } else {
-          return undefined;
+          return null;
         }
       });
       repository.update = jest.fn();
@@ -105,13 +108,13 @@ describe('ViewersService', () => {
       expect(repository.update).toBeCalledWith({ index: 1 }, { username: 'changedname' });
     });
 
-    it('존재하지 않는 유저는 undefined를 반환해야 한다', async () => {
-      repository.findOne = jest.fn(async () => undefined);
+    it('존재하지 않는 유저는 null을 반환해야 한다', async () => {
+      repository.findOne = jest.fn(async () => null);
       repository.update = jest.fn();
 
       const result = await service.getViewer('testuser1', '테스트유저1');
 
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
       expect(repository.findOne).toBeCalledTimes(2);
       expect(repository.findOne).nthCalledWith(1, { twitchId: 'testuser1' });
       expect(repository.findOne).nthCalledWith(2, { username: '테스트유저1' });
@@ -120,7 +123,7 @@ describe('ViewersService', () => {
 
   describe('setPoints', () => {
     it('twitchId로 사용자의 포인트를 설정해야 한다', async () => {
-      repository.update = jest.fn(async ({ twitchId }) => !!twitchId);
+      repository.update = jest.fn(async ({ twitchId } = {}) => !!twitchId);
 
       const result = await service.setPoints('testuser1', '테스트유저1', { ticket: 10, ticketPiece: 12 });
 
@@ -130,7 +133,7 @@ describe('ViewersService', () => {
     });
 
     it('twitchId로 사용자를 조회할 수 없으면 username으로 포인트를 설정해야 한다', async () => {
-      repository.update = jest.fn(async ({ username }) => !!username);
+      repository.update = jest.fn(async ({ username } = {}) => !!username);
 
       const result = await service.setPoints('testuser1', '테스트유저1', { ticket: 10, ticketPiece: 12 });
 
@@ -204,11 +207,11 @@ describe('ViewersService', () => {
     });
 
     it('존재하지 않는 유저는 undefined를 반환해야 한다', async () => {
-      repository.findOne = jest.fn(async () => undefined);
+      repository.findOne = jest.fn(async () => null);
 
       const result = await service.getViewerByTwitchId('testuser1');
 
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
       expect(repository.findOne).toBeCalledWith({ twitchId: 'testuser1' });
     });
   });
@@ -225,11 +228,11 @@ describe('ViewersService', () => {
     });
 
     it('존재하지 않는 유저는 undefined를 반환해야 한다', async () => {
-      repository.findOne = jest.fn(async () => undefined);
+      repository.findOne = jest.fn(async () => null);
 
       const result = await service.getViewerByUsername('테스트유저1');
 
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
       expect(repository.findOne).toBeCalledWith({ username: '테스트유저1' });
     });
   });

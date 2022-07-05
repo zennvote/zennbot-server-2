@@ -29,6 +29,10 @@ describe('SettingsRepository', () => {
 
       const result = await repository.getSetting('setting2');
 
+      expect(result).not.toBeNull();
+      if (!result) {
+        return;
+      }
       expect(result).toBeInstanceOf(FlagSetting);
       expect(result.key).toBe('setting2');
       expect(result.value).toBe(true);
@@ -50,6 +54,9 @@ describe('SettingsRepository', () => {
       const actually = await typeormRepository.findOne({ where: { key: 'setting1' } });
       expect(result).toBe(true);
       expect(actually).toBeDefined();
+      if (!actually) {
+        return;
+      }
       expect(actually.flagValue).toBe(true);
     });
 

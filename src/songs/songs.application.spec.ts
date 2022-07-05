@@ -72,6 +72,7 @@ describe('SongsApplication', () => {
         } else if (key === 'goldenbell-enabled') {
           return new FlagSetting({ key: 'goldenbell-enabled', value: false });
         }
+        return null;
       });
     });
 
@@ -92,6 +93,7 @@ describe('SongsApplication', () => {
         } else if (key === 'goldenbell-enabled') {
           return new FlagSetting({ key: 'goldenbell-enabled', value: false });
         }
+        return null;
       });
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');
@@ -113,6 +115,7 @@ describe('SongsApplication', () => {
         } else if (key === 'goldenbell-enabled') {
           return new FlagSetting({ key: 'goldenbell-enabled', value: true });
         }
+        return null;
       });
 
       const result = await app.requestSong('test song', 'testviewer', '테스트유저');

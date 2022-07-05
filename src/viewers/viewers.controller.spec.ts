@@ -103,7 +103,7 @@ describe('ViewersController', () => {
     });
 
     it('사용자 정보가 없을 시 경고 메시지를 반환해야 한다', async () => {
-      service.getViewer = jest.fn(async () => undefined);
+      service.getViewer = jest.fn(async () => null);
       const sendFn = jest.fn();
 
       await controller.whoAmICommand({
@@ -289,7 +289,7 @@ describe('ViewersController', () => {
 
     it('사용자 정보가 없을 시 경고 메시지를 반환해야 한다', async () => {
       managersService.isManager = jest.fn(async () => true);
-      service.getViewerByUsername = jest.fn(async () => undefined);
+      service.getViewerByUsername = jest.fn(async () => null);
       const sendFn = jest.fn();
 
       await controller.givePointCommand({

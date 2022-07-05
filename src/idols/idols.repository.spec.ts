@@ -1,3 +1,4 @@
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
 import { Idol } from './idols.entity';
@@ -6,21 +7,30 @@ import { IdolsRepository } from './idols.repository';
 describe('IdolsRepository', () => {
   let repository: IdolsRepository;
   let sheetsService: SheetsService;
+  let configService: ConfigService;
 
   beforeEach(async () => {
+    const get = jest.fn().mockReturnValue('');
+
     const module = await Test.createTestingModule({
-      providers: [IdolsRepository, { provide: SheetsService, useValue: {} }],
+      providers: [
+        IdolsRepository,
+        { provide: SheetsService, useValue: {} },
+        { provide: ConfigService, useValue: { get } },
+      ],
     }).compile();
 
     repository = module.get(IdolsRepository);
+    configService = module.get(ConfigService);
     sheetsService = module.get(SheetsService);
 
     sheetsService.getSheets = jest.fn().mockResolvedValue(sampleSheets);
   });
 
   it('should be defined', () => {
-    expect(repository).toBeDefined();
+    expect(configService).toBeDefined();
     expect(sheetsService).toBeDefined();
+    expect(repository).toBeDefined();
   });
 
   describe('search', () => {

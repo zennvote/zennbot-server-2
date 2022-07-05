@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Subject } from 'rxjs';
 
 import { SongsRepository } from './songs.repository';
 import Song from './songs.entity';

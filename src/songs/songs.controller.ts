@@ -48,6 +48,10 @@ export class SongsController {
     const twitchId = payload.tags['username'];
     const username = payload.tags['display-name'];
 
+    if (!twitchId || !username) {
+      return;
+    }
+
     const result = await this.songsApplication.requestSong(title, twitchId, username);
     if (isBusinessError(result)) {
       switch (result.error) {

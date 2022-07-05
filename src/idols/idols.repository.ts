@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
 import { Idol } from './idols.entity';
 
 @Injectable()
 export class IdolsRepository {
-  constructor(private readonly sheetsService: SheetsService) {}
+  constructor(private readonly sheetsService: SheetsService, private readonly configService: ConfigService) {}
 
   private readonly sheetsRequest = {
-    spreadsheetId: process.env.IDOL_SHEETS_ID,
+    spreadsheetId: this.configService.get('IDOL_SHEETS_ID'),
     columns: [
       'firstName',
       'lastName',

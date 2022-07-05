@@ -32,6 +32,11 @@ describe('SettingsService', () => {
 
       const result = await service.getSetting('setting1');
 
+      expect(result).not.toBeNull();
+      if (!result) {
+        return;
+      }
+
       expect(result).toBeInstanceOf(Setting);
       expect(result.key).toBe('setting1');
       expect(result.value).toBe(true);

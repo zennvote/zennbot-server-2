@@ -7,11 +7,11 @@ export enum SettingType {
 @Entity({ name: 'setting' })
 export class SettingDataModel {
   @PrimaryColumn()
-  key: string;
+  key!: string;
 
   @Column()
-  type: SettingType;
+  type!: SettingType;
 
   @Column({ nullable: true })
-  flagValue: boolean;
+  flagValue!: boolean;
 }

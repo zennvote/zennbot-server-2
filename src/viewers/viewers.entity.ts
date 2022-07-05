@@ -11,29 +11,31 @@ export interface ViewerInitializer {
 
 export class Viewer {
   @ApiProperty()
-  index: number;
+  index!: number;
 
   @ApiProperty()
-  username: string;
+  username!: string;
 
   @ApiProperty()
   twitchId?: string;
 
   @ApiProperty()
-  ticket: number;
+  ticket!: number;
 
   @ApiProperty()
-  ticketPiece: number;
+  ticketPiece!: number;
 
   @ApiProperty({ nullable: true })
   prefix?: string;
 
   constructor(initializer?: ViewerInitializer) {
-    this.index = initializer?.index;
-    this.username = initializer?.username;
-    this.twitchId = initializer?.twitchId;
-    this.ticket = initializer?.ticket;
-    this.ticketPiece = initializer?.ticketPiece;
-    this.prefix = initializer?.prefix;
+    if (initializer) {
+      this.index = initializer.index;
+      this.username = initializer.username;
+      this.twitchId = initializer.twitchId;
+      this.ticket = initializer.ticket;
+      this.ticketPiece = initializer.ticketPiece;
+      this.prefix = initializer.prefix;
+    }
   }
 }
