@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { SettingsService } from 'src/settings/settings.service';
+import { SettingsService } from 'src/domain/settings/settings.service';
 
 import { BusinessError, isBusinessError } from 'src/util/business-error';
-import { ViewersService } from 'src/viewers/viewers.service';
+import { ViewersService } from 'src/domain/viewers/viewers.service';
 
 import { RequestType } from './songs.entity';
 import { SongsService } from './songs.service';

@@ -3,8 +3,8 @@ import { Repository } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
 
-import { User } from 'src/users/entities/user.entity';
-import { UserDataModel } from 'src/users/entities/user.datamodel';
+import { User } from 'src/domain/users/entities/user.entity';
+import { UserDataModel } from 'src/domain/users/entities/user.datamodel';
 import { InjectRepository } from '@nestjs/typeorm';
 
 const salt = 12;

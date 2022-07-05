@@ -6,17 +6,17 @@ import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ViewersModule } from './viewers/viewers.module';
-import { SongsModule } from './songs/songs.module';
+import { ViewersModule } from './domain/viewers/viewers.module';
+import { SongsModule } from './domain/songs/songs.module';
 import { TmiModule } from './libs/tmi/tmi.module';
-import { ManagerModule } from './managers/managers.module';
+import { ManagerModule } from './domain/managers/managers.module';
 import { SheetsModule } from './libs/sheets/sheets.module';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './domain/users/users.module';
+import { AuthModule } from './domain/auth/auth.module';
 
 import { getConfigWithConfigService } from '../ormconfig';
-import { SettingsModule } from './settings/settings.module';
-import { IdolsModule } from './idols/idols.module';
+import { SettingsModule } from './domain/settings/settings.module';
+import { IdolsModule } from './domain/idols/idols.module';
 
 @Module({
   imports: [
