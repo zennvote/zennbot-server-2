@@ -2,8 +2,8 @@ import { forwardRef, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UsersModule } from 'src/domain/users/users.module';
-import { UserDataModel } from 'src/domain/users/entities/user.datamodel';
+import { UsersModule } from 'src/app/users/users.module';
+import { UserDataModel } from 'src/app/users/entities/user.datamodel';
 
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';

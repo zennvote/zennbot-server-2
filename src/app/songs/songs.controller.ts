@@ -14,7 +14,7 @@ import {
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { map } from 'rxjs';
 
-import { JwtAuthGuard } from 'src/domain/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';
 import { isBusinessError } from 'src/util/business-error';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 

@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
-import { ManagersService } from 'src/domain/managers/managers.service';
+import { ManagersService } from 'src/app/managers/managers.service';
 
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 import { Viewer } from './viewers.entity';

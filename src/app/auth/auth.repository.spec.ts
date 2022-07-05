@@ -2,8 +2,8 @@ import { Connection, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { createTestDbConnection } from 'src/test-utils';
-import { UserDataModel } from 'src/domain/users/entities/user.datamodel';
-import { User } from 'src/domain/users/entities/user.entity';
+import { UserDataModel } from 'src/app/users/entities/user.datamodel';
+import { User } from 'src/app/users/entities/user.entity';
 import { AuthRepository } from './auth.repository';
 
 // hashed string of "password1"
