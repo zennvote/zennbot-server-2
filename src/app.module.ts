@@ -13,10 +13,10 @@ import { ManagerModule } from './app/managers/managers.module';
 import { SheetsModule } from './libs/sheets/sheets.module';
 import { UsersModule } from './app/users/users.module';
 import { AuthModule } from './app/auth/auth.module';
-
 import { getConfigWithConfigService } from '../ormconfig';
 import { SettingsModule } from './app/settings/settings.module';
 import { IdolsModule } from './app/idols/idols.module';
+import { AttendancesModule } from './app/attendances/attendances/attendances.module';
 
 @Module({
   imports: [
@@ -72,6 +72,7 @@ import { IdolsModule } from './app/idols/idols.module';
     AuthModule,
     SettingsModule,
     IdolsModule,
+    AttendancesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
