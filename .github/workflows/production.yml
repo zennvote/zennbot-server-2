@@ -18,6 +18,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: branch-name
+
     - name: Test Fail
       run: exit 1
 
@@ -61,11 +66,6 @@ jobs:
         cluster: ${{ env.ECS_CLUSTER }}
         service: ${{ env.ECS_SERVICE }}
         wait-for-service-stability: true
-
-    - name: Branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      id: branch-name
 
     - name: Send Success Message
       env:
