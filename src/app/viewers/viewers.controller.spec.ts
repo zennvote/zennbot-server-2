@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ManagersService } from 'src/managers/managers.service';
+import { ManagersService } from 'src/app/managers/managers.service';
 import { ViewersController } from './viewers.controller';
 import { Viewer } from './viewers.entity';
 import { ViewersService } from './viewers.service';

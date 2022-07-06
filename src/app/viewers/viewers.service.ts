@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RequestType } from 'src/songs/songs.entity';
+import { RequestType } from 'src/app/songs/songs.entity';
 import { BusinessError } from 'src/util/business-error';
 import { Viewer } from './viewers.entity';
 import { ViewersRepository } from './viewers.repository';
