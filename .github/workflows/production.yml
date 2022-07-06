@@ -23,9 +23,6 @@ jobs:
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: branch-name
 
-    - name: Test Fail
-      run: exit 1
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -103,7 +100,8 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         DISCORD_EMBEDS: |
           [{
-            "title": ":octagonal_sign: Project Deploy Failed! Check in [here](https://github.com/${{ github.repository }}/actions) :octagonal_sign:",
+            "title": ":octagonal_sign: Project Deploy Failed! :octagonal_sign:",
+            "description": "Check it: https://github.com/${{ github.repository }}/actions",
             "fields": [
               {
                 "name": "Repository",
