@@ -12,7 +12,10 @@ export class SongsRepository {
   private readonly logger = new Logger(SongsRepository.name);
 
   private readonly requestedSongsSubject = new Subject<Song[]>();
+  private readonly cooltimeSongsSubject = new Subject<Song[]>();
+
   public requestedSongsObserver = this.requestedSongsSubject.asObservable();
+  public cooltimeSongsObserver = this.cooltimeSongsSubject.asObservable();
 
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
@@ -46,7 +49,11 @@ export class SongsRepository {
   }
 
   async setCooltimeSongs(songs: Song[]) {
-    return this.setSongs(CooltimeSongsKey, songs);
+    const result = await this.setSongs(CooltimeSongsKey, songs);
+
+    this.cooltimeSongsSubject.next(songs);
+
+    return result;
   }
 
   private async setSongs(key: string, songs: Song[]) {
