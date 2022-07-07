@@ -29,9 +29,7 @@ export class AttendancesApplication {
     attendance.attendedAt = attendDto.attendedAt;
     attendance.tier = attendDto.tier;
 
-    const viewer = attendDto.username
-      ? await this.viewersRepository.findByTwitchIdAndUsername(attendDto.username, attendDto.twitchId)
-      : await this.viewersRepository.findOne({ twitchId: attendDto.twitchId });
+    const viewer = await this.viewersRepository.findByTwitchIdAndUsername(attendDto.username, attendDto.twitchId);
     if (!viewer) {
       return new BusinessError('user-not-found');
     }
