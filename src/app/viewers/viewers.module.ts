@@ -6,6 +6,6 @@ import { ViewersService } from './viewers.service';
 @Module({
   providers: [ViewersService, ViewersRepository],
   controllers: [ViewersController],
-  exports: [ViewersService],
+  exports: [ViewersService, ViewersRepository],
 })
 export class ViewersModule {}
