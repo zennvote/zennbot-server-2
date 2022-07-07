@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { Transactional } from 'src/libs/Transactional.decorator';
 import { BusinessError } from 'src/util/business-error';
 
 import { ViewersRepository } from 'src/app/viewers/viewers.repository';
@@ -18,7 +17,6 @@ export class AttendancesApplication {
     private readonly viewersRepository: ViewersRepository,
   ) {}
 
-  @Transactional()
   async attend(attendDto: AttendDto) {
     const recent = await this.attendancesRepository.getRecentAttendance(attendDto.twitchId);
 
