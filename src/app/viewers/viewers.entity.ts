@@ -38,4 +38,8 @@ export class Viewer {
       this.prefix = initializer.prefix;
     }
   }
+
+  getAttendanceReward(tier: number) {
+    this.ticketPiece += tier * 3;
+  }
 }

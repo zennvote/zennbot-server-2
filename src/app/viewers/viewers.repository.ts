@@ -29,6 +29,9 @@ export class ViewersRepository {
     return viewers;
   }
 
+  /**
+   * username 혹은 twitchId로 검색할 시 시트 갱신을 위해 {@link findByTwitchIdAndUsername}을 사용할 것을 권장.
+   */
   async findOne(option: Partial<Viewer> = {}) {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
 
@@ -42,6 +45,38 @@ export class ViewersRepository {
     const viewer = this.rowToViewer(row);
 
     return viewer;
+  }
+
+  /**
+   * 기존 시트 형식의 특성상 twitchId가 nullable하기 때문에 두 정보를 모두 이용하여 검색하고 이를 갱신한다.
+   * 해당 시청자의 정보가 최신일 시 갱신하지 않으므로 다중 호출에 대한 비용은 적다.
+   */
+  async findByTwitchIdAndUsername(username: string, twitchId: string) {
+    const rows = await this.sheetsService.getSheets(this.sheetsInfo);
+
+    const row = rows.find((row) => {
+      return row.username === username || row.twitchId === twitchId;
+    });
+    if (!row) {
+      return null;
+    }
+    if (row.username !== username || row.twitchId !== twitchId) {
+      await this.sheetsService.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
+    }
+
+    const viewer = this.rowToViewer(row);
+
+    return viewer;
+  }
+
+  async save(viewer: Viewer): Promise<boolean> {
+    if (!viewer.index) {
+      return false;
+    }
+
+    await this.sheetsService.updateSheets(this.sheetsInfo, viewer.index, viewer);
+
+    return true;
   }
 
   async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<boolean> {
