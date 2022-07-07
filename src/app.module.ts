@@ -16,7 +16,7 @@ import { AuthModule } from './app/auth/auth.module';
 import { getConfigWithConfigService } from '../ormconfig';
 import { SettingsModule } from './app/settings/settings.module';
 import { IdolsModule } from './app/idols/idols.module';
-import { AttendancesModule } from './app/attendances/attendances/attendances.module';
+import { AttendancesModule } from './app/attendances/attendances.module';
 
 @Module({
   imports: [
