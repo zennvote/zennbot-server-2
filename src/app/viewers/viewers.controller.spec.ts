@@ -37,19 +37,19 @@ describe('ViewersController', () => {
     it('사용자 목록을 반환해야 한다', async () => {
       service.getViewers = jest.fn(async (): Promise<Viewer[]> => {
         return [
-          {
+          new Viewer({
             index: 1,
             ticket: 10,
             ticketPiece: 12,
             username: '테스트유저1',
-          },
-          {
+          }),
+          new Viewer({
             index: 2,
             ticket: 0,
             ticketPiece: 20,
             username: '테스트유저2',
             prefix: 'test-prefix',
-          },
+          }),
         ];
       });
 
