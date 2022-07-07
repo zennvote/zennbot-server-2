@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ViewersModule } from '../viewers/viewers.module';
 import { AttendancesApplication } from './attendances.application';
@@ -7,7 +7,7 @@ import { AttendanceDataModel } from './repositories/attendance.datamodel';
 import { AttendancesRepository } from './repositories/attendances.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AttendanceDataModel]), ViewersModule],
+  imports: [TypeOrmModule.forFeature([AttendanceDataModel]), CacheModule.register(), ViewersModule],
   providers: [AttendancesService, AttendancesRepository, AttendancesApplication],
 })
 export class AttendancesModule {}

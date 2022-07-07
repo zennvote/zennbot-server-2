@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
 import { Attendance } from '../entities/attendance.entity';
 import { AttendanceDataModel } from './attendance.datamodel';
@@ -8,9 +9,22 @@ import { AttendanceDataModel } from './attendance.datamodel';
 export class AttendancesRepository {
   constructor(
     @InjectRepository(AttendanceDataModel) private attendanceDataModelRepository: Repository<AttendanceDataModel>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async getRecentAttendance(twitchId: string): Promise<Attendance | null> {
+    const cacheKey = `cache.getRecentAttendance.${twitchId}`;
+    const cached = await this.cacheManager.get<Attendance>(cacheKey);
+
+    if (cached) {
+      const attendance = new Attendance();
+      attendance.twitchId = cached.twitchId;
+      attendance.attendedAt = cached.attendedAt;
+      attendance.tier = cached.tier;
+
+      return attendance;
+    }
+
     const result = await this.attendanceDataModelRepository.findOne({
       where: { twitchId },
       order: { attendedAt: 'DESC' },
@@ -25,6 +39,8 @@ export class AttendancesRepository {
     attendance.attendedAt = result.attendedAt;
     attendance.tier = result.tier;
 
+    await this.cacheManager.set(cacheKey, attendance, { ttl: 12 * 60 * 60 });
+
     return attendance;
   }
 
@@ -34,6 +50,8 @@ export class AttendancesRepository {
       attendedAt: attendance.attendedAt,
       tier: attendance.tier,
     });
+
+    await this.cacheManager.del(`cache.getRecentAttendance.${attendance.twitchId}`);
 
     const createdAttendance = new Attendance();
     createdAttendance.twitchId = created.twitchId;
