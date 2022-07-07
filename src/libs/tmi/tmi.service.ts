@@ -37,15 +37,6 @@ export class TmiService {
           tier = 2;
         }
 
-        console.log('CHAT', {
-          twitchId: tags.username,
-          username: tags['display-name'],
-          tier,
-          subsciription: tags.badges?.subscriber,
-          sendAt,
-          channel,
-        });
-
         this.eventEmitter.emit('subscriber-chat', {
           twitchId: tags.username,
           username: tags['display-name'],

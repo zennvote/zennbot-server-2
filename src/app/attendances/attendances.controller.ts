@@ -9,7 +9,6 @@ export class AttendancesController {
 
   @OnEvent('subscriber-chat')
   async onSubscriberChat(payload: AttendDto) {
-    const result = await this.attendancesApplication.attend(payload);
-    console.log(result);
+    await this.attendancesApplication.attend(payload);
   }
 }
