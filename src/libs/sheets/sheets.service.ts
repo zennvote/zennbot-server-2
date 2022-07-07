@@ -52,12 +52,13 @@ export class SheetsService {
 
     const columnTable = Object.fromEntries(columns.map((column, index) => [column, s(64 + startColumn + index)]));
 
-    const data = Object.entries(values).map(([key, value]) => {
-      return {
+    const data = Object
+      .entries(values)
+      .filter(([key]) => !!columnTable[key])
+      .map(([key, value]) => ({
         range: `${sheetsName}!${columnTable[key]}${index + startRow}`,
         values: [[value]],
-      };
-    });
+      }));
 
     await this.client.spreadsheets.values.batchUpdate({
       spreadsheetId,
