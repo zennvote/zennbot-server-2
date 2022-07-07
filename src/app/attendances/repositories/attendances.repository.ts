@@ -1,7 +1,9 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
+
 import { Attendance } from '../entities/attendance.entity';
 import { AttendanceDataModel } from './attendance.datamodel';
 
@@ -14,9 +16,11 @@ export class AttendancesRepository {
 
   async getRecentAttendance(twitchId: string): Promise<Attendance | null> {
     const cacheKey = `cache.getRecentAttendance.${twitchId}`;
-    const cached = await this.cacheManager.get<Attendance>(cacheKey);
+    const cached = await this.cacheManager.get<Attendance | 'null'>(cacheKey);
 
-    if (cached) {
+    if (cached === 'null') {
+      return null;
+    } else if (cached) {
       const attendance = new Attendance();
       attendance.twitchId = cached.twitchId;
       attendance.attendedAt = cached.attendedAt;
@@ -30,6 +34,8 @@ export class AttendancesRepository {
       order: { attendedAt: 'DESC' },
     });
 
+    await this.cacheManager.set(cacheKey, result ?? 'null', { ttl: 12 * 60 * 60 });
+
     if (!result) {
       return null;
     }
@@ -38,8 +44,6 @@ export class AttendancesRepository {
     attendance.twitchId = result.twitchId;
     attendance.attendedAt = result.attendedAt;
     attendance.tier = result.tier;
-
-    await this.cacheManager.set(cacheKey, attendance, { ttl: 12 * 60 * 60 });
 
     return attendance;
   }
