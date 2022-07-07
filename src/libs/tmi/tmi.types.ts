@@ -9,3 +9,11 @@ export interface CommandPayload {
   message: string;
   send: (message: string) => void;
 }
+
+export interface SubscriberChatPayload {
+  twitchId: string;
+  username: string;
+  tier: number;
+  attendedAt: Date;
+  send: (message: string) => void;
+}
