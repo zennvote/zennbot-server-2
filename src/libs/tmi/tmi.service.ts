@@ -7,10 +7,12 @@ import { TMI_CLIENT } from './tmi.types';
 export class TmiService {
   constructor(@Inject(TMI_CLIENT) private client: Client, private eventEmitter: EventEmitter2) {
     client.on('message', (channel, tags, fullMessage, self) => {
-      const sendAt = tags['tmi-sent-ts'] ? new Date(parseInt(tags['tmi-sent-ts'], 10)) : new Date();
       if (self) {
         return;
       }
+
+      const sendAt = tags['tmi-sent-ts'] ? new Date(parseInt(tags['tmi-sent-ts'], 10)) : new Date();
+      const send = (message: string) => this.client.say(channel, message);
 
       if (fullMessage.startsWith('!')) {
         const message = fullMessage.startsWith('!젠 ') ? fullMessage.replace('젠 ', '') : fullMessage;
@@ -23,7 +25,7 @@ export class TmiService {
           tags,
           args,
           message,
-          send: (message: string) => this.client.say(channel, message),
+          send,
         });
       }
 
@@ -42,6 +44,7 @@ export class TmiService {
           username: tags['display-name'],
           tier,
           attendedAt: sendAt,
+          send,
         });
       }
     });
