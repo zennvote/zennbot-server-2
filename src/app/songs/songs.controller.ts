@@ -38,6 +38,12 @@ export class SongsController {
     return this.songsApplication.getSongsObserver().pipe(map((data) => JSON.stringify(data)));
   }
 
+  @Sse('cooltimes/sse')
+  @ApiOkResponse({ type: [Song] })
+  getCooltimeSongsSse() {
+    return this.songsApplication.getCooltimeSongsObserver().pipe(map((data) => JSON.stringify(data)));
+  }
+
   @OnCommand('신청')
   async requestSongCommand(payload: CommandPayload) {
     if (payload.args.length <= 0) {

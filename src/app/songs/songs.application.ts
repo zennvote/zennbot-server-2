@@ -23,6 +23,10 @@ export class SongsApplication {
     return this.songsService.requestedSongsObserver;
   }
 
+  getCooltimeSongsObserver() {
+    return this.songsService.cooltimeSongsObserver;
+  }
+
   async requestSong(title: string, twitchId: string, username: string) {
     const isRequestEnabled = (await this.settingsService.getSetting('request-enabled'))?.value ?? false;
     if (!isRequestEnabled) {

@@ -13,6 +13,10 @@ export class SongsService {
     return this.songsRepository.requestedSongsObserver;
   }
 
+  get cooltimeSongsObserver() {
+    return this.songsRepository.cooltimeSongsObserver;
+  }
+
   async getSongs() {
     return this.songsRepository.getRequestedSongs();
   }
