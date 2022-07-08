@@ -3,6 +3,7 @@ import { BusinessError } from 'src/util/business-error';
 import { AttendancesApplication } from './attendances.application';
 import { AttendancesController } from './attendances.controller';
 import { AttendDto } from './dtos/attend.dto';
+import { Attendance } from './entities/attendance.entity';
 
 describe('AttendancesController', () => {
   let controller: AttendancesController;
@@ -68,6 +69,20 @@ describe('AttendancesController', () => {
 
       expect(application.attend).toBeCalledWith(dto);
       expect(sendMock).not.toBeCalled();
+    });
+  });
+
+  describe('getAttendances', () => {
+    it('출석을 조회할 수 있어야 한다', async () => {
+      const attendances = [new Attendance(), new Attendance(), new Attendance()];
+      attendances[0].attendedAt = new Date(2022, 11, 24);
+      attendances[0].attendedAt = new Date(2022, 11, 25);
+      attendances[0].attendedAt = new Date(2022, 11, 26);
+      application.getAttendances = jest.fn().mockResolvedValueOnce(attendances);
+
+      const result = await controller.getAttendances();
+
+      expect(result).toBe(attendances);
     });
   });
 });

@@ -131,4 +131,24 @@ describe('AttendanceRepository', () => {
       expect(actually).toBeUndefined();
     });
   });
+
+  describe('getAttendances', () => {
+    it('출석 정보를 시간순으로 조회할 수 있어야 한다', async () => {
+      const datamodels = [
+        { id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1 },
+        { id: 2, twitchId: 'testviewer2', attendedAt: new Date(2022, 3, 26), tier: 2 },
+        { id: 3, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 27), tier: 1 },
+      ];
+      await typeormRepository.save(datamodels);
+
+      const result = await repository.getAttendances();
+
+      expect(result.length).toBe(3);
+      expect(result[0]).toHaveProperty('twitchId', 'testviewer1');
+      expect(result[0]).toHaveProperty('attendedAt', new Date(2022, 3, 27));
+      expect(result[0]).toHaveProperty('tier', 1);
+      expect(result[1]).toHaveProperty('attendedAt', new Date(2022, 3, 26));
+      expect(result[2]).toHaveProperty('attendedAt', new Date(2022, 3, 25));
+    });
+  });
 });

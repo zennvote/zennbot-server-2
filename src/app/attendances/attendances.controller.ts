@@ -1,7 +1,8 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { SubscriberChatPayload } from 'src/libs/tmi/tmi.types';
 import { isBusinessError } from 'src/util/business-error';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AttendancesApplication } from './attendances.application';
 import { AttendDto } from './dtos/attend.dto';
 
@@ -24,5 +25,13 @@ export class AttendancesController {
     }
 
     payload.send(`@${payload.twitchId} 님에게 ${payload.tier}티어 출석 보상이 지급되었습니다!`);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getAttendances() {
+    const result = await this.attendancesApplication.getAttendances();
+
+    return result;
   }
 }

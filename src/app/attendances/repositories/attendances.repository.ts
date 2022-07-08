@@ -40,12 +40,19 @@ export class AttendancesRepository {
       return null;
     }
 
-    const attendance = new Attendance();
-    attendance.twitchId = result.twitchId;
-    attendance.attendedAt = result.attendedAt;
-    attendance.tier = result.tier;
+    const attendance = this.convertDataModel(result);
 
     return attendance;
+  }
+
+  async getAttendances(): Promise<Attendance[]> {
+    const result = await this.attendanceDataModelRepository.find({
+      order: { attendedAt: 'DESC' },
+    });
+
+    const attendances = result.map((datamodel) => this.convertDataModel(datamodel));
+
+    return attendances;
   }
 
   async saveAttendance(attendance: Attendance): Promise<Attendance> {
@@ -63,5 +70,14 @@ export class AttendancesRepository {
     createdAttendance.tier = created.tier;
 
     return createdAttendance;
+  }
+
+  private convertDataModel({ twitchId, attendedAt, tier }: AttendanceDataModel) {
+    const attendance = new Attendance();
+    attendance.twitchId = twitchId;
+    attendance.attendedAt = attendedAt;
+    attendance.tier = tier;
+
+    return attendance;
   }
 }
