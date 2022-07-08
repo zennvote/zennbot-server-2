@@ -114,4 +114,19 @@ describe('AttendancesApplication', () => {
       expect(repository.saveAttendance).not.toBeCalled();
     });
   });
+
+  describe('getAttendances', () => {
+    it('출석 정보를 조회할 수 있어야 한다', async () => {
+      const attendances = [new Attendance(), new Attendance(), new Attendance()];
+      attendances[0].attendedAt = new Date(2022, 11, 24);
+      attendances[0].attendedAt = new Date(2022, 11, 25);
+      attendances[0].attendedAt = new Date(2022, 11, 26);
+
+      repository.getAttendances = jest.fn().mockResolvedValue(attendances);
+
+      const result = await application.getAttendances();
+
+      expect(result).toBe(attendances);
+    });
+  });
 });

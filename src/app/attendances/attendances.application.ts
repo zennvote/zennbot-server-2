@@ -39,4 +39,10 @@ export class AttendancesApplication {
     await this.viewersRepository.save(viewer);
     await this.attendancesRepository.saveAttendance(attendance);
   }
+
+  async getAttendances() {
+    const attendances = await this.attendancesRepository.getAttendances();
+
+    return attendances;
+  }
 }
