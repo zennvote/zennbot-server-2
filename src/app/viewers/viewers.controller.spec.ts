@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ManagersService } from 'src/app/managers/managers.service';
 import { ViewersController } from './viewers.controller';
 import { Viewer } from './viewers.entity';
 import { ViewersService } from './viewers.service';
@@ -7,26 +6,15 @@ import { ViewersService } from './viewers.service';
 describe('ViewersController', () => {
   let controller: ViewersController;
   let service: ViewersService;
-  let managersService: ManagersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ViewersController],
-      providers: [
-        {
-          provide: ViewersService,
-          useValue: {},
-        },
-        {
-          provide: ManagersService,
-          useValue: {},
-        },
-      ],
+      providers: [{ provide: ViewersService, useValue: {} }],
     }).compile();
 
     controller = module.get<ViewersController>(ViewersController);
     service = module.get<ViewersService>(ViewersService);
-    managersService = module.get<ManagersService>(ManagersService);
   });
 
   it('should be defined', () => {
@@ -124,7 +112,6 @@ describe('ViewersController', () => {
 
   describe('COMMAND 지급', () => {
     it('헤당 유저에게 티켓을 지급해야 한다', async () => {
-      managersService.isManager = jest.fn(async () => true);
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
         async () =>
@@ -149,14 +136,12 @@ describe('ViewersController', () => {
         send: sendFn,
       });
 
-      expect(managersService.isManager).toBeCalledWith('manageruser');
       expect(service.getViewerByUsername).toBeCalledWith('테스트유저1');
       expect(service.setPointsWithUsername).toBeCalledWith('테스트유저1', { ticket: 20 });
       expect(sendFn).toBeCalledWith('테스트유저1님에게 곡 10개를 지급하였습니다.');
     });
 
     it('헤당 유저에게 조각을 지급해야 한다', async () => {
-      managersService.isManager = jest.fn(async () => true);
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
         async () =>
@@ -181,14 +166,12 @@ describe('ViewersController', () => {
         send: sendFn,
       });
 
-      expect(managersService.isManager).toBeCalledWith('manageruser');
       expect(service.getViewerByUsername).toBeCalledWith('테스트유저1');
       expect(service.setPointsWithUsername).toBeCalledWith('테스트유저1', { ticketPiece: 16 });
       expect(sendFn).toBeCalledWith('테스트유저1님에게 조각 4개를 지급하였습니다.');
     });
 
     it('갯수를 생략할 시 1개를 지급해야 한다.', async () => {
-      managersService.isManager = jest.fn(async () => true);
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
         async () =>
@@ -213,14 +196,12 @@ describe('ViewersController', () => {
         send: sendFn,
       });
 
-      expect(managersService.isManager).toBeCalledWith('manageruser');
       expect(service.getViewerByUsername).toBeCalledWith('테스트유저1');
       expect(service.setPointsWithUsername).toBeCalledWith('테스트유저1', { ticketPiece: 13 });
       expect(sendFn).toBeCalledWith('테스트유저1님에게 조각 1개를 지급하였습니다.');
     });
 
     it('음수를 입력할 시 포인트를 차감해야 한다.', async () => {
-      managersService.isManager = jest.fn(async () => true);
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
         async () =>
@@ -245,29 +226,9 @@ describe('ViewersController', () => {
         send: sendFn,
       });
 
-      expect(managersService.isManager).toBeCalledWith('manageruser');
       expect(service.getViewerByUsername).toBeCalledWith('테스트유저1');
       expect(service.setPointsWithUsername).toBeCalledWith('테스트유저1', { ticketPiece: 4 });
       expect(sendFn).toBeCalledWith('테스트유저1님의 조각 8개를 차감하였습니다.');
-    });
-
-    it('권한이 없는 유저는 명령어를 사용할 수 없다', async () => {
-      managersService.isManager = jest.fn(async () => false);
-      const sendFn = jest.fn();
-
-      await controller.givePointCommand({
-        message: '!지급 조각 테스트유저1 4',
-        args: ['조각', '테스트유저1', '4'],
-        channel: 'channel',
-        tags: {
-          username: 'manageruser',
-          'display-name': '매니저유저1',
-        },
-        send: sendFn,
-      });
-
-      expect(managersService.isManager).toBeCalledWith('manageruser');
-      expect(sendFn).toBeCalledWith('권한이 없습니다!');
     });
 
     it('잘못된 형식으로 입력 시 경고 메시지를 반환해야 한다', async () => {
@@ -288,7 +249,6 @@ describe('ViewersController', () => {
     });
 
     it('사용자 정보가 없을 시 경고 메시지를 반환해야 한다', async () => {
-      managersService.isManager = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(async () => null);
       const sendFn = jest.fn();
 
@@ -303,7 +263,6 @@ describe('ViewersController', () => {
         send: sendFn,
       });
 
-      expect(managersService.isManager).toBeCalledWith('manageruser');
       expect(service.getViewerByUsername).toBeCalledWith('테스트유저1');
       expect(sendFn).toBeCalledWith('존재하지 않는 시청자입니다.');
     });

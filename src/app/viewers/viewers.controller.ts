@@ -1,6 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
-import { ManagersService } from 'src/app/managers/managers.service';
 
 import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
@@ -12,7 +11,7 @@ import { ViewersService } from './viewers.service';
 
 @Controller('viewers')
 export class ViewersController {
-  constructor(private readonly viewersService: ViewersService, private readonly managersService: ManagersService) {}
+  constructor(private readonly viewersService: ViewersService) {}
 
   @Get()
   @ApiOkResponse({ type: [Viewer] })
