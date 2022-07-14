@@ -61,7 +61,7 @@ import { AttendancesModule } from './app/attendances/attendances.module';
     EventEmitterModule.forRoot(),
     ViewersModule,
     SongsModule,
-    ManagerModule,
+    ManagerModule.forRoot(),
     SheetsModule.forRoot({
       credentialsPath: process.env.SHEETS_CREDENTIALS_PATH,
       tokenPath: process.env.SHEETS_TOKEN_PATH,
