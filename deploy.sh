@@ -3,6 +3,7 @@
 docker stop zennbot-web
 docker rm zennbot-web
 
+aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com
 docker pull 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
 docker run -d --name zennbot-web 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web
 
