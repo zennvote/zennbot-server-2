@@ -2,10 +2,10 @@ version: 0.0
 os: linux
 files:
   - source: /execute-deploy.sh
-    destination: /home/ubuntu/zennbot-deploy
+    destination: /home/ec2-user/zennbot-deploy
     overwrite: yes
   - source: /deploy.sh
-    destination: /home/ubuntu/zennbot-deploy
+    destination: /home/ec2-user/zennbot-deploy
     overwrite: yes
 hooks:
   AfterInstall:
