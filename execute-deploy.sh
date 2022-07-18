@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /home/ec2-user/zennbot-deploy
+
 docker stop zennbot-web
 docker rm zennbot-web
 
