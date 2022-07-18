@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserDataModel } from './entities/user.datamodel';
+import { PrismaService } from 'src/libs/prisma/prisma.service';
 
+import { UserDataModel } from './entities/user.datamodel';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersRepository {
-  constructor(@InjectRepository(UserDataModel) private userDataModelsRepository: Repository<UserDataModel>) {}
+  constructor(private prisma: PrismaService) {}
 
   async findByUsername(username: string): Promise<User | null> {
-    const result = await this.userDataModelsRepository.findOne({ where: { username } });
+    const result = await this.prisma.user.findUnique({ where: { username } });
     if (!result) {
       return null;
     }
@@ -27,7 +26,7 @@ export class UsersRepository {
     datamodel.username = username;
     datamodel.password = password;
 
-    const result = await this.userDataModelsRepository.save(datamodel);
+    const result = await this.prisma.user.create({ data: datamodel });
 
     const user = new User();
     user.id = result.id;
