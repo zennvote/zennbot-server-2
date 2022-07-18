@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { SettingDataModel, SettingType } from './entities/setting.datamodel';
+
+import { PrismaService } from 'src/libs/prisma/prisma.service';
+
+import { SettingType } from './entities/setting.datamodel';
 import { FlagSetting } from './entities/setting.entity';
 
 @Injectable()
 export class SettingsRepository {
-  constructor(
-    @InjectRepository(SettingDataModel) private readonly settingsDataModelRepository: Repository<SettingDataModel>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getSetting(key: string) {
-    const result = await this.settingsDataModelRepository.findOne({ where: { key } });
+    const result = await this.prisma.setting.findFirst({ where: { key } });
 
     if (!result) {
       return null;
@@ -21,14 +20,14 @@ export class SettingsRepository {
       case SettingType.Flag:
         const flagSetting = new FlagSetting();
         flagSetting.key = result.key;
-        flagSetting.value = result.flagValue;
+        flagSetting.value = result.flagValue ?? false;
         return flagSetting;
     }
   }
 
   async setFlagSetting(key: string, value: boolean) {
-    const result = await this.settingsDataModelRepository.update({ key }, { flagValue: value });
+    const result = await this.prisma.setting.update({ where: { key }, data: { flagValue: value } });
 
-    return (result.affected ?? 0) > 0;
+    return result.flagValue === value;
   }
 }

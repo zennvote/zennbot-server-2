@@ -1,18 +1,14 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
 import { Cache } from 'cache-manager';
-import { Repository } from 'typeorm';
+
+import { PrismaService } from 'src/libs/prisma/prisma.service';
 
 import { Attendance } from '../entities/attendance.entity';
 import { AttendanceDataModel } from './attendance.datamodel';
 
 @Injectable()
 export class AttendancesRepository {
-  constructor(
-    @InjectRepository(AttendanceDataModel) private attendanceDataModelRepository: Repository<AttendanceDataModel>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+  constructor(private prisma: PrismaService, @Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   async getRecentAttendance(twitchId: string): Promise<Attendance | null> {
     const cacheKey = `cache.getRecentAttendance.${twitchId}`;
@@ -29,9 +25,9 @@ export class AttendancesRepository {
       return attendance;
     }
 
-    const result = await this.attendanceDataModelRepository.findOne({
+    const result = await this.prisma.attendance.findFirst({
       where: { twitchId },
-      order: { attendedAt: 'DESC' },
+      orderBy: { attendedAt: 'desc' },
     });
 
     await this.cacheManager.set(cacheKey, result ?? 'null', { ttl: 12 * 60 * 60 });
@@ -46,8 +42,8 @@ export class AttendancesRepository {
   }
 
   async getAttendances(): Promise<Attendance[]> {
-    const result = await this.attendanceDataModelRepository.find({
-      order: { attendedAt: 'DESC' },
+    const result = await this.prisma.attendance.findMany({
+      orderBy: { attendedAt: 'desc' },
     });
 
     const attendances = result.map((datamodel) => this.convertDataModel(datamodel));
@@ -56,10 +52,12 @@ export class AttendancesRepository {
   }
 
   async saveAttendance(attendance: Attendance): Promise<Attendance> {
-    const created = await this.attendanceDataModelRepository.save({
-      twitchId: attendance.twitchId,
-      attendedAt: attendance.attendedAt,
-      tier: attendance.tier,
+    const created = await this.prisma.attendance.create({
+      data: {
+        twitchId: attendance.twitchId,
+        attendedAt: attendance.attendedAt,
+        tier: attendance.tier,
+      },
     });
 
     await this.cacheManager.del(`cache.getRecentAttendance.${attendance.twitchId}`);
