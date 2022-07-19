@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Attendance {
+  id         Int      @id @default(autoincrement())
+  twitchId   String   @db.VarChar
+  attendedAt DateTime @db.Timestamp(6)
+  tier       Int
+
+  @@map("attendance")
+
+  @@unique([twitchId, attendedAt], map: "IDX_88afafaccbb967eda0db4d9bd4")
+}
+
+model Manager {
+  id       Int    @id @default(autoincrement())
+  twitchId String @unique @db.VarChar
+
+  @@map("manager")
+}
+
+model Setting {
+  key       String   @id @db.VarChar
+  type      String   @db.VarChar
+  flagValue Boolean?
+
+  @@map("setting")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique @db.VarChar
+  password String @db.VarChar
+
+  @@map("user")
+}

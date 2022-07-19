@@ -1,16 +1,15 @@
 import { DiscoveryModule, DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
 import { DynamicModule, Module, OnApplicationBootstrap } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 
 import { MANAGER_CHAT_GUARD_METADATA } from './guards/manager-chat.guard';
-import { Manager } from './managers.entity';
+
 import { ManagersService } from './managers.service';
 import { ManagersController } from './managers.controller';
 
 @Module({
-  imports: [DiscoveryModule, TypeOrmModule.forFeature([Manager])],
+  imports: [DiscoveryModule],
   providers: [ManagersService],
   exports: [ManagersService],
   controllers: [ManagersController],
