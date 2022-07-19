@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as Joi from 'joi';
 
@@ -13,7 +12,6 @@ import { ManagerModule } from './app/managers/managers.module';
 import { SheetsModule } from './libs/sheets/sheets.module';
 import { UsersModule } from './app/users/users.module';
 import { AuthModule } from './app/auth/auth.module';
-import { getConfigWithConfigService } from '../ormconfig';
 import { SettingsModule } from './app/settings/settings.module';
 import { IdolsModule } from './app/idols/idols.module';
 import { AttendancesModule } from './app/attendances/attendances.module';
@@ -46,10 +44,6 @@ import { AttendancesModule } from './app/attendances/attendances.module';
         TMI_PASSWORD: Joi.string().required(),
         TMI_USERNAME: Joi.string().required(),
       }),
-    }),
-    TypeOrmModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => getConfigWithConfigService(configService),
-      inject: [ConfigService],
     }),
     TmiModule.forRoot({
       identity: {
