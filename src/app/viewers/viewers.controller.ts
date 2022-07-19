@@ -1,15 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
-import { ManagersService } from 'src/app/managers/managers.service';
 
+import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
+
+import { ManagerChatGuard } from '../managers/guards/manager-chat.guard';
+
 import { Viewer } from './viewers.entity';
 import { ViewersService } from './viewers.service';
-import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 
 @Controller('viewers')
 export class ViewersController {
-  constructor(private readonly viewersService: ViewersService, private readonly managersService: ManagersService) {}
+  constructor(private readonly viewersService: ViewersService) {}
 
   @Get()
   @ApiOkResponse({ type: [Viewer] })
@@ -38,22 +40,13 @@ export class ViewersController {
     payload.send(`${formattedPrefix}${username} 티켓 ${ticket}장 | 조각 ${ticketPiece}장 보유중`);
   }
 
+  @ManagerChatGuard()
   @OnCommand('지급')
   async givePointCommand(payload: CommandPayload) {
     const [inputType, name, inputPoint] = payload.args;
 
     if (payload.args.length < 2 || Number.isNaN(inputType) || (inputType !== '곡' && inputType !== '조각')) {
       return payload.send('잘못된 명령어 형식입니다. 다시 한번 확인해주세요!');
-    }
-
-    const twitchId = payload.tags['username'];
-
-    if (!twitchId) {
-      return;
-    }
-
-    if (!(await this.managersService.isManager(twitchId))) {
-      return payload.send('권한이 없습니다!');
     }
 
     const point = parseInt(inputPoint, 10) || 1;
