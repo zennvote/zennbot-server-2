@@ -15,6 +15,7 @@ import { AuthModule } from './app/auth/auth.module';
 import { SettingsModule } from './app/settings/settings.module';
 import { IdolsModule } from './app/idols/idols.module';
 import { AttendancesModule } from './app/attendances/attendances.module';
+import { PrismaModule } from './libs/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { AttendancesModule } from './app/attendances/attendances.module';
     SettingsModule,
     IdolsModule,
     AttendancesModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
