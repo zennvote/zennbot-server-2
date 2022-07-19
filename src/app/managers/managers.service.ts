@@ -1,32 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PrismaService } from 'src/libs/prisma/prisma.service';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { Manager } from './managers.entity';
 
 @Injectable()
 export class ManagersService {
-  constructor(
-    @InjectRepository(Manager)
-    private managerRepository: Repository<Manager>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getManagers() {
-    return this.managerRepository.find();
+    const managers = await this.prisma.manager.findMany();
+
+    return managers.map((manager) => {
+      const entity = new Manager();
+      entity.id = manager.id;
+      entity.twitchId = manager.twitchId;
+      return entity;
+    });
   }
 
   async createManager(createManagerDto: CreateManagerDto) {
     const manager = new Manager();
     manager.twitchId = createManagerDto.twitchId;
 
-    return await this.managerRepository.save(manager);
+    return await this.prisma.manager.create({ data: manager });
   }
 
   async deleteManager(twitchId: string) {
-    await this.managerRepository.delete({ twitchId });
+    await this.prisma.manager.delete({ where: { twitchId } });
   }
 
   async isManager(twitchId: string) {
-    return (await this.managerRepository.count({ twitchId })) > 0;
+    return (await this.prisma.manager.count({ where: { twitchId } })) > 0;
   }
 }
