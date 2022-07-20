@@ -47,8 +47,12 @@ export class Idol {
     }
   }
 
+  get fullName() {
+    return this.firstName ? `${this.firstName} ${this.lastName}` : this.lastName;
+  }
+
   get stringified() {
-    const name = this.firstName ? `${this.firstName} ${this.lastName}` : this.lastName;
+    const name = this.fullName;
     const idolInfo = [
       parseInformation(this.company, '소속사 불명', ' 프로덕션'),
       parseInformation(this.unit, null, ' 소속'),

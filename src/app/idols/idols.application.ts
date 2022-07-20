@@ -18,4 +18,16 @@ export class IdolsApplication {
 
     return result[0];
   }
+
+  async getBirthdayIdols() {
+    const now = new Date();
+
+    const idol = await this.idolsService.getBirthdayIdols(now);
+
+    if (idol.length === 0) {
+      return new BusinessError('no-result');
+    }
+
+    return idol;
+  }
 }

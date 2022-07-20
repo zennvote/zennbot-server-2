@@ -110,6 +110,20 @@ describe('IdolsRepository', () => {
       expect(sorted[1].lastName).toBe('나오');
     });
   });
+
+  describe('findByBirthday', () => {
+    it('생일에 해당하는 아이돌을 모두 반환해야 한다.', async () => {
+      const date = new Date(2022, 6, 22);
+      const result = await repository.findByBirthday(date);
+      const sorted = result.sort((a, b) => a.firstName.localeCompare(b.firstName));
+
+      expect(sorted).toHaveLength(2);
+      expect(sorted[0]).toBeInstanceOf(Idol);
+      expect(sorted[0].fullName).toBe('사토 신');
+      expect(sorted[1]).toBeInstanceOf(Idol);
+      expect(sorted[1].fullName).toBe('하치미야 메구루');
+    });
+  });
 });
 
 const sampleSheets = [
@@ -202,5 +216,19 @@ const sampleSheets = [
     hometown: '홋카이도',
     cv: '우에사카 스미레',
     introduction: '별을 사랑하는 러시아 혼혈 아이돌',
+  },
+  {
+    firstName: '하치미야',
+    lastName: '메구루',
+    company: '283',
+    unit: 'illumination STARS',
+    birthday: '7월 22일',
+    age: '16',
+    height: '157',
+    weight: '46',
+    threeSize: '90-59-89',
+    hometown: '미국 메사추세츠주',
+    cv: '미네다 마유',
+    introduction: '활발하고 붙임성 좋은 미국 혼혈 아이돌',
   },
 ];

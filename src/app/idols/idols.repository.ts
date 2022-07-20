@@ -41,4 +41,15 @@ export class IdolsRepository {
 
     return idols;
   }
+
+  async findByBirthday(date: Date) {
+    const rows = await this.sheetsService.getSheets(this.sheetsRequest);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const formattedDate = `${month}월 ${day}일`;
+
+    const idols = rows.filter((row) => row.birthday === formattedDate).map((row) => new Idol(row));
+
+    return idols;
+  }
 }

@@ -149,4 +149,41 @@ describe('IdolsController', () => {
       expect(sendMock).toBeCalledWith('해당하는 아이돌이 없습니다!');
     });
   });
+
+  it('오늘 생일인 아이돌 검색 결과를 반환해야 한다.', async () => {
+    const sendMock = jest.fn();
+    const payload: CommandPayload = {
+      args: [],
+      channel: 'testchannel',
+      message: '!생일돌',
+      tags: {},
+      send: sendMock,
+    };
+    application.getBirthdayIdols = jest
+      .fn()
+      .mockResolvedValue([
+        new Idol({ firstName: '히구치', lastName: '마도카' }),
+        new Idol({ firstName: '사기사와', lastName: '후미카' }),
+      ]);
+
+    await controller.getBirthdayIdols(payload);
+
+    expect(sendMock).toBeCalledWith('오늘 생일인 아이돌은 히구치 마도카, 사기사와 후미카입니다');
+  });
+
+  it('생일인 아이돌이 없을 시 에러 메시지가 표기돼야 한다', async () => {
+    const sendMock = jest.fn();
+    const payload: CommandPayload = {
+      args: [],
+      channel: 'testchannel',
+      message: '!생일돌',
+      tags: {},
+      send: sendMock,
+    };
+    application.getBirthdayIdols = jest.fn().mockResolvedValue(new BusinessError('no-result'));
+
+    await controller.getBirthdayIdols(payload);
+
+    expect(sendMock).toBeCalledWith('오늘 생일인 아이돌이 없습니다!');
+  });
 });
