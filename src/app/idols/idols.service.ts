@@ -8,4 +8,8 @@ export class IdolsService {
   async searchIdols(keyword: string) {
     return this.idolsRepository.search(keyword);
   }
+
+  async getBirthdayIdols(date: Date) {
+    return this.idolsRepository.findByBirthday(date);
+  }
 }

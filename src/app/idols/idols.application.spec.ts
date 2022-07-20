@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { isBusinessError } from 'src/util/business-error';
+import { BusinessError, isBusinessError } from 'src/util/business-error';
 import { IdolsApplication } from './idols.application';
 import { Idol } from './idols.entity';
 import { IdolsService } from './idols.service';
@@ -51,6 +51,37 @@ describe('IdolsApplication', () => {
       service.searchIdols = jest.fn().mockResolvedValue([]);
 
       const result = await application.searchIdol('시프트');
+
+      expect(isBusinessError(result)).toBeTrue();
+      expect(result).toHaveProperty('error', 'no-result');
+    });
+  });
+
+  describe('getBirthdayIdols', () => {
+    it('오늘 생일인 아이돌을 반환해야 한다.', async () => {
+      const expected = [
+        new Idol({ firstName: '스나즈카', lastName: '아키라' }),
+        new Idol({ firstName: '유메미', lastName: '리아무' }),
+      ];
+      const now = new Date(2022, 11, 24);
+
+      jest.useFakeTimers().setSystemTime(now);
+      service.getBirthdayIdols = jest.fn().mockResolvedValue(expected);
+
+      const result = await application.getBirthdayIdols();
+
+      expect(result).toMatchObject(expected);
+      expect(service.getBirthdayIdols).toBeCalledWith(now);
+    });
+
+    it('오늘 생일인 아이돌이 없다면 에러를 반환해야 한다', async () => {
+      const expected = [];
+      const now = new Date(2022, 11, 24);
+
+      jest.useFakeTimers().setSystemTime(now);
+      service.getBirthdayIdols = jest.fn().mockResolvedValue(expected);
+
+      const result = await application.getBirthdayIdols();
 
       expect(isBusinessError(result)).toBeTrue();
       expect(result).toHaveProperty('error', 'no-result');

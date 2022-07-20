@@ -25,4 +25,19 @@ export class IdolsController {
 
     payload.send(idol.stringified);
   }
+
+  @OnCommand('생일돌')
+  async getBirthdayIdols(payload: CommandPayload) {
+    const idols = await this.idolsApplication.getBirthdayIdols();
+
+    if (isBusinessError(idols)) {
+      switch (idols.error) {
+        case 'no-result':
+          return payload.send('오늘 생일인 아이돌이 없습니다!');
+      }
+    }
+    const idolNames = idols.map((idol) => idol.fullName).join(', ');
+
+    payload.send(`오늘 생일인 아이돌은 ${idolNames}입니다`);
+  }
 }

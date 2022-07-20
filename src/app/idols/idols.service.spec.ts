@@ -39,4 +39,24 @@ describe('IdolsService', () => {
       expect(repository.search).toBeCalledWith('시키');
     });
   });
+
+  describe('getBirthdayIdols', () => {
+    it('날짜를 기준으로 생일인 아이돌 목록을 반환해야 한다', async () => {
+      const expected = [
+        new Idol({ firstName: '히구치', lastName: '마도카' }),
+        new Idol({ firstName: '사기사와', lastName: '후미카' }),
+      ];
+      const date = new Date(2022, 9, 27);
+      repository.findByBirthday = jest.fn().mockResolvedValue(expected);
+
+      const result = await service.getBirthdayIdols(date);
+
+      expect(result).toMatchObject([
+        { firstName: '히구치', lastName: '마도카' },
+        { firstName: '사기사와', lastName: '후미카' },
+      ]);
+      expect(result[0]).toBeInstanceOf(Idol);
+      expect(repository.findByBirthday).toBeCalledWith(date);
+    });
+  });
 });
