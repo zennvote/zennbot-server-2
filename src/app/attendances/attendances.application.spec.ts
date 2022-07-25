@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import * as Sinon from 'sinon';
 
@@ -16,6 +17,7 @@ describe('AttendancesApplication', () => {
   let service: AttendancesService;
   let repository: AttendancesRepository;
   let viewersRepository: ViewersRepository;
+  let configService: ConfigService;
   let twitch: Sinon.SinonStubbedInstance<typeof originalTwitch>;
 
   beforeEach(async () => {
@@ -25,6 +27,7 @@ describe('AttendancesApplication', () => {
         { provide: AttendancesService, useValue: {} },
         { provide: AttendancesRepository, useValue: {} },
         { provide: ViewersRepository, useValue: {} },
+        { provide: ConfigService, useValue: {} },
       ],
     }).compile();
 
@@ -32,6 +35,7 @@ describe('AttendancesApplication', () => {
     service = module.get(AttendancesService);
     repository = module.get(AttendancesRepository);
     viewersRepository = module.get(ViewersRepository);
+    configService = module.get(ConfigService);
     twitch = Sinon.stub(originalTwitch);
   });
 
@@ -43,9 +47,14 @@ describe('AttendancesApplication', () => {
     expect(repository).toBeDefined();
     expect(viewersRepository).toBeDefined();
     expect(twitch).toBeDefined();
+    expect(configService).toBeDefined();
   });
 
   describe('attend', () => {
+    beforeEach(() => {
+      configService.get = jest.fn((key) => key);
+    });
+
     it('출석을 등록하고 포인트를 지급해야 한다', async () => {
       const recentAttendance = new Attendance();
       recentAttendance.attendedAt = new Date(2022, 11, 24);
@@ -73,6 +82,7 @@ describe('AttendancesApplication', () => {
       expect(viewer.getAttendanceReward).toBeCalledWith(2);
       expect(viewersRepository.save).toBeCalledWith(viewer);
       expect(repository.saveAttendance).toBeCalledWith(expected);
+      expect(twitch.getSubscription.calledWith('TMI_CHANNEL', 'TMI_CHANNEL_ID', 'testviewer1'));
     });
 
     it('출석이 불가능한 경우 에러를 발생시킨다', async () => {
