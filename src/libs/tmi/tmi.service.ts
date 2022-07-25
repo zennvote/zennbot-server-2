@@ -31,19 +31,9 @@ export class TmiService {
       }
 
       if (tags.subscriber) {
-        const subsciription = parseInt(tags.badges?.subscriber ?? '0', 10);
-
-        let tier = 1;
-        if (subsciription >= 3000) {
-          tier = 3;
-        } else if (subsciription >= 2000) {
-          tier = 2;
-        }
-
         this.eventEmitter.emit('subscriber-chat', {
           twitchId: tags.username,
           username: tags['display-name'],
-          tier,
           attendedAt: sendAt,
           send,
         });
