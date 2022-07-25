@@ -20,8 +20,8 @@ export const getSubscription = async (channel: string, channelId: string, twitch
           channelLogin: channel,
           hasChannelID: true,
           giftRecipientLogin: twitchId,
-          isViewerBadgeCollectionEnabled: false,
-          withStandardGifting: false,
+          isViewerBadgeCollectionEnabled: true,
+          withStandardGifting: true,
         },
         extensions: {
           persistedQuery: {
@@ -35,6 +35,10 @@ export const getSubscription = async (channel: string, channelId: string, twitch
   );
 
   const { tier: tierString } = data?.targetUser?.relationship?.subscriptionBenefit ?? {};
+  if (!tierString) {
+    return null;
+  }
+
   const tier = parseInt(tierString, 10);
 
   if (tier >= 3000) {

@@ -2,7 +2,6 @@ import { Test } from '@nestjs/testing';
 import { BusinessError } from 'src/util/business-error';
 import { AttendancesApplication } from './attendances.application';
 import { AttendancesController } from './attendances.controller';
-import { AttendDto } from './dtos/attend.dto';
 import { Attendance } from './entities/attendance.entity';
 
 describe('AttendancesController', () => {
@@ -26,21 +25,24 @@ describe('AttendancesController', () => {
 
   describe('onSubscriberChat', () => {
     it('구독자가 채팅을 칠 시 출석을 생성해야한다.', async () => {
+      const attendance = new Attendance();
+      attendance.twitchId = 'testviewer1';
+      attendance.attendedAt = new Date(2022, 11, 24, 20);
+      attendance.tier = 2;
+
       const sendMock = jest.fn();
-      application.attend = jest.fn();
+      application.attend = jest.fn().mockResolvedValue(attendance);
 
       const dto = {
         twitchId: 'testviewer1',
         username: '테스트시청자1',
         attendedAt: new Date(2022, 11, 24, 20),
-        tier: 2,
       };
 
       await controller.onSubscriberChat({
         twitchId: 'testviewer1',
         username: '테스트시청자1',
         attendedAt: new Date(2022, 11, 24, 20),
-        tier: 2,
         send: sendMock,
       });
 
@@ -56,14 +58,12 @@ describe('AttendancesController', () => {
         twitchId: 'testviewer1',
         username: '테스트시청자1',
         attendedAt: new Date(2022, 11, 24, 20),
-        tier: 2,
       };
 
       await controller.onSubscriberChat({
         twitchId: 'testviewer1',
         username: '테스트시청자1',
         attendedAt: new Date(2022, 11, 24, 20),
-        tier: 2,
         send: sendMock,
       });
 
