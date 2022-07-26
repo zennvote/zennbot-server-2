@@ -2,12 +2,12 @@ import axios from 'axios';
 
 const twitchGqlUrl = 'https://gql.twitch.tv/gql';
 
-const headers = {
-  Authorization: `OAuth ${process.env.TWITCH_GQL_CLIENT_AUTH}`,
-  'Client-Id': process.env.TWITCH_GQL_CLIENT_ID ?? '',
-};
-
 export const getSubscription = async (channel: string, channelId: string, twitchId: string) => {
+  const headers = {
+    Authorization: `OAuth ${process.env.TWITCH_GQL_CLIENT_AUTH}`,
+    'Client-Id': process.env.TWITCH_GQL_CLIENT_ID ?? '',
+  };
+
   const {
     data: [{ data }],
   } = await axios.post(
