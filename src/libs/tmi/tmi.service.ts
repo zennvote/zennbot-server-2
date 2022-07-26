@@ -1,10 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { MainLogger } from 'src/util/logger';
 import { Client } from 'tmi.js';
 import { TMI_CLIENT } from './tmi.types';
 
 @Injectable()
 export class TmiService {
+  private readonly logger = new MainLogger('TmiLogger');
+
   constructor(@Inject(TMI_CLIENT) private client: Client, private eventEmitter: EventEmitter2) {
     client.on('message', (channel, tags, fullMessage, self) => {
       if (self) {
@@ -21,12 +24,26 @@ export class TmiService {
         const [unformattedCommand, ...args] = message.split(' ');
         const command = unformattedCommand.slice(1);
 
+        const loggingSend = (response: string) => {
+          this.logger.http(`TMI Command - ${command}`, {
+            response,
+            channel,
+            tags,
+            args,
+            message,
+            displayName: tags['display-name'],
+            username: tags.username,
+            userId: tags['user-id'],
+          });
+          send(response);
+        };
+
         this.eventEmitter.emit(`command.${command}`, {
           channel,
           tags,
           args,
           message,
-          send,
+          send: loggingSend,
         });
       }
 

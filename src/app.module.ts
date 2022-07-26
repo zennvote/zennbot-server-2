@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as Joi from 'joi';
@@ -16,6 +16,7 @@ import { SettingsModule } from './app/settings/settings.module';
 import { IdolsModule } from './app/idols/idols.module';
 import { AttendancesModule } from './app/attendances/attendances.module';
 import { PrismaModule } from './libs/prisma/prisma.module';
+import { HttpLoggerMiddleware } from './util/http-logger-middleware';
 
 @Module({
   imports: [
@@ -73,4 +74,9 @@ import { PrismaModule } from './libs/prisma/prisma.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    console.log('consumer!!');
+    consumer.apply(HttpLoggerMiddleware).forRoutes('*');
+  }
+}

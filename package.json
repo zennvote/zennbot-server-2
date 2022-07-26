@@ -53,7 +53,8 @@
     "rxjs": "^7.2.0",
     "sqlite3": "^5.0.8",
     "swagger-ui-express": "^4.4.0",
-    "tmi.js": "^1.8.5"
+    "tmi.js": "^1.8.5",
+    "winston": "^3.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
