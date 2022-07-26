@@ -48,8 +48,10 @@ export class MainLogger extends ConsoleLogger {
   private printLog(level: LogLevel, originalMessage: any, ...params: any[]) {
     const { context, messages } = this.getContextAndMessages([originalMessage, ...params]);
     const [message, ...meta] = messages;
+    const time = new Date();
+    const timeString = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 
-    this.winstonLogger[level](`${message}`, { context, meta });
+    this.winstonLogger[level](`${timeString} : ${message}`, { context, meta, time });
   }
 
   private getContextAndMessages(args: unknown[]) {
