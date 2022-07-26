@@ -2,6 +2,8 @@ import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { isString } from 'class-validator';
 import * as winston from 'winston';
 
+type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug';
+
 @Injectable()
 export class MainLogger extends ConsoleLogger {
   private winstonLogger = winston.createLogger({
@@ -14,45 +16,40 @@ export class MainLogger extends ConsoleLogger {
     ],
   });
 
-  log(original: any, ...optionalParams: any[]) {
-    const { context, messages } = this.getContextAndMessages([original, ...optionalParams]);
-    const [message, ...meta] = messages;
-    super.log(original, ...optionalParams);
-    this.winstonLogger.info(`${message}`, { context, meta });
+  log(message: any, ...params: any[]) {
+    super.log(message, ...params);
+    this.printLog('info', message, ...params);
   }
 
-  error(original: any, ...optionalParams: any[]) {
-    const { context, messages } = this.getContextAndMessages([original, ...optionalParams]);
-    const [message, ...meta] = messages;
-    super.error(original, ...optionalParams);
-    this.winstonLogger.error(`${message}`, { context, meta });
+  error(message: any, ...params: any[]) {
+    super.error(message, ...params);
+    this.printLog('error', message, ...params);
   }
 
-  http(original: any, ...optionalParams: any[]) {
-    const { context, messages } = this.getContextAndMessages([original, ...optionalParams]);
-    const [message, ...meta] = messages;
-    this.winstonLogger.http(`${message}`, { context, meta });
+  http(message: any, ...params: any[]) {
+    this.printLog('http', message, ...params);
   }
 
-  warn(original: any, ...optionalParams: any[]) {
-    const { context, messages } = this.getContextAndMessages([original, ...optionalParams]);
-    const [message, ...meta] = messages;
-    super.warn(original, ...optionalParams);
-    this.winstonLogger.warn(`${message}`, { context, meta });
+  warn(message: any, ...params: any[]) {
+    super.warn(message, ...params);
+    this.printLog('warn', message, ...params);
   }
 
-  debug(original: any, ...optionalParams: any[]) {
-    const { context, messages } = this.getContextAndMessages([original, ...optionalParams]);
-    const [message, ...meta] = messages;
-    super.debug(original, ...optionalParams);
-    this.winstonLogger.debug(`${message}`, { context, meta });
+  debug(message: any, ...params: any[]) {
+    super.debug(message, ...params);
+    this.printLog('debug', message, ...params);
   }
 
-  verbose(original: any, ...optionalParams: any[]) {
-    const { context, messages } = this.getContextAndMessages([original, ...optionalParams]);
+  verbose(message: any, ...params: any[]) {
+    super.verbose(message, ...params);
+    this.printLog('verbose', message, ...params);
+  }
+
+  private printLog(level: LogLevel, originalMessage: any, ...params: any[]) {
+    const { context, messages } = this.getContextAndMessages([originalMessage, ...params]);
     const [message, ...meta] = messages;
-    super.verbose(original, ...optionalParams);
-    this.winstonLogger.verbose(`${message}`, { context, meta });
+
+    this.winstonLogger[level](`${message}`, { context, meta });
   }
 
   private getContextAndMessages(args: unknown[]) {
