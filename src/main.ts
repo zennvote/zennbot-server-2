@@ -1,10 +1,13 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { MainLogger } from './util/logger';
 import { setupSwagger } from './util/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new MainLogger(),
+  });
 
   app.enableCors({ origin: true, credentials: true });
   app.useGlobalPipes(new ValidationPipe());
