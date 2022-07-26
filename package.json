@@ -100,7 +100,7 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/{!(*.module),}.(t|j)s"
+      "app/**/{!(*.module),}.(t|j)s"
     ],
     "coveragePathIgnorePatterns": [
       "src/migrations/*",
