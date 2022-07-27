@@ -86,6 +86,12 @@ export class SongsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete('cooltimes')
+  async deleteCooltimeSongs() {
+    return await this.songsApplication.resetCooltimeSongs();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':index')
   async deleteSong(@Param('index') indexStr: string, @Query('refund') refundStr: string) {
     const isRefund = refundStr !== undefined;
@@ -144,11 +150,5 @@ export class SongsController {
   @ApiOkResponse({ type: [Song] })
   async getCooltimeSongs() {
     return await this.songsApplication.getCooltimeSongs();
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete('cooltimes')
-  async deleteCooltimeSongs() {
-    return await this.songsApplication.resetCooltimeSongs();
   }
 }
