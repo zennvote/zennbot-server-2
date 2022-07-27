@@ -1,6 +1,7 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { CacheModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import * as redisStore from 'cache-manager-redis-store';
 import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
@@ -53,6 +54,13 @@ import { HttpLoggerMiddleware } from './util/http-logger-middleware';
         password: process.env.TMI_PASSWORD,
       },
       channels: [process.env.TMI_CHANNEL ?? ''],
+    }),
+    CacheModule.register({
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      isGlobal: true,
+      ttl: 0,
     }),
     EventEmitterModule.forRoot(),
     ViewersModule,
