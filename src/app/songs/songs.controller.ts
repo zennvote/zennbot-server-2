@@ -62,7 +62,7 @@ export class SongsController {
     if (isBusinessError(result)) {
       switch (result.error) {
         case 'request-disabled':
-          return;
+          return payload.send('현재 신청곡을 받고있지 않습니다!');
         case 'viewer-not-exists':
           return payload.send('존재하지 않는 사용자입니다! 신규 등록을 요청해주세요');
         case 'in-cooltime':
@@ -73,6 +73,10 @@ export class SongsController {
     }
 
     const { requestType } = result;
+    if (RequestType.freemode) {
+      return payload.send(`🔔 골든벨🔔 ${username}님의 곡이 무료로 신청되었어요!`);
+    }
+
     const usedPointsString = requestType === RequestType.ticket ? '1장을' : '3개를';
 
     return payload.send(`${username}님의 ${requestType} ${usedPointsString} 사용하여 곡을 신청했어요!`);
