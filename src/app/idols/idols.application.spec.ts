@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { BusinessError, isBusinessError } from 'src/util/business-error';
+import { isBusinessError } from 'src/util/business-error';
 import { IdolsApplication } from './idols.application';
 import { Idol } from './idols.entity';
 import { IdolsService } from './idols.service';

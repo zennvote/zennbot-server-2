@@ -9,16 +9,16 @@ export enum RequestType {
 
 export default class Song {
   @ApiProperty()
-  title: string;
+    title: string;
 
   @ApiProperty()
-  requestor: string;
+    requestor: string;
 
   @ApiProperty()
-  requestorName: string;
+    requestorName: string;
 
   @ApiProperty({ enum: RequestType })
-  requestType: RequestType;
+    requestType: RequestType;
 
   constructor(title: string, requestor: string, requestorName: string, requestType: RequestType) {
     this.title = title;

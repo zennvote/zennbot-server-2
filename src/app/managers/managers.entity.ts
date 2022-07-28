@@ -3,10 +3,10 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class Manager {
   @ApiProperty()
-  id!: number;
+    id!: number;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  twitchId!: string;
+    twitchId!: string;
 }

@@ -1,4 +1,6 @@
-import { DiscoveryModule, DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
+import {
+  DiscoveryModule, DiscoveryService, MetadataScanner, Reflector,
+} from '@nestjs/core';
 import { DynamicModule, Module, OnApplicationBootstrap } from '@nestjs/common';
 
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
@@ -34,9 +36,11 @@ export class ManagerModule implements OnApplicationBootstrap {
     controllers
       .filter((wrapper) => wrapper.isDependencyTreeStatic())
       .filter(({ instance }) => instance && Object.getPrototypeOf(instance))
-      .forEach(({ instance }) => {
-        this.scanner.scanFromPrototype(instance, Object.getPrototypeOf(instance), this.registerManagerAuth(instance));
-      });
+      .forEach(({ instance }) => this.scanner.scanFromPrototype(
+        instance,
+        Object.getPrototypeOf(instance),
+        this.registerManagerAuth(instance),
+      ));
   }
 
   registerManagerAuth(instance: any) {
@@ -49,6 +53,7 @@ export class ManagerModule implements OnApplicationBootstrap {
       const methodRef = instance[methodName];
       const originMethod = (...args: unknown[]) => methodRef.call(instance, ...args);
 
+      // eslint-disable-next-line no-param-reassign
       instance[methodName] = async (...args: unknown[]) => {
         const [payload] = args as [CommandPayload | undefined, ...unknown[]];
 
@@ -64,7 +69,7 @@ export class ManagerModule implements OnApplicationBootstrap {
           }
         }
 
-        return await originMethod(...args);
+        return originMethod(...args);
       };
     };
   }

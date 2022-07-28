@@ -5,7 +5,10 @@ import { Idol } from './idols.entity';
 
 @Injectable()
 export class IdolsRepository {
-  constructor(private readonly sheetsService: SheetsService, private readonly configService: ConfigService) {}
+  constructor(
+    private readonly sheetsService: SheetsService,
+    private readonly configService: ConfigService,
+  ) {}
 
   private readonly sheetsRequest = {
     spreadsheetId: this.configService.get('IDOL_SHEETS_ID'),
@@ -32,10 +35,9 @@ export class IdolsRepository {
 
     const idols = rows
       .filter(
-        (row) =>
-          keyword === row.firstName ||
-          keyword === row.lastName ||
-          (row.firstName && keyword === `${row.firstName} ${row.lastName}`),
+        (row) => keyword === row.firstName
+          || keyword === row.lastName
+          || (row.firstName && keyword === `${row.firstName} ${row.lastName}`),
       )
       .map((row) => new Idol(row));
 

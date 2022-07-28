@@ -33,13 +33,27 @@ describe('AttendanceRepository', () => {
   describe('getRecentAttendance', () => {
     it('해당 유저의 가장 최신 출석을 반환해야 한다', async () => {
       await typeormRepository.save([
-        { id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1 },
-        { id: 2, twitchId: 'testviewer2', attendedAt: new Date(2022, 3, 25), tier: 1 },
-        { id: 3, twitchId: 'testviewer3', attendedAt: new Date(2022, 3, 25), tier: 1 },
-        { id: 4, twitchId: 'testviewer4', attendedAt: new Date(2022, 3, 25), tier: 1 },
-        { id: 5, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 26), tier: 1 },
-        { id: 6, twitchId: 'testviewer2', attendedAt: new Date(2022, 3, 26), tier: 1 },
-        { id: 7, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 27), tier: 1 },
+        {
+          id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1,
+        },
+        {
+          id: 2, twitchId: 'testviewer2', attendedAt: new Date(2022, 3, 25), tier: 1,
+        },
+        {
+          id: 3, twitchId: 'testviewer3', attendedAt: new Date(2022, 3, 25), tier: 1,
+        },
+        {
+          id: 4, twitchId: 'testviewer4', attendedAt: new Date(2022, 3, 25), tier: 1,
+        },
+        {
+          id: 5, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 26), tier: 1,
+        },
+        {
+          id: 6, twitchId: 'testviewer2', attendedAt: new Date(2022, 3, 26), tier: 1,
+        },
+        {
+          id: 7, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 27), tier: 1,
+        },
       ]);
 
       const result = await repository.getRecentAttendance('testviewer1');
@@ -58,12 +72,16 @@ describe('AttendanceRepository', () => {
     });
 
     it('출석 조회에 성공했다면 캐싱해야 한다.', async () => {
-      await typeormRepository.save({ id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1 });
+      await typeormRepository.save({
+        id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1,
+      });
 
       await repository.getRecentAttendance('testviewer1');
 
       const cached = await cacheManager.get('cache.getRecentAttendance.testviewer1');
-      expect(cached).toMatchObject({ id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1 });
+      expect(cached).toMatchObject({
+        id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1,
+      });
     });
 
     it('출석 조회에 실패했다면 null string을 캐싱해야 한다.', async () => {
@@ -92,7 +110,9 @@ describe('AttendanceRepository', () => {
 
     it('null string이 캐시되어있다면 null을 반환해야 한다', async () => {
       await cacheManager.set('cache.getRecentAttendance.testviewer1', 'null');
-      await typeormRepository.save({ id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1 });
+      await typeormRepository.save({
+        id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1,
+      });
 
       const result = await repository.getRecentAttendance('testviewer1');
 
@@ -135,9 +155,15 @@ describe('AttendanceRepository', () => {
   describe('getAttendances', () => {
     it('출석 정보를 시간순으로 조회할 수 있어야 한다', async () => {
       const datamodels = [
-        { id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1 },
-        { id: 2, twitchId: 'testviewer2', attendedAt: new Date(2022, 3, 26), tier: 2 },
-        { id: 3, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 27), tier: 1 },
+        {
+          id: 1, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 25), tier: 1,
+        },
+        {
+          id: 2, twitchId: 'testviewer2', attendedAt: new Date(2022, 3, 26), tier: 2,
+        },
+        {
+          id: 3, twitchId: 'testviewer1', attendedAt: new Date(2022, 3, 27), tier: 1,
+        },
       ];
       await typeormRepository.save(datamodels);
 

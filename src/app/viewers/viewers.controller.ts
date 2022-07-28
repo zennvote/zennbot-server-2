@@ -16,12 +16,12 @@ export class ViewersController {
   @Get()
   @ApiOkResponse({ type: [Viewer] })
   async getViewers() {
-    return await this.viewersService.getViewers();
+    return this.viewersService.getViewers();
   }
 
   @OnCommand('조각')
   async whoAmICommand(payload: CommandPayload) {
-    const twitchId = payload.tags['username'];
+    const twitchId = payload.tags.username;
     const username = payload.tags['display-name'];
 
     if (!twitchId || !username) {
@@ -57,9 +57,15 @@ export class ViewersController {
     }
 
     if (inputType === '곡') {
-      await this.viewersService.setPointsWithUsername(name, { ticket: viewer.ticket + point });
+      await this.viewersService.setPointsWithUsername(
+        name,
+        { ticket: viewer.ticket + point },
+      );
     } else {
-      await this.viewersService.setPointsWithUsername(name, { ticketPiece: viewer.ticketPiece + point });
+      await this.viewersService.setPointsWithUsername(
+        name,
+        { ticketPiece: viewer.ticketPiece + point },
+      );
     }
 
     if (point < 0) {

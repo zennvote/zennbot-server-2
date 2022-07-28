@@ -22,7 +22,7 @@ export class ManagersService {
     const manager = new Manager();
     manager.twitchId = createManagerDto.twitchId;
 
-    return await this.prisma.manager.create({ data: manager });
+    return this.prisma.manager.create({ data: manager });
   }
 
   async deleteManager(twitchId: string) {

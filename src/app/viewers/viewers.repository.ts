@@ -24,7 +24,9 @@ export class ViewersRepository {
   async find() {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
 
-    const viewers = rows.filter((row) => row.username).map((row) => this.rowToViewer(row));
+    const viewers = rows
+      .filter((row) => row.username)
+      .map((row) => ViewersRepository.rowToViewer(row));
 
     return viewers;
   }
@@ -35,14 +37,14 @@ export class ViewersRepository {
   async findOne(option: Partial<Viewer> = {}) {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
 
-    const row = rows.find((row) => {
-      return Object.entries(option).every(([key, value]) => row[key] === value);
-    });
+    const row = rows.find((row) => (
+      Object.entries(option).every(([key, value]) => row[key] === value)
+    ));
     if (!row) {
       return null;
     }
 
-    const viewer = this.rowToViewer(row);
+    const viewer = ViewersRepository.rowToViewer(row);
 
     return viewer;
   }
@@ -54,9 +56,7 @@ export class ViewersRepository {
   async findByTwitchIdAndUsername(username: string, twitchId: string) {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
 
-    const row = rows.find((row) => {
-      return row.username === username || row.twitchId === twitchId;
-    });
+    const row = rows.find((row) => row.username === username || row.twitchId === twitchId);
     if (!row) {
       return null;
     }
@@ -64,7 +64,7 @@ export class ViewersRepository {
       await this.sheetsService.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
 
-    const viewer = this.rowToViewer(row);
+    const viewer = ViewersRepository.rowToViewer(row);
 
     return viewer;
   }
@@ -79,7 +79,7 @@ export class ViewersRepository {
     return true;
   }
 
-  async update(option: Partial<Viewer> = {}, value: Partial<Viewer>): Promise<boolean> {
+  async update(option: Partial<Viewer>, value: Partial<Viewer>): Promise<boolean> {
     if (option.index !== undefined && Object.keys(option).length === 1) {
       await this.sheetsService.updateSheets(this.sheetsInfo, option.index, value);
       return true;
@@ -93,7 +93,7 @@ export class ViewersRepository {
     return true;
   }
 
-  private rowToViewer(row: ViewerRow) {
+  private static rowToViewer(row: ViewerRow) {
     if (!row.username) {
       return null;
     }

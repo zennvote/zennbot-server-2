@@ -5,5 +5,5 @@ export class User {
 
   @IsString()
   @IsNotEmpty()
-  username!: string;
+    username!: string;
 }

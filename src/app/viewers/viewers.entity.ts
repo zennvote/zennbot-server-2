@@ -11,22 +11,22 @@ export interface ViewerInitializer {
 
 export class Viewer {
   @ApiProperty()
-  index!: number;
+    index!: number;
 
   @ApiProperty()
-  username!: string;
+    username!: string;
 
   @ApiProperty()
-  twitchId?: string;
+    twitchId?: string;
 
   @ApiProperty()
-  ticket!: number;
+    ticket!: number;
 
   @ApiProperty()
-  ticketPiece!: number;
+    ticketPiece!: number;
 
   @ApiProperty({ nullable: true })
-  prefix?: string;
+    prefix?: string;
 
   constructor(initializer?: ViewerInitializer) {
     if (initializer) {

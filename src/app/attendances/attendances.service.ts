@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AttendancesService {
-  isAttendable(recentAttendedAt: Date) {
+  static isAttendable(recentAttendedAt: Date) {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();

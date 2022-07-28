@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ViewersModule } from 'src/app/viewers/viewers.module';
+import { SettingsModule } from 'src/app/settings/settings.module';
 import { SongsService } from './songs.service';
 import { SongsController } from './songs.controller';
-import { ViewersModule } from 'src/app/viewers/viewers.module';
 import { SongsRepository } from './songs.repository';
 import { SongsApplication } from './songs.application';
-import { SettingsModule } from 'src/app/settings/settings.module';
 
 @Module({
   imports: [ViewersModule, SettingsModule],

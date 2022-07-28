@@ -20,6 +20,8 @@ export class IdolsController {
           return payload.send('해당하는 아이돌이 두명 이상 존재합니다. 성과 이름을 둘 다 입력해주세요!');
         case 'no-result':
           return payload.send('해당하는 아이돌이 없습니다!');
+        default:
+          return;
       }
     }
 
@@ -34,6 +36,8 @@ export class IdolsController {
       switch (idols.error) {
         case 'no-result':
           return payload.send('오늘 생일인 아이돌이 없습니다!');
+        default:
+          return;
       }
     }
     const idolNames = idols.map((idol) => idol.fullName).join(', ');

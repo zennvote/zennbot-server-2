@@ -10,7 +10,9 @@ export class HttpLoggerMiddleware implements NestMiddleware {
     const userAgent = req.get('user-agent') || '';
     res.on('finish', () => {
       const { statusCode } = res;
-      this.logger.http(`${method} ${statusCode} - ${originalUrl}`, { ip, method, originalUrl, userAgent, statusCode });
+      this.logger.http(`${method} ${statusCode} - ${originalUrl}`, {
+        ip, method, originalUrl, userAgent, statusCode,
+      });
     });
     next();
   }

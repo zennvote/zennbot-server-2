@@ -2,7 +2,6 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { SubscriberChatPayload } from 'src/libs/tmi/tmi.types';
 import { isBusinessError } from 'src/util/business-error';
-import { getSubscription } from 'src/util/twitch';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AttendancesApplication } from './attendances.application';
 import { AttendDto } from './dtos/attend.dto';

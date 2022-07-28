@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
+import { BusinessError } from 'src/util/business-error';
 import { SongsRepository } from './songs.repository';
 import Song from './songs.entity';
 import { CreateSongDto } from './dtos/create-song.dto';
-import { BusinessError } from 'src/util/business-error';
 
 @Injectable()
 export class SongsService {
@@ -34,7 +34,8 @@ export class SongsService {
     }
 
     await this.songsRepository.setRequestedSongs(remainSongs);
-    await this.songsRepository.setCooltimeSongs([...cooltimeSongs, song].slice(cooltimeSongs.length >= 4 ? 1 : 0));
+    await this.songsRepository.setCooltimeSongs([...cooltimeSongs, song]
+      .slice(cooltimeSongs.length >= 4 ? 1 : 0));
 
     return song;
   }
@@ -48,11 +49,15 @@ export class SongsService {
     const cooltimeSongs = await this.songsRepository.getCooltimeSongs();
     const requestedSongs = await this.songsRepository.getRequestedSongs();
 
-    return [...cooltimeSongs, ...requestedSongs].slice(-4).some((song) => song.requestor === twitchId);
+    return [...cooltimeSongs, ...requestedSongs]
+      .slice(-4)
+      .some((song) => song.requestor === twitchId);
   }
 
   async enqueueSong(createSongDto: CreateSongDto): Promise<Song> {
-    const { title, requestor, requestorName, requestType } = createSongDto;
+    const {
+      title, requestor, requestorName, requestType,
+    } = createSongDto;
     const song = new Song(title, requestor, requestorName, requestType);
 
     const requestedSongs = await this.songsRepository.getRequestedSongs();

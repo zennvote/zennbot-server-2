@@ -32,13 +32,17 @@ export class ViewersService {
     return usernameViewer;
   }
 
-  async setPoints(twitchId: string, username: string, points: { ticket?: number; ticketPiece?: number }) {
+  async setPoints(
+    twitchId: string,
+    username: string,
+    points: { ticket?: number; ticketPiece?: number },
+  ) {
     const twitchIdResult = await this.setPointsWithTwitchId(twitchId, points);
     if (twitchIdResult) {
       return twitchIdResult;
     }
 
-    return await this.setPointsWithUsername(username, points);
+    return this.setPointsWithUsername(username, points);
   }
 
   async refundPoints(twitchId: string, requestType: RequestType.ticket | RequestType.ticketPiece) {
@@ -60,7 +64,7 @@ export class ViewersService {
     if (ticket >= 1) {
       await this.viewersRepository.update({ index }, { ticket: ticket - 1 });
       return RequestType.ticket;
-    } else if (ticketPiece >= 3) {
+    } if (ticketPiece >= 3) {
       await this.viewersRepository.update({ index }, { ticketPiece: ticketPiece - 3 });
       return RequestType.ticketPiece;
     }
@@ -68,11 +72,11 @@ export class ViewersService {
   }
 
   async setPointsWithTwitchId(twitchId: string, points: { ticket?: number; ticketPiece?: number }) {
-    return await this.viewersRepository.update({ twitchId }, points);
+    return this.viewersRepository.update({ twitchId }, points);
   }
 
   async setPointsWithUsername(username: string, points: { ticket?: number; ticketPiece?: number }) {
-    return await this.viewersRepository.update({ username }, points);
+    return this.viewersRepository.update({ username }, points);
   }
 
   getViewerByTwitchId(twitchId: string) {

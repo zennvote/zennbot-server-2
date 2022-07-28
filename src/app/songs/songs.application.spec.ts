@@ -56,10 +56,14 @@ describe('SongsApplication', () => {
 
   describe('requestSong', () => {
     const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
-    const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
+    const viewer = new Viewer({
+      index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7,
+    });
 
     beforeEach(() => {
-      const viewer = new Viewer({ index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7 });
+      const viewer = new Viewer({
+        index: 1, username: '테스트유저', ticket: 10, ticketPiece: 7,
+      });
       const song = new Song('test song', 'testviewer', '테스트유저', RequestType.ticket);
 
       service.isCooltime = jest.fn().mockResolvedValue(false);
@@ -69,7 +73,7 @@ describe('SongsApplication', () => {
       settingsService.getSetting = jest.fn(async (key: string) => {
         if (key === 'request-enabled') {
           return new FlagSetting({ key: 'request-enabled', value: true });
-        } else if (key === 'goldenbell-enabled') {
+        } if (key === 'goldenbell-enabled') {
           return new FlagSetting({ key: 'goldenbell-enabled', value: false });
         }
         return null;
@@ -90,7 +94,7 @@ describe('SongsApplication', () => {
       settingsService.getSetting = jest.fn(async (key: string) => {
         if (key === 'request-enabled') {
           return new FlagSetting({ key: 'request-enabled', value: false });
-        } else if (key === 'goldenbell-enabled') {
+        } if (key === 'goldenbell-enabled') {
           return new FlagSetting({ key: 'goldenbell-enabled', value: false });
         }
         return null;
@@ -112,7 +116,7 @@ describe('SongsApplication', () => {
       settingsService.getSetting = jest.fn(async (key: string) => {
         if (key === 'request-enabled') {
           return new FlagSetting({ key: 'request-enabled', value: true });
-        } else if (key === 'goldenbell-enabled') {
+        } if (key === 'goldenbell-enabled') {
           return new FlagSetting({ key: 'goldenbell-enabled', value: true });
         }
         return null;

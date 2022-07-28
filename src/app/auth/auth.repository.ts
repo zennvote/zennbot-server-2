@@ -22,7 +22,7 @@ export class AuthRepository {
     return result;
   }
 
-  async createPassword(password: string): Promise<string> {
-    return await bcrypt.hash(password, salt);
+  static async createPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, salt);
   }
 }

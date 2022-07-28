@@ -5,10 +5,10 @@ type SettingValue = boolean;
 export class Setting {
   @IsString()
   @IsNotEmpty()
-  key!: string;
+    key!: string;
 
   @IsNotEmpty()
-  value!: SettingValue;
+    value!: SettingValue;
 }
 
 export class FlagSetting extends Setting {

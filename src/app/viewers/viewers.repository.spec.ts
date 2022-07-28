@@ -24,9 +24,15 @@ describe('ViewersRepository', () => {
   describe('find', () => {
     it('유저 목록을 반환해야 한다.', async () => {
       sheetsService.getSheets = jest.fn().mockResolvedValue([
-        { index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1' },
-        { index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2' },
-        { index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix' },
+        {
+          index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1',
+        },
+        {
+          index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2',
+        },
+        {
+          index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix',
+        },
       ]);
 
       const result = await repository.find();
@@ -47,9 +53,15 @@ describe('ViewersRepository', () => {
   describe('findOne', () => {
     it('조건에 맞는 유저를 찾을 수 있어야 한다', async () => {
       sheetsService.getSheets = jest.fn().mockResolvedValue([
-        { index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1' },
-        { index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2' },
-        { index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix' },
+        {
+          index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1',
+        },
+        {
+          index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2',
+        },
+        {
+          index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix',
+        },
       ]);
 
       const result = await repository.findOne({ twitchId: 'viewer2' });
@@ -64,9 +76,15 @@ describe('ViewersRepository', () => {
 
     it('조건에 맞는 유저가 없을 시 null을 반환한다.', async () => {
       sheetsService.getSheets = jest.fn().mockResolvedValue([
-        { index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1' },
-        { index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2' },
-        { index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix' },
+        {
+          index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1',
+        },
+        {
+          index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2',
+        },
+        {
+          index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix',
+        },
       ]);
 
       const result = await repository.findOne({ twitchId: 'non-exist-user' });
@@ -84,23 +102,36 @@ describe('ViewersRepository', () => {
 
     it('조건에 맞는 유저를 업데이트할 수 있어야 한다', async () => {
       sheetsService.getSheets = jest.fn().mockResolvedValue([
-        { index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1' },
-        { index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2' },
-        { index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix' },
+        {
+          index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1',
+        },
+        {
+          index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2',
+        },
+        {
+          index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix',
+        },
       ]);
       sheetsService.updateSheets = jest.fn();
 
       const result = await repository.update({ twitchId: 'viewer2' }, { ticket: 10, ticketPiece: 15 });
 
-      expect(sheetsService.updateSheets).toBeCalledWith(sheetsInfo, 2, { ticket: 10, ticketPiece: 15 });
+      expect(sheetsService.updateSheets)
+        .toBeCalledWith(sheetsInfo, 2, { ticket: 10, ticketPiece: 15 });
       expect(result).toBe(true);
     });
 
     it('조건에 맞는 유저가 없을 시 false를 반환한다', async () => {
       sheetsService.getSheets = jest.fn().mockResolvedValue([
-        { index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1' },
-        { index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2' },
-        { index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix' },
+        {
+          index: 1, twitchId: 'viewer1', username: '시청자1', ticketPiece: '3', ticket: '1',
+        },
+        {
+          index: 2, twitchId: 'viewer2', username: '시청자2', ticketPiece: '6', ticket: '2',
+        },
+        {
+          index: 3, twitchId: 'viewer3', username: '시청자3', ticketPiece: '9', ticket: '3', prefix: 'sample prefix',
+        },
       ]);
       sheetsService.updateSheets = jest.fn();
 
@@ -116,7 +147,8 @@ describe('ViewersRepository', () => {
 
       const result = await repository.update({ index: 3 }, { ticket: 10, ticketPiece: 15 });
 
-      expect(sheetsService.updateSheets).toBeCalledWith(sheetsInfo, 3, { ticket: 10, ticketPiece: 15 });
+      expect(sheetsService.updateSheets)
+        .toBeCalledWith(sheetsInfo, 3, { ticket: 10, ticketPiece: 15 });
       expect(sheetsService.getSheets).toBeCalledTimes(0);
       expect(result).toBe(true);
     });

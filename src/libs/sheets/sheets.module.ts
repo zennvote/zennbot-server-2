@@ -18,7 +18,10 @@ export class SheetsModule {
     const clientFactory = {
       provide: SHEETS_CLIENT,
       useFactory: async () => {
-        if ((!option.credentials && !option.credentialsPath) || (!option.token && !option.tokenPath)) {
+        if (
+          (!option.credentials && !option.credentialsPath)
+          || (!option.token && !option.tokenPath)
+        ) {
           throw new Error('No token for tmi.js');
         }
 

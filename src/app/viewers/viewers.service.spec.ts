@@ -3,15 +3,14 @@ import { Viewer } from './viewers.entity';
 import { ViewersRepository } from './viewers.repository';
 import { ViewersService } from './viewers.service';
 
-const getTestViewer = () =>
-  new Viewer({
-    index: 1,
-    ticket: 10,
-    ticketPiece: 8,
-    username: '테스트유저1',
-    twitchId: 'testuser1',
-    prefix: '테스트 칭호',
-  });
+const getTestViewer = () => new Viewer({
+  index: 1,
+  ticket: 10,
+  ticketPiece: 8,
+  username: '테스트유저1',
+  twitchId: 'testuser1',
+  prefix: '테스트 칭호',
+});
 
 describe('ViewersService', () => {
   let service: ViewersService;
@@ -54,9 +53,8 @@ describe('ViewersService', () => {
         const { twitchId } = viewer ?? {};
         if (twitchId) {
           return expected;
-        } else {
-          return null;
         }
+        return null;
       });
       repository.update = jest.fn();
 
@@ -73,9 +71,8 @@ describe('ViewersService', () => {
         const { username } = viewer ?? {};
         if (username) {
           return expected;
-        } else {
-          return null;
         }
+        return null;
       });
       repository.update = jest.fn();
 
@@ -85,7 +82,10 @@ describe('ViewersService', () => {
       expect(repository.findOne).toBeCalledTimes(2);
       expect(repository.findOne).nthCalledWith(1, { twitchId: 'testuser1' });
       expect(repository.findOne).nthCalledWith(2, { username: '테스트유저1' });
-      expect(repository.update).toBeCalledWith({ index: 1 }, { twitchId: 'testuser1' });
+      expect(repository.update).toBeCalledWith(
+        { index: 1 },
+        { twitchId: 'testuser1' },
+      );
     });
 
     it('username이 변경된 유저를 조회할 경우 갱신해야 한다', async () => {
@@ -94,9 +94,8 @@ describe('ViewersService', () => {
         const { twitchId } = viewer ?? {};
         if (twitchId) {
           return expected;
-        } else {
-          return null;
         }
+        return null;
       });
       repository.update = jest.fn();
 
@@ -105,7 +104,10 @@ describe('ViewersService', () => {
       expect(result).toMatchObject(expected);
       expect(repository.findOne).toHaveBeenCalledTimes(1);
       expect(repository.findOne).nthCalledWith(1, { twitchId: 'testuser1' });
-      expect(repository.update).toBeCalledWith({ index: 1 }, { username: 'changedname' });
+      expect(repository.update).toBeCalledWith(
+        { index: 1 },
+        { username: 'changedname' },
+      );
     });
 
     it('존재하지 않는 유저는 null을 반환해야 한다', async () => {
@@ -125,33 +127,57 @@ describe('ViewersService', () => {
     it('twitchId로 사용자의 포인트를 설정해야 한다', async () => {
       repository.update = jest.fn(async ({ twitchId } = {}) => !!twitchId);
 
-      const result = await service.setPoints('testuser1', '테스트유저1', { ticket: 10, ticketPiece: 12 });
+      const result = await service.setPoints('testuser1', '테스트유저1', {
+        ticket: 10,
+        ticketPiece: 12,
+      });
 
       expect(result).toBe(true);
       expect(repository.update).toBeCalledTimes(1);
-      expect(repository.update).toBeCalledWith({ twitchId: 'testuser1' }, { ticket: 10, ticketPiece: 12 });
+      expect(repository.update).toBeCalledWith(
+        { twitchId: 'testuser1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
     });
 
     it('twitchId로 사용자를 조회할 수 없으면 username으로 포인트를 설정해야 한다', async () => {
       repository.update = jest.fn(async ({ username } = {}) => !!username);
 
-      const result = await service.setPoints('testuser1', '테스트유저1', { ticket: 10, ticketPiece: 12 });
+      const result = await service.setPoints('testuser1', '테스트유저1', {
+        ticket: 10,
+        ticketPiece: 12,
+      });
 
       expect(result).toBe(true);
       expect(repository.update).toBeCalledTimes(2);
-      expect(repository.update).toBeCalledWith({ twitchId: 'testuser1' }, { ticket: 10, ticketPiece: 12 });
-      expect(repository.update).toBeCalledWith({ username: '테스트유저1' }, { ticket: 10, ticketPiece: 12 });
+      expect(repository.update).toBeCalledWith(
+        { twitchId: 'testuser1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
+      expect(repository.update).toBeCalledWith(
+        { username: '테스트유저1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
     });
 
     it('존재하지 않는 유저는 false를 반환해야 한다.', async () => {
       repository.update = jest.fn(async () => false);
 
-      const result = await service.setPoints('testuser1', '테스트유저1', { ticket: 10, ticketPiece: 12 });
+      const result = await service.setPoints('testuser1', '테스트유저1', {
+        ticket: 10,
+        ticketPiece: 12,
+      });
 
       expect(result).toBe(false);
       expect(repository.update).toBeCalledTimes(2);
-      expect(repository.update).toBeCalledWith({ twitchId: 'testuser1' }, { ticket: 10, ticketPiece: 12 });
-      expect(repository.update).toBeCalledWith({ username: '테스트유저1' }, { ticket: 10, ticketPiece: 12 });
+      expect(repository.update).toBeCalledWith(
+        { twitchId: 'testuser1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
+      expect(repository.update).toBeCalledWith(
+        { username: '테스트유저1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
     });
   });
 
@@ -159,19 +185,31 @@ describe('ViewersService', () => {
     it('twitchId로 사용자의 포인트를 설정해야 한다', async () => {
       repository.update = jest.fn(async () => true);
 
-      const result = await service.setPointsWithTwitchId('testuser1', { ticket: 10, ticketPiece: 12 });
+      const result = await service.setPointsWithTwitchId('testuser1', {
+        ticket: 10,
+        ticketPiece: 12,
+      });
 
       expect(result).toBe(true);
-      expect(repository.update).toBeCalledWith({ twitchId: 'testuser1' }, { ticket: 10, ticketPiece: 12 });
+      expect(repository.update).toBeCalledWith(
+        { twitchId: 'testuser1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
     });
 
     it('존재하지 않는 유저는 false를 반환해야 한다.', async () => {
       repository.update = jest.fn(async () => false);
 
-      const result = await service.setPointsWithTwitchId('testuser1', { ticket: 10, ticketPiece: 12 });
+      const result = await service.setPointsWithTwitchId('testuser1', {
+        ticket: 10,
+        ticketPiece: 12,
+      });
 
       expect(result).toBe(false);
-      expect(repository.update).toBeCalledWith({ twitchId: 'testuser1' }, { ticket: 10, ticketPiece: 12 });
+      expect(repository.update).toBeCalledWith(
+        { twitchId: 'testuser1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
     });
   });
 
@@ -179,19 +217,31 @@ describe('ViewersService', () => {
     it('username으로 사용자의 포인트를 설정해야 한다', async () => {
       repository.update = jest.fn(async () => true);
 
-      const result = await service.setPointsWithUsername('테스트유저1', { ticket: 10, ticketPiece: 12 });
+      const result = await service.setPointsWithUsername('테스트유저1', {
+        ticket: 10,
+        ticketPiece: 12,
+      });
 
       expect(result).toBe(true);
-      expect(repository.update).toBeCalledWith({ username: '테스트유저1' }, { ticket: 10, ticketPiece: 12 });
+      expect(repository.update).toBeCalledWith(
+        { username: '테스트유저1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
     });
 
     it('존재하지 않는 유저는 false를 반환해야 한다.', async () => {
       repository.update = jest.fn(async () => false);
 
-      const result = await service.setPointsWithUsername('테스트유저1', { ticket: 10, ticketPiece: 12 });
+      const result = await service.setPointsWithUsername('테스트유저1', {
+        ticket: 10,
+        ticketPiece: 12,
+      });
 
       expect(result).toBe(false);
-      expect(repository.update).toBeCalledWith({ username: '테스트유저1' }, { ticket: 10, ticketPiece: 12 });
+      expect(repository.update).toBeCalledWith(
+        { username: '테스트유저1' },
+        { ticket: 10, ticketPiece: 12 },
+      );
     });
   });
 

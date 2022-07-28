@@ -1,14 +1,12 @@
 import { AttendancesService } from './attendances.service';
 
 describe('Attendance', () => {
-  const service = new AttendancesService();
-
   describe('isAttendable', () => {
     it('최근 출석이 오늘 이전이라면 출석이 가능하다', () => {
       const now = new Date(2022, 11, 24, 20);
       jest.useFakeTimers().setSystemTime(now);
 
-      const result = service.isAttendable(new Date(2022, 11, 23, 20));
+      const result = AttendancesService.isAttendable(new Date(2022, 11, 23, 20));
 
       expect(result).toBeTrue();
     });
@@ -17,7 +15,7 @@ describe('Attendance', () => {
       const now = new Date(2022, 11, 24, 20);
       jest.useFakeTimers().setSystemTime(now);
 
-      const result = service.isAttendable(new Date(2022, 11, 24, 8));
+      const result = AttendancesService.isAttendable(new Date(2022, 11, 24, 8));
 
       expect(result).toBeTrue();
     });
@@ -26,7 +24,7 @@ describe('Attendance', () => {
       const now = new Date(2022, 11, 24, 20);
       jest.useFakeTimers().setSystemTime(now);
 
-      const result = service.isAttendable(new Date(2022, 11, 24, 11));
+      const result = AttendancesService.isAttendable(new Date(2022, 11, 24, 11));
 
       expect(result).toBeFalse();
     });
@@ -35,7 +33,7 @@ describe('Attendance', () => {
       const now = new Date(2022, 11, 24, 6);
       jest.useFakeTimers().setSystemTime(now);
 
-      const result = service.isAttendable(new Date(2022, 11, 23, 11));
+      const result = AttendancesService.isAttendable(new Date(2022, 11, 23, 11));
 
       expect(result).toBeFalse();
     });

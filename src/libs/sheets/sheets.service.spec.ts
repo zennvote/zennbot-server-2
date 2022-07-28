@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import 'jest-extended';
-import { sheets_v4 } from 'googleapis';
+import { sheets_v4 as sheetsV4 } from 'googleapis';
 import { SheetsService } from './sheets.service';
 import { SHEETS_CLIENT } from './sheets.types';
 
@@ -12,15 +12,18 @@ describe('SheetsService', () => {
   };
 
   let service: SheetsService;
-  let sheetsClient: sheets_v4.Sheets;
+  let sheetsClient: sheetsV4.Sheets;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SheetsService, { provide: SHEETS_CLIENT, useValue: { spreadsheets: { values: {} } } }],
+      providers: [
+        SheetsService,
+        { provide: SHEETS_CLIENT, useValue: { spreadsheets: { values: {} } } },
+      ],
     }).compile();
 
     service = module.get<SheetsService>(SheetsService);
-    sheetsClient = module.get<sheets_v4.Sheets>(SHEETS_CLIENT);
+    sheetsClient = module.get<sheetsV4.Sheets>(SHEETS_CLIENT);
   });
 
   it('should be defined', () => {
@@ -41,9 +44,15 @@ describe('SheetsService', () => {
       const result = await service.getSheets(sheetsRequest);
 
       expect(result).toMatchObject([
-        { index: 0, twitchId: 'testviewer1', username: '테스트유저1', ticketPiece: '14', ticket: '9' },
-        { index: 1, twitchId: 'testviewer2', username: '테스트유저2', ticketPiece: '0', ticket: '7', prefix: '테스트' },
-        { index: 2, twitchId: 'testviewer3', username: '테스트유저3', ticketPiece: '3', ticket: '13' },
+        {
+          index: 0, twitchId: 'testviewer1', username: '테스트유저1', ticketPiece: '14', ticket: '9',
+        },
+        {
+          index: 1, twitchId: 'testviewer2', username: '테스트유저2', ticketPiece: '0', ticket: '7', prefix: '테스트',
+        },
+        {
+          index: 2, twitchId: 'testviewer3', username: '테스트유저3', ticketPiece: '3', ticket: '13',
+        },
       ]);
     });
   });

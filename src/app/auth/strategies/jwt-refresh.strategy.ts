@@ -14,6 +14,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwtRefresh')
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async validate(req: Request, payload: { username: string; sub: string }) {
     return { id: payload.sub };
   }

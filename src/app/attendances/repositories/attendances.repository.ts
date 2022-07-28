@@ -16,7 +16,7 @@ export class AttendancesRepository {
 
     if (cached === 'null') {
       return null;
-    } else if (cached) {
+    } if (cached) {
       const attendance = new Attendance();
       attendance.twitchId = cached.twitchId;
       attendance.attendedAt = cached.attendedAt;
@@ -36,7 +36,7 @@ export class AttendancesRepository {
       return null;
     }
 
-    const attendance = this.convertDataModel(result);
+    const attendance = AttendancesRepository.convertDataModel(result);
 
     return attendance;
   }
@@ -46,7 +46,7 @@ export class AttendancesRepository {
       orderBy: { attendedAt: 'desc' },
     });
 
-    const attendances = result.map((datamodel) => this.convertDataModel(datamodel));
+    const attendances = result.map(AttendancesRepository.convertDataModel);
 
     return attendances;
   }
@@ -70,7 +70,7 @@ export class AttendancesRepository {
     return createdAttendance;
   }
 
-  private convertDataModel({ twitchId, attendedAt, tier }: AttendanceDataModel) {
+  private static convertDataModel({ twitchId, attendedAt, tier }: AttendanceDataModel) {
     const attendance = new Attendance();
     attendance.twitchId = twitchId;
     attendance.attendedAt = attendedAt;

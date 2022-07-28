@@ -4,6 +4,8 @@ export enum SettingType {
 
 export class SettingDataModel {
   key!: string;
+
   type!: SettingType;
+
   flagValue!: boolean;
 }

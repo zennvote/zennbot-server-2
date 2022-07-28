@@ -16,7 +16,7 @@ export class SongsApplication {
   ) {}
 
   async getSongs() {
-    return await this.songsService.getSongs();
+    return this.songsService.getSongs();
   }
 
   getSongsObserver() {
@@ -54,7 +54,7 @@ export class SongsApplication {
       requestType = result;
     }
 
-    return await this.songsService.enqueueSong({
+    return this.songsService.enqueueSong({
       title,
       requestor: twitchId,
       requestorName: username,
@@ -63,7 +63,7 @@ export class SongsApplication {
   }
 
   async createSongManually(title: string) {
-    return await this.songsService.enqueueSong({
+    return this.songsService.enqueueSong({
       title,
       requestor: 'producerzenn',
       requestorName: '프로듀서_젠',
@@ -81,7 +81,9 @@ export class SongsApplication {
       return deleted;
     }
 
-    if (isRefund && (deleted.requestType === RequestType.ticket || deleted.requestType === RequestType.ticketPiece)) {
+    if (isRefund && (
+      deleted.requestType === RequestType.ticket || deleted.requestType === RequestType.ticketPiece
+    )) {
       const result = await this.viewersService.refundPoints(deleted.requestor, deleted.requestType);
 
       if (isBusinessError(result)) {
@@ -93,22 +95,22 @@ export class SongsApplication {
   }
 
   async skipSong() {
-    return await this.songsService.skipSong();
+    return this.songsService.skipSong();
   }
 
   async reindexSongs(indexes: number[]) {
-    return await this.songsService.reindexSong(indexes);
+    return this.songsService.reindexSong(indexes);
   }
 
   async resetRequestedSongs() {
-    return await this.songsService.resetRequestedSongs();
+    return this.songsService.resetRequestedSongs();
   }
 
   async getCooltimeSongs() {
-    return await this.songsService.getCooltimeSongs();
+    return this.songsService.getCooltimeSongs();
   }
 
   async resetCooltimeSongs() {
-    return await this.songsService.resetCooltimeSongs();
+    return this.songsService.resetCooltimeSongs();
   }
 }

@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { sheets_v4 } from 'googleapis';
+import { sheets_v4 as sheetsV4 } from 'googleapis';
 import { SheetsRequest, SHEETS_CLIENT } from './sheets.types';
 
 const s = (value: number) => String.fromCharCode(value);
 
 @Injectable()
 export class SheetsService {
-  constructor(@Inject(SHEETS_CLIENT) private readonly client: sheets_v4.Sheets) {}
+  constructor(@Inject(SHEETS_CLIENT) private readonly client: sheetsV4.Sheets) {}
 
   public async getSheets<T extends ReadonlyArray<string>>(request: SheetsRequest<T>) {
     type RowType = { [key in T[number]]: string | undefined };
@@ -30,9 +30,9 @@ export class SheetsService {
       index,
       ...(Object.fromEntries(
         row
-          .map((value, keyIndex) => {
-            return columns[keyIndex] ? [columns[keyIndex], value as string] : undefined;
-          })
+          .map((value, keyIndex) => (
+            columns[keyIndex] ? [columns[keyIndex], value as string] : undefined
+          ))
           .filter((value): value is string[] => value !== undefined),
       ) as RowType),
     }));
@@ -50,7 +50,9 @@ export class SheetsService {
     const startColumn = request.startColumn ?? 1;
     const startRow = request.startRow ?? 1;
 
-    const columnTable = Object.fromEntries(columns.map((column, index) => [column, s(64 + startColumn + index)]));
+    const columnTable = Object.fromEntries(
+      columns.map((column, columnIndex) => [column, s(64 + startColumn + columnIndex)]),
+    );
 
     const data = Object
       .entries(values)

@@ -64,7 +64,7 @@ describe('AttendancesApplication', () => {
       repository.saveAttendance = jest.fn();
       viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
       viewersRepository.save = jest.fn();
-      service.isAttendable = jest.fn().mockReturnValue(true);
+      AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
       viewer.getAttendanceReward = jest.fn();
       twitch.getSubscription.resolves(2);
 
@@ -94,7 +94,7 @@ describe('AttendancesApplication', () => {
       repository.saveAttendance = jest.fn();
       viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
       viewersRepository.save = jest.fn();
-      service.isAttendable = jest.fn().mockReturnValue(false);
+      AttendancesService.isAttendable = jest.fn().mockReturnValue(false);
       viewer.getAttendanceReward = jest.fn();
       twitch.getSubscription.resolves(2);
 
@@ -119,7 +119,7 @@ describe('AttendancesApplication', () => {
       repository.saveAttendance = jest.fn();
       viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
       viewersRepository.save = jest.fn();
-      service.isAttendable = jest.fn().mockReturnValue(true);
+      AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
       viewer.getAttendanceReward = jest.fn();
       twitch.getSubscription.resolves(null);
 
@@ -143,7 +143,7 @@ describe('AttendancesApplication', () => {
       repository.saveAttendance = jest.fn();
       viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(null);
       viewersRepository.save = jest.fn();
-      service.isAttendable = jest.fn().mockReturnValue(true);
+      AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
       twitch.getSubscription.resolves(2);
 
       const result = await application.attend({

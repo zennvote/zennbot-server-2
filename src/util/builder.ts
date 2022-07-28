@@ -15,8 +15,8 @@ interface NoParamConstructor<T> {
 export abstract class Builder<T> {
   public object: T;
 
-  constructor(ctor: NoParamConstructor<T>) {
-    this.object = new ctor();
+  constructor(Ctor: NoParamConstructor<T>) {
+    this.object = new Ctor();
   }
 
   build(): T {

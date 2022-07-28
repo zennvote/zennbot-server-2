@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Post,
@@ -18,18 +19,18 @@ import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';
 import { isBusinessError } from 'src/util/business-error';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 
+import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import Song, { RequestType } from './songs.entity';
 import { SongsApplication } from './songs.application';
-import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 
 @Controller('songs')
 export class SongsController {
-  constructor(private readonly songsApplication: SongsApplication) {}
+  constructor(private readonly songsApplication: SongsApplication) { }
 
   @Get()
   @ApiOkResponse({ type: [Song] })
   async getSongs() {
-    return await this.songsApplication.getSongs();
+    return this.songsApplication.getSongs();
   }
 
   @Sse('sse')
@@ -41,7 +42,9 @@ export class SongsController {
   @Sse('cooltimes/sse')
   @ApiOkResponse({ type: [Song] })
   getCooltimeSongsSse() {
-    return this.songsApplication.getCooltimeSongsObserver().pipe(map((data) => JSON.stringify(data)));
+    return this.songsApplication
+      .getCooltimeSongsObserver()
+      .pipe(map((data) => JSON.stringify(data)));
   }
 
   @OnCommand('신청')
@@ -51,7 +54,7 @@ export class SongsController {
     }
 
     const title = payload.args.join(' ');
-    const twitchId = payload.tags['username'];
+    const twitchId = payload.tags.username;
     const username = payload.tags['display-name'];
 
     if (!twitchId || !username) {
@@ -69,6 +72,8 @@ export class SongsController {
           return payload.send('아직 곡을 신청할 수 없어요! 이전에 신청한 곡 이후로 최소 4개의 곡이 신청되어야 해요.');
         case 'no-points':
           return payload.send('포인트가 부족해요! !젠 조각 명령어로 보유 포인트를 확인해주세요~');
+        default:
+          return;
       }
     }
 
@@ -86,13 +91,13 @@ export class SongsController {
   @Post()
   @ApiCreatedResponse({ type: Song })
   async createSong(@Body('title') title: string) {
-    return await this.songsApplication.createSongManually(title);
+    return this.songsApplication.createSongManually(title);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('cooltimes')
   async deleteCooltimeSongs() {
-    return await this.songsApplication.resetCooltimeSongs();
+    return this.songsApplication.resetCooltimeSongs();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -101,7 +106,7 @@ export class SongsController {
     const isRefund = refundStr !== undefined;
     const index = parseInt(indexStr, 10);
 
-    if (isNaN(index) || index < 0) {
+    if (Number.isNaN(index) || index < 0) {
       throw new BadRequestException();
     }
 
@@ -112,6 +117,8 @@ export class SongsController {
           throw new NotFoundException();
         case 'out-of-range':
           throw new BadRequestException();
+        default:
+          throw new InternalServerErrorException();
       }
     }
 
@@ -147,12 +154,12 @@ export class SongsController {
   @Post('reset')
   @ApiOkResponse()
   async resetSongs() {
-    return await this.songsApplication.resetRequestedSongs();
+    return this.songsApplication.resetRequestedSongs();
   }
 
   @Get('cooltimes')
   @ApiOkResponse({ type: [Song] })
   async getCooltimeSongs() {
-    return await this.songsApplication.getCooltimeSongs();
+    return this.songsApplication.getCooltimeSongs();
   }
 }

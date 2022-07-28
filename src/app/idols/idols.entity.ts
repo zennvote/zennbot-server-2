@@ -14,19 +14,41 @@ export interface IdolInitializer {
   introduction?: string;
 }
 
+const parseInformation = (value: string | undefined, invalid: string | null, prefix = '', suffix = '') => {
+  if (!value) {
+    return undefined;
+  }
+  if (value === '불명') {
+    return invalid || undefined;
+  }
+  return suffix + value + prefix;
+};
+
 export class Idol {
   firstName!: string;
+
   lastName!: string;
+
   company!: string;
+
   unit!: string;
+
   type!: string;
+
   birthday!: string;
+
   age!: string;
+
   height!: string;
+
   weight!: string;
+
   threeSize!: string;
+
   hometown!: string;
+
   cv!: string;
+
   introduction!: string;
 
   constructor(initializer?: IdolInitializer) {
@@ -77,13 +99,3 @@ export class Idol {
       .join(' / ');
   }
 }
-
-const parseInformation = (value: string | undefined, invalid: string | null, prefix = '', suffix = '') => {
-  if (!value) {
-    return undefined;
-  }
-  if (value === '불명') {
-    return invalid ? invalid : undefined;
-  }
-  return suffix + value + prefix;
-};

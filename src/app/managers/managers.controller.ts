@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body, Controller, Delete, Get, Param, Post, UseGuards,
+} from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';
 import { CreateManagerDto } from './dto/create-manager.dto';
@@ -13,17 +15,17 @@ export class ManagersController {
   @Get()
   @ApiOkResponse({ type: [Manager] })
   async getManagers() {
-    return await this.managersService.getManagers();
+    return this.managersService.getManagers();
   }
 
   @Post()
   @ApiCreatedResponse({ type: Manager })
   async createManager(@Body() body: CreateManagerDto) {
-    return await this.managersService.createManager(body);
+    return this.managersService.createManager(body);
   }
 
   @Delete(':twitchId')
   async deleteManager(@Param('twitchId') twitchId: string) {
-    return await this.managersService.deleteManager(twitchId);
+    return this.managersService.deleteManager(twitchId);
   }
 }

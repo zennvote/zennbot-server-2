@@ -7,7 +7,7 @@ import { FlagSetting } from './entities/setting.entity';
 
 @Injectable()
 export class SettingsRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getSetting(key: string) {
     const result = await this.prisma.setting.findFirst({ where: { key } });
@@ -22,6 +22,8 @@ export class SettingsRepository {
         flagSetting.key = result.key;
         flagSetting.value = result.flagValue ?? false;
         return flagSetting;
+      default:
+        return null;
     }
   }
 

@@ -5,11 +5,11 @@ import * as twitch from 'src/util/twitch';
 
 import { ViewersRepository } from 'src/app/viewers/viewers.repository';
 
+import { ConfigService } from '@nestjs/config';
 import { AttendancesService } from './attendances.service';
 import { AttendancesRepository } from './repositories/attendances.repository';
 import { Attendance } from './entities/attendance.entity';
 import { AttendDto } from './dtos/attend.dto';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AttendancesApplication {
@@ -30,7 +30,7 @@ export class AttendancesApplication {
 
     const recent = await this.attendancesRepository.getRecentAttendance(attendDto.twitchId);
 
-    if (recent && !this.attendancesService.isAttendable(recent.attendedAt)) {
+    if (recent && !AttendancesService.isAttendable(recent.attendedAt)) {
       return new BusinessError('already-attended');
     }
 
@@ -44,7 +44,10 @@ export class AttendancesApplication {
     attendance.attendedAt = attendDto.attendedAt;
     attendance.tier = tier;
 
-    const viewer = await this.viewersRepository.findByTwitchIdAndUsername(attendDto.username, attendDto.twitchId);
+    const viewer = await this.viewersRepository.findByTwitchIdAndUsername(
+      attendDto.username,
+      attendDto.twitchId,
+    );
     if (!viewer) {
       return new BusinessError('user-not-found');
     }

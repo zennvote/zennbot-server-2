@@ -1,4 +1,6 @@
-import { Body, Controller, Get, NotFoundException, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body, Controller, Get, NotFoundException, Param, Patch, UseGuards,
+} from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';

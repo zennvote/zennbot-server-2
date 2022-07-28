@@ -1,4 +1,6 @@
-import { CacheModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  CacheModule, MiddlewareConsumer, Module, NestModule,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as redisStore from 'cache-manager-redis-store';
@@ -83,8 +85,8 @@ import { HttpLoggerMiddleware } from './util/http-logger-middleware';
   providers: [AppService],
 })
 export class AppModule implements NestModule {
+  // eslint-disable-next-line class-methods-use-this
   configure(consumer: MiddlewareConsumer) {
-    console.log('consumer!!');
     consumer.apply(HttpLoggerMiddleware).forRoutes('*');
   }
 }

@@ -23,23 +23,21 @@ describe('ViewersController', () => {
 
   describe('GET /viewers', () => {
     it('사용자 목록을 반환해야 한다', async () => {
-      service.getViewers = jest.fn(async (): Promise<Viewer[]> => {
-        return [
-          new Viewer({
-            index: 1,
-            ticket: 10,
-            ticketPiece: 12,
-            username: '테스트유저1',
-          }),
-          new Viewer({
-            index: 2,
-            ticket: 0,
-            ticketPiece: 20,
-            username: '테스트유저2',
-            prefix: 'test-prefix',
-          }),
-        ];
-      });
+      service.getViewers = jest.fn(async (): Promise<Viewer[]> => [
+        new Viewer({
+          index: 1,
+          ticket: 10,
+          ticketPiece: 12,
+          username: '테스트유저1',
+        }),
+        new Viewer({
+          index: 2,
+          ticket: 0,
+          ticketPiece: 20,
+          username: '테스트유저2',
+          prefix: 'test-prefix',
+        }),
+      ]);
 
       const result = await controller.getViewers();
 
@@ -64,14 +62,13 @@ describe('ViewersController', () => {
   describe('COMMAND 조각', () => {
     it('사용자의 정보를 반환해야 한다.', async () => {
       service.getViewer = jest.fn(
-        async (): Promise<Viewer> =>
-          new Viewer({
-            index: 1,
-            ticket: 10,
-            ticketPiece: 12,
-            username: '테스트유저1',
-            prefix: 'test-prefix',
-          }),
+        async (): Promise<Viewer> => new Viewer({
+          index: 1,
+          ticket: 10,
+          ticketPiece: 12,
+          username: '테스트유저1',
+          prefix: 'test-prefix',
+        }),
       );
       const sendFn = jest.fn();
 
@@ -114,14 +111,13 @@ describe('ViewersController', () => {
     it('헤당 유저에게 티켓을 지급해야 한다', async () => {
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
-        async () =>
-          new Viewer({
-            index: 1,
-            ticket: 10,
-            ticketPiece: 12,
-            username: '테스트유저1',
-            twitchId: 'testuser1',
-          }),
+        async () => new Viewer({
+          index: 1,
+          ticket: 10,
+          ticketPiece: 12,
+          username: '테스트유저1',
+          twitchId: 'testuser1',
+        }),
       );
       const sendFn = jest.fn();
 
@@ -144,14 +140,13 @@ describe('ViewersController', () => {
     it('헤당 유저에게 조각을 지급해야 한다', async () => {
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
-        async () =>
-          new Viewer({
-            index: 1,
-            ticket: 10,
-            ticketPiece: 12,
-            username: '테스트유저1',
-            twitchId: 'testuser1',
-          }),
+        async () => new Viewer({
+          index: 1,
+          ticket: 10,
+          ticketPiece: 12,
+          username: '테스트유저1',
+          twitchId: 'testuser1',
+        }),
       );
       const sendFn = jest.fn();
 
@@ -174,14 +169,13 @@ describe('ViewersController', () => {
     it('갯수를 생략할 시 1개를 지급해야 한다.', async () => {
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
-        async () =>
-          new Viewer({
-            index: 1,
-            ticket: 10,
-            ticketPiece: 12,
-            username: '테스트유저1',
-            twitchId: 'testuser1',
-          }),
+        async () => new Viewer({
+          index: 1,
+          ticket: 10,
+          ticketPiece: 12,
+          username: '테스트유저1',
+          twitchId: 'testuser1',
+        }),
       );
       const sendFn = jest.fn();
 
@@ -204,14 +198,13 @@ describe('ViewersController', () => {
     it('음수를 입력할 시 포인트를 차감해야 한다.', async () => {
       service.setPointsWithUsername = jest.fn(async () => true);
       service.getViewerByUsername = jest.fn(
-        async () =>
-          new Viewer({
-            index: 1,
-            ticket: 10,
-            ticketPiece: 12,
-            username: '테스트유저1',
-            twitchId: 'testuser1',
-          }),
+        async () => new Viewer({
+          index: 1,
+          ticket: 10,
+          ticketPiece: 12,
+          username: '테스트유저1',
+          twitchId: 'testuser1',
+        }),
       );
       const sendFn = jest.fn();
 
