@@ -80,11 +80,6 @@ jobs:
                 "name": "Branch",
                 "value": "${{ steps.branch-name.outputs.branch }}",
                 "inline": true
-              },
-              {
-                "name": "Version",
-                "value": "${{ github.event.after }}",
-                "inline": false
               }
             ],
             "footer": {
@@ -112,11 +107,6 @@ jobs:
                 "name": "Branch",
                 "value": "${{ steps.branch-name.outputs.branch }}",
                 "inline": true
-              },
-              {
-                "name": "Version",
-                "value": "${{ github.event.after }}",
-                "inline": false
               }
             ],
             "footer": {
