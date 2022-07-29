@@ -8,14 +8,15 @@ datasource db {
 }
 
 model Attendance {
-  id         Int      @id @default(autoincrement())
-  twitchId   String   @db.VarChar
-  attendedAt DateTime @db.Timestamp(6)
-  tier       Int
-
-  @@map("attendance")
+  id            Int      @id @default(autoincrement())
+  twitchId      String   @db.VarChar
+  attendedAt    DateTime @db.Timestamp(6)
+  broadcastedAt String   @db.VarChar
+  tier          Int
 
   @@unique([twitchId, attendedAt], map: "IDX_88afafaccbb967eda0db4d9bd4")
+  @@index([broadcastedAt])
+  @@map("attendance")
 }
 
 model Manager {
