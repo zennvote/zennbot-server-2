@@ -6,7 +6,7 @@ import { ViewersRepository } from './viewers.repository';
 
 @Injectable()
 export class ViewersService {
-  constructor(private viewersRepository: ViewersRepository) {}
+  constructor(private viewersRepository: ViewersRepository) { }
 
   getViewers() {
     return this.viewersRepository.find();
@@ -30,6 +30,18 @@ export class ViewersService {
     this.viewersRepository.update({ index: usernameViewer.index }, { twitchId });
 
     return usernameViewer;
+  }
+
+  async createViewer(username: string, twitchId?: string) {
+    const viewer = new Viewer({
+      index: 0,
+      ticket: 1,
+      ticketPiece: 3,
+      username,
+      twitchId,
+    });
+
+    await this.viewersRepository.create(viewer);
   }
 
   async setPoints(
