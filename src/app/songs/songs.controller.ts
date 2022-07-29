@@ -78,7 +78,7 @@ export class SongsController {
     }
 
     const { requestType } = result;
-    if (RequestType.freemode) {
+    if (requestType === RequestType.freemode) {
       return payload.send(`🔔 골든벨🔔 ${username}님의 곡이 무료로 신청되었어요!`);
     }
 
