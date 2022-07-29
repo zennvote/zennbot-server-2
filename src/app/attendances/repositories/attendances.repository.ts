@@ -43,7 +43,7 @@ export class AttendancesRepository {
 
   async getAttendances(): Promise<Attendance[]> {
     const result = await this.prisma.attendance.findMany({
-      orderBy: { broadcastedAt: 'desc', attendedAt: 'desc' },
+      orderBy: [{ broadcastedAt: 'desc' }, { attendedAt: 'desc' }],
     });
 
     const attendances = result.map(AttendancesRepository.convertDataModel);
