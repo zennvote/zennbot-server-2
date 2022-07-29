@@ -85,4 +85,19 @@ describe('AttendancesController', () => {
       expect(result).toBe(attendances);
     });
   });
+
+  describe('getAttendances', () => {
+    it('출석을 조회할 수 있어야 한다', async () => {
+      const attendances = [new Attendance(), new Attendance(), new Attendance()];
+      attendances[0].attendedAt = new Date(2022, 11, 24, 20);
+      attendances[1].attendedAt = new Date(2022, 11, 24, 21);
+      attendances[2].attendedAt = new Date(2022, 11, 25, 2);
+      application.getAttendanceOfBroadcast = jest.fn().mockResolvedValueOnce(attendances);
+
+      const result = await controller.getAttendanceOfBroadcast('2022-11-24');
+
+      expect(result).toBe(attendances);
+      expect(application.getAttendanceOfBroadcast).toBeCalledWith('2022-11-24');
+    });
+  });
 });

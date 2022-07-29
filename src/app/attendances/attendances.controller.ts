@@ -1,4 +1,6 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller, Get, Param, UseGuards,
+} from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { SubscriberChatPayload } from 'src/libs/tmi/tmi.types';
 import { isBusinessError } from 'src/util/business-error';
@@ -30,6 +32,14 @@ export class AttendancesController {
   @UseGuards(JwtAuthGuard)
   async getAttendances() {
     const result = await this.attendancesApplication.getAttendances();
+
+    return result;
+  }
+
+  @Get(':broadcasted_at')
+  @UseGuards(JwtAuthGuard)
+  async getAttendanceOfBroadcast(@Param() broadcastedAt: string) {
+    const result = await this.attendancesApplication.getAttendanceOfBroadcast(broadcastedAt);
 
     return result;
   }

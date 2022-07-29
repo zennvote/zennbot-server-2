@@ -65,4 +65,12 @@ export class AttendancesApplication {
 
     return attendances;
   }
+
+  async getAttendanceOfBroadcast(broadcastedAt: string) {
+    const attendances = await this.attendancesRepository.getAttendancesByBroadcastedAt(
+      broadcastedAt,
+    );
+
+    return attendances;
+  }
 }

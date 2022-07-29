@@ -1,14 +1,14 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import { Attendance as PrismaAttendance } from '@prisma/client';
 
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 
 import { Attendance } from '../entities/attendance.entity';
-import { AttendanceDataModel } from './attendance.datamodel';
 
 @Injectable()
 export class AttendancesRepository {
-  constructor(private prisma: PrismaService, @Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(private prisma: PrismaService, @Inject(CACHE_MANAGER) private cacheManager: Cache) { }
 
   async getRecentAttendance(twitchId: string): Promise<Attendance | null> {
     const cacheKey = `cache.getRecentAttendance.${twitchId}`;
@@ -43,6 +43,17 @@ export class AttendancesRepository {
 
   async getAttendances(): Promise<Attendance[]> {
     const result = await this.prisma.attendance.findMany({
+      orderBy: { broadcastedAt: 'desc', attendedAt: 'desc' },
+    });
+
+    const attendances = result.map(AttendancesRepository.convertDataModel);
+
+    return attendances;
+  }
+
+  async getAttendancesByBroadcastedAt(broadcastedAt: string) {
+    const result = await this.prisma.attendance.findMany({
+      where: { broadcastedAt },
       orderBy: { attendedAt: 'desc' },
     });
 
@@ -57,6 +68,7 @@ export class AttendancesRepository {
         twitchId: attendance.twitchId,
         attendedAt: attendance.attendedAt,
         tier: attendance.tier,
+        broadcastedAt: attendance.broadcastedAt,
       },
     });
 
@@ -66,15 +78,22 @@ export class AttendancesRepository {
     createdAttendance.twitchId = created.twitchId;
     createdAttendance.attendedAt = created.attendedAt;
     createdAttendance.tier = created.tier;
+    createdAttendance.broadcastedAt = created.broadcastedAt;
 
     return createdAttendance;
   }
 
-  private static convertDataModel({ twitchId, attendedAt, tier }: AttendanceDataModel) {
+  private static convertDataModel({
+    twitchId,
+    attendedAt,
+    tier,
+    broadcastedAt,
+  }: PrismaAttendance) {
     const attendance = new Attendance();
     attendance.twitchId = twitchId;
     attendance.attendedAt = attendedAt;
     attendance.tier = tier;
+    attendance.broadcastedAt = broadcastedAt;
 
     return attendance;
   }
