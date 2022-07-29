@@ -93,6 +93,10 @@ export class ViewersRepository {
     return true;
   }
 
+  async create(viewer: Viewer) {
+    await this.sheetsService.appendRow(this.sheetsInfo, viewer);
+  }
+
   private static rowToViewer(row: ViewerRow) {
     if (!row.username) {
       return null;

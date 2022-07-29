@@ -6,7 +6,7 @@ const s = (value: number) => String.fromCharCode(value);
 
 @Injectable()
 export class SheetsService {
-  constructor(@Inject(SHEETS_CLIENT) private readonly client: sheetsV4.Sheets) {}
+  constructor(@Inject(SHEETS_CLIENT) private readonly client: sheetsV4.Sheets) { }
 
   public async getSheets<T extends ReadonlyArray<string>>(request: SheetsRequest<T>) {
     type RowType = { [key in T[number]]: string | undefined };
@@ -65,6 +65,25 @@ export class SheetsService {
     await this.client.spreadsheets.values.batchUpdate({
       spreadsheetId,
       requestBody: { data, valueInputOption: 'RAW' },
+    });
+  }
+
+  public async appendRow<T extends ReadonlyArray<string>>(
+    request: SheetsRequest<T>,
+    values: { [key in T[number]]?: any },
+  ) {
+    const { spreadsheetId, columns } = request;
+    const sheetsName = request.sheetsName ?? '';
+    const startColumn = request.startColumn ?? 1;
+
+    const value = [columns.map((column) => values[column])];
+
+    await this.client.spreadsheets.values.append({
+      spreadsheetId,
+      range: `${sheetsName}!${s(64 + startColumn)}:${s(64 + startColumn + columns.length)}`,
+      includeValuesInResponse: true,
+      valueInputOption: 'RAW',
+      requestBody: { values: value },
     });
   }
 }
