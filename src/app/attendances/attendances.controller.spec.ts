@@ -92,7 +92,7 @@ describe('AttendancesController', () => {
       attendances[0].attendedAt = new Date(2022, 11, 24, 20);
       attendances[1].attendedAt = new Date(2022, 11, 24, 21);
       attendances[2].attendedAt = new Date(2022, 11, 25, 2);
-      application.getAttendances = jest.fn().mockResolvedValueOnce(attendances);
+      application.getAttendanceOfBroadcast = jest.fn().mockResolvedValueOnce(attendances);
 
       const result = await controller.getAttendanceOfBroadcast('2022-11-24');
 
