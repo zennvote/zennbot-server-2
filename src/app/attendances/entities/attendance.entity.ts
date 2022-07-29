@@ -3,5 +3,7 @@ export class Attendance {
 
   attendedAt!: Date;
 
+  broadcastedAt!: string;
+
   tier!: number;
 }
