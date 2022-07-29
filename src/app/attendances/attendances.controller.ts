@@ -38,7 +38,7 @@ export class AttendancesController {
 
   @Get(':broadcasted_at')
   @UseGuards(JwtAuthGuard)
-  async getAttendanceOfBroadcast(@Param() broadcastedAt: string) {
+  async getAttendanceOfBroadcast(@Param('broadcasted_at') broadcastedAt: string) {
     const result = await this.attendancesApplication.getAttendanceOfBroadcast(broadcastedAt);
 
     return result;
