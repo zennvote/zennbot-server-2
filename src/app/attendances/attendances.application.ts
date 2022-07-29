@@ -39,10 +39,7 @@ export class AttendancesApplication {
       return new BusinessError('subscription-not-found');
     }
 
-    const attendance = new Attendance();
-    attendance.twitchId = attendDto.twitchId;
-    attendance.attendedAt = attendDto.attendedAt;
-    attendance.tier = tier;
+    const attendance = new Attendance({ ...attendDto, tier });
 
     const viewer = await this.viewersRepository.findByTwitchIdAndUsername(
       attendDto.username,

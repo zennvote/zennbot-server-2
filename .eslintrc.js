@@ -42,6 +42,7 @@ module.exports = {
     'import/no-cycle': 'off',
     'no-case-declarations': 'off',
     'max-classes-per-file': 'off',
+    'no-underscore-dangle': 'off',
     'no-shadow': 'off',
     'consistent-return': 'off',
     'no-useless-constructor': 'off',

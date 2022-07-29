@@ -17,10 +17,7 @@ export class AttendancesRepository {
     if (cached === 'null') {
       return null;
     } if (cached) {
-      const attendance = new Attendance();
-      attendance.twitchId = cached.twitchId;
-      attendance.attendedAt = cached.attendedAt;
-      attendance.tier = cached.tier;
+      const attendance = new Attendance(cached);
 
       return attendance;
     }
@@ -74,26 +71,13 @@ export class AttendancesRepository {
 
     await this.cacheManager.del(`cache.getRecentAttendance.${attendance.twitchId}`);
 
-    const createdAttendance = new Attendance();
-    createdAttendance.twitchId = created.twitchId;
-    createdAttendance.attendedAt = created.attendedAt;
-    createdAttendance.tier = created.tier;
-    createdAttendance.broadcastedAt = created.broadcastedAt;
+    const createdAttendance = new Attendance(created);
 
     return createdAttendance;
   }
 
-  private static convertDataModel({
-    twitchId,
-    attendedAt,
-    tier,
-    broadcastedAt,
-  }: PrismaAttendance) {
-    const attendance = new Attendance();
-    attendance.twitchId = twitchId;
-    attendance.attendedAt = attendedAt;
-    attendance.tier = tier;
-    attendance.broadcastedAt = broadcastedAt;
+  private static convertDataModel(datamodel: PrismaAttendance) {
+    const attendance = new Attendance(datamodel);
 
     return attendance;
   }
