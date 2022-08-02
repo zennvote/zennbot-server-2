@@ -20,6 +20,7 @@ import { IdolsModule } from './app/idols/idols.module';
 import { AttendancesModule } from './app/attendances/attendances.module';
 import { PrismaModule } from './libs/prisma/prisma.module';
 import { HttpLoggerMiddleware } from './util/http-logger-middleware';
+import { GameModule } from './app/game/game.module';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { HttpLoggerMiddleware } from './util/http-logger-middleware';
     SettingsModule,
     IdolsModule,
     AttendancesModule,
+    GameModule,
     PrismaModule,
   ],
   controllers: [AppController],
