@@ -5,12 +5,14 @@ import * as Sinon from 'sinon';
 import { BusinessError } from 'src/util/business-error';
 import * as originalTwitch from 'src/util/twitch';
 
-import { Viewer } from '../viewers/viewers.entity';
-import { ViewersRepository } from '../viewers/viewers.repository';
+import { viewerFactory } from 'src/app/viewers/entities/viewer.factory';
+import { ViewersRepository } from 'src/app/viewers/viewers.repository';
+
+import { attendanceFactory } from './entities/attendance.factory';
+import { AttendancesRepository } from './repositories/attendances.repository';
 import { AttendancesApplication } from './attendances.application';
 import { AttendancesService } from './attendances.service';
-import { Attendance } from './entities/attendance.entity';
-import { AttendancesRepository } from './repositories/attendances.repository';
+import { Viewer } from '../viewers/viewers.entity';
 
 describe('AttendancesApplication', () => {
   let application: AttendancesApplication;
@@ -37,6 +39,8 @@ describe('AttendancesApplication', () => {
     viewersRepository = module.get(ViewersRepository);
     configService = module.get(ConfigService);
     twitch = Sinon.stub(originalTwitch);
+
+    configService.get = jest.fn((key) => key);
   });
 
   afterEach(() => Sinon.restore());
@@ -50,114 +54,115 @@ describe('AttendancesApplication', () => {
     expect(configService).toBeDefined();
   });
 
-  // describe('attend', () => {
-  //   beforeEach(() => {
-  //     configService.get = jest.fn((key) => key);
-  //   });
+  describe('attend', () => {
+    let viewer: Viewer;
 
-  //   it('출석을 등록하고 포인트를 지급해야 한다', async () => {
-  //     const recentAttendance = new Attendance();
-  //     recentAttendance.attendedAt = new Date(2022, 11, 24);
-  //     const viewer = new Viewer();
+    beforeEach(() => {
+      viewer = viewerFactory.indexed(1).build();
+      repository.getRecentAttendance = jest.fn().mockReturnValue(null);
+      repository.saveAttendance = jest.fn();
+      viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
+      viewersRepository.save = jest.fn();
+      twitch.getSubscription.resolves(2);
+    });
 
-  //     repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
-  //     repository.saveAttendance = jest.fn();
-  //     viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
-  //     viewersRepository.save = jest.fn();
-  //     AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
-  //     viewer.getAttendanceReward = jest.fn();
-  //     twitch.getSubscription.resolves(2);
+    it('출석을 등록하고 포인트를 지급해야 한다', async () => {
+      const { ticketPiece } = viewer;
+      const result = await application.attend({
+        twitchId: 'testviewer1',
+        username: '테스트시청자1',
+        attendedAt: new Date(2022, 11, 24, 22),
+      });
 
-  //     await application.attend({
-  //       twitchId: 'testviewer1',
-  //       username: '테스트시청자1',
-  //       attendedAt: new Date(2022, 11, 25),
-  //     });
+      const expected = attendanceFactory.build({
+        attendedAt: new Date(2022, 11, 24, 22),
+        broadcastedAt: '2022-11-24',
+        twitchId: 'testviewer1',
+        tier: 2,
+      });
+      const expectedViewer = viewerFactory.indexed(1).build({
+        ticketPiece: ticketPiece + 6,
+      });
 
-  //     const expected = new Attendance();
-  //     expected.twitchId = 'testviewer1';
-  //     expected.attendedAt = new Date(2022, 11, 25);
-  //     expected.tier = 2;
+      expect(result).not.toBeInstanceOf(BusinessError);
+      expect(repository.saveAttendance).toBeCalledWith(expected);
+      expect(viewersRepository.save).toBeCalledWith(expectedViewer);
+      expect(twitch.getSubscription.calledWith('TMI_CHANNEL', 'TMI_CHANNEL_ID', 'testviewer1'));
+    });
 
-  //     expect(viewer.getAttendanceReward).toBeCalledWith(2);
-  //     expect(viewersRepository.save).toBeCalledWith(viewer);
-  //     expect(repository.saveAttendance).toBeCalledWith(expected);
-  //     expect(twitch.getSubscription.calledWith('TMI_CHANNEL', 'TMI_CHANNEL_ID', 'testviewer1'));
-  //   });
+    // it('출석이 불가능한 경우 에러를 발생시킨다', async () => {
+    //   const recentAttendance = new Attendance();
+    //   recentAttendance.attendedAt = new Date(2022, 11, 24);
+    //   const viewer = new Viewer();
 
-  //   it('출석이 불가능한 경우 에러를 발생시킨다', async () => {
-  //     const recentAttendance = new Attendance();
-  //     recentAttendance.attendedAt = new Date(2022, 11, 24);
-  //     const viewer = new Viewer();
+    //   repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
+    //   repository.saveAttendance = jest.fn();
+    //   viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
+    //   viewersRepository.save = jest.fn();
+    //   AttendancesService.isAttendable = jest.fn().mockReturnValue(false);
+    //   viewer.getAttendanceReward = jest.fn();
+    //   twitch.getSubscription.resolves(2);
 
-  //     repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
-  //     repository.saveAttendance = jest.fn();
-  //     viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
-  //     viewersRepository.save = jest.fn();
-  //     AttendancesService.isAttendable = jest.fn().mockReturnValue(false);
-  //     viewer.getAttendanceReward = jest.fn();
-  //     twitch.getSubscription.resolves(2);
+    //   const result = await application.attend({
+    //     twitchId: 'testviewer1',
+    //     username: '테스트시청자1',
+    //     attendedAt: new Date(2022, 11, 25),
+    //   });
 
-  //     const result = await application.attend({
-  //       twitchId: 'testviewer1',
-  //       username: '테스트시청자1',
-  //       attendedAt: new Date(2022, 11, 25),
-  //     });
+    //   expect(result).toBeInstanceOf(BusinessError);
+    //   expect(result).toHaveProperty('error', 'already-attended');
+    //   expect(viewersRepository.save).not.toBeCalled();
+    //   expect(repository.saveAttendance).not.toBeCalled();
+    // });
 
-  //     expect(result).toBeInstanceOf(BusinessError);
-  //     expect(result).toHaveProperty('error', 'already-attended');
-  //     expect(viewersRepository.save).not.toBeCalled();
-  //     expect(repository.saveAttendance).not.toBeCalled();
-  //   });
+    // it('출석 정보 조회에 실패할 경우 에러를 발생시킨다', async () => {
+    //   const recentAttendance = new Attendance();
+    //   recentAttendance.attendedAt = new Date(2022, 11, 24);
+    //   const viewer = new Viewer();
 
-  //   it('출석 정보 조회에 실패할 경우 에러를 발생시킨다', async () => {
-  //     const recentAttendance = new Attendance();
-  //     recentAttendance.attendedAt = new Date(2022, 11, 24);
-  //     const viewer = new Viewer();
+    //   repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
+    //   repository.saveAttendance = jest.fn();
+    //   viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
+    //   viewersRepository.save = jest.fn();
+    //   AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
+    //   viewer.getAttendanceReward = jest.fn();
+    //   twitch.getSubscription.resolves(null);
 
-  //     repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
-  //     repository.saveAttendance = jest.fn();
-  //     viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
-  //     viewersRepository.save = jest.fn();
-  //     AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
-  //     viewer.getAttendanceReward = jest.fn();
-  //     twitch.getSubscription.resolves(null);
+    //   const result = await application.attend({
+    //     twitchId: 'testviewer1',
+    //     username: '테스트시청자1',
+    //     attendedAt: new Date(2022, 11, 25),
+    //   });
 
-  //     const result = await application.attend({
-  //       twitchId: 'testviewer1',
-  //       username: '테스트시청자1',
-  //       attendedAt: new Date(2022, 11, 25),
-  //     });
+    //   expect(result).toBeInstanceOf(BusinessError);
+    //   expect(result).toHaveProperty('error', 'subscription-not-found');
+    //   expect(viewersRepository.save).not.toBeCalled();
+    //   expect(repository.saveAttendance).not.toBeCalled();
+    // });
 
-  //     expect(result).toBeInstanceOf(BusinessError);
-  //     expect(result).toHaveProperty('error', 'subscription-not-found');
-  //     expect(viewersRepository.save).not.toBeCalled();
-  //     expect(repository.saveAttendance).not.toBeCalled();
-  //   });
+    // it('출석 포인트를 지급할 시청자 정보가 없을 경우 에러를 발생시킨다', async () => {
+    //   const recentAttendance = new Attendance();
+    //   recentAttendance.attendedAt = new Date(2022, 11, 24);
 
-  //   it('출석 포인트를 지급할 시청자 정보가 없을 경우 에러를 발생시킨다', async () => {
-  //     const recentAttendance = new Attendance();
-  //     recentAttendance.attendedAt = new Date(2022, 11, 24);
+    //   repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
+    //   repository.saveAttendance = jest.fn();
+    //   viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(null);
+    //   viewersRepository.save = jest.fn();
+    //   AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
+    //   twitch.getSubscription.resolves(2);
 
-  //     repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
-  //     repository.saveAttendance = jest.fn();
-  //     viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(null);
-  //     viewersRepository.save = jest.fn();
-  //     AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
-  //     twitch.getSubscription.resolves(2);
+    //   const result = await application.attend({
+    //     twitchId: 'testviewer1',
+    //     username: '테스트시청자1',
+    //     attendedAt: new Date(2022, 11, 25),
+    //   });
 
-  //     const result = await application.attend({
-  //       twitchId: 'testviewer1',
-  //       username: '테스트시청자1',
-  //       attendedAt: new Date(2022, 11, 25),
-  //     });
-
-  //     expect(result).toBeInstanceOf(BusinessError);
-  //     expect(result).toHaveProperty('error', 'user-not-found');
-  //     expect(viewersRepository.save).not.toBeCalled();
-  //     expect(repository.saveAttendance).not.toBeCalled();
-  //   });
-  // });
+    //   expect(result).toBeInstanceOf(BusinessError);
+    //   expect(result).toHaveProperty('error', 'user-not-found');
+    //   expect(viewersRepository.save).not.toBeCalled();
+    //   expect(repository.saveAttendance).not.toBeCalled();
+    // });
+  });
 
   // describe('getAttendances', () => {
   //   it('출석 정보를 조회할 수 있어야 한다', async () => {
