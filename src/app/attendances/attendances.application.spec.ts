@@ -11,12 +11,10 @@ import { ViewersRepository } from 'src/app/viewers/viewers.repository';
 import { attendanceFactory } from './entities/attendance.factory';
 import { AttendancesRepository } from './repositories/attendances.repository';
 import { AttendancesApplication } from './attendances.application';
-import { AttendancesService } from './attendances.service';
 import { Viewer } from '../viewers/viewers.entity';
 
 describe('AttendancesApplication', () => {
   let application: AttendancesApplication;
-  let service: AttendancesService;
   let repository: AttendancesRepository;
   let viewersRepository: ViewersRepository;
   let configService: ConfigService;
@@ -26,7 +24,6 @@ describe('AttendancesApplication', () => {
     const module = await Test.createTestingModule({
       providers: [
         AttendancesApplication,
-        { provide: AttendancesService, useValue: {} },
         { provide: AttendancesRepository, useValue: {} },
         { provide: ViewersRepository, useValue: {} },
         { provide: ConfigService, useValue: {} },
@@ -34,7 +31,6 @@ describe('AttendancesApplication', () => {
     }).compile();
 
     application = module.get(AttendancesApplication);
-    service = module.get(AttendancesService);
     repository = module.get(AttendancesRepository);
     viewersRepository = module.get(ViewersRepository);
     configService = module.get(ConfigService);
@@ -47,7 +43,6 @@ describe('AttendancesApplication', () => {
 
   it('should be defined', () => {
     expect(application).toBeDefined();
-    expect(service).toBeDefined();
     expect(repository).toBeDefined();
     expect(viewersRepository).toBeDefined();
     expect(twitch).toBeDefined();
@@ -138,7 +133,7 @@ describe('AttendancesApplication', () => {
     it('최근 출석의 방송일이 현재 방송일과 같다면 출석을 처리하지 않아야 한다', async () => {
       const recent = attendanceFactory.build({
         twitchId: 'testviewer1',
-        broadcastedAt: '2022-11-23',
+        broadcastedAt: '2022-11-24',
         attendedAt: new Date(2022, 11, 24, 20),
         tier: 2,
       });
