@@ -109,20 +109,115 @@ describe('AttendancesApplication', () => {
       expect(repository.saveAttendance).toBeCalledWith(expected);
     });
 
-    it.todo('최근 출석의 방송일이 현재 방송일과 다르다면 출석을 처리해야 한다');
+    it('최근 출석의 방송일이 현재 방송일과 다르다면 출석을 처리해야 한다', async () => {
+      const recent = attendanceFactory.build({
+        twitchId: 'testviewer1',
+        broadcastedAt: '2022-11-23',
+        attendedAt: new Date(2022, 11, 23, 22),
+        tier: 2,
+      });
+      repository.getRecentAttendance = jest.fn().mockResolvedValue(recent);
 
-    it.todo('최근 출석의 방송일이 현재 방송일과 같다면 출석을 처리하지 않아야 한다');
+      const result = await application.attend({
+        twitchId: 'testviewer1',
+        username: '테스트시청자1',
+        attendedAt: new Date(2022, 11, 24, 22),
+      });
 
-    it.todo('티어 정보 조회에 실패했을 경우 0티어 출석으로 처리해야 한다');
+      const expected = attendanceFactory.build({
+        attendedAt: new Date(2022, 11, 24, 22),
+        broadcastedAt: '2022-11-24',
+        twitchId: 'testviewer1',
+        tier: 2,
+      });
 
-    it.todo('시청자 정보 조회에 실패했을 경우 출석을 처리하지 않아야 한다');
+      expect(result).not.toBeInstanceOf(BusinessError);
+      expect(repository.saveAttendance).toBeCalledWith(expected);
+    });
+
+    it('최근 출석의 방송일이 현재 방송일과 같다면 출석을 처리하지 않아야 한다', async () => {
+      const recent = attendanceFactory.build({
+        twitchId: 'testviewer1',
+        broadcastedAt: '2022-11-23',
+        attendedAt: new Date(2022, 11, 24, 20),
+        tier: 2,
+      });
+      repository.getRecentAttendance = jest.fn().mockResolvedValue(recent);
+
+      const result = await application.attend({
+        twitchId: 'testviewer1',
+        username: '테스트시청자1',
+        attendedAt: new Date(2022, 11, 24, 22),
+      });
+
+      expect(result).toBeInstanceOf(BusinessError);
+      expect(result).toHaveProperty('error', 'already-attended');
+      expect(repository.saveAttendance).not.toBeCalled();
+    });
+
+    it('티어 정보 조회에 실패했을 경우 0티어 출석으로 처리해야 한다', async () => {
+      twitch.getSubscription.resolves(null);
+
+      const result = await application.attend({
+        twitchId: 'testviewer1',
+        username: '테스트시청자1',
+        attendedAt: new Date(2022, 11, 24, 22),
+      });
+
+      const expected = attendanceFactory.build({
+        attendedAt: new Date(2022, 11, 24, 22),
+        broadcastedAt: '2022-11-24',
+        twitchId: 'testviewer1',
+        tier: 0,
+      });
+
+      expect(result).not.toBeInstanceOf(BusinessError);
+      expect(repository.saveAttendance).toBeCalledWith(expected);
+    });
+
+    it('시청자 정보 조회에 실패했을 경우 출석을 처리하지 않아야 한다', async () => {
+      viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(null);
+
+      const result = await application.attend({
+        twitchId: 'testviewer1',
+        username: '테스트시청자1',
+        attendedAt: new Date(2022, 11, 24, 22),
+      });
+
+      expect(result).toBeInstanceOf(BusinessError);
+      expect(result).toHaveProperty('error', 'viewer-not-found');
+      expect(repository.saveAttendance).not.toBeCalled();
+    });
   });
 
   describe('getAttendances', () => {
-    it.todo('출석 정보를 조회할 수 있어야 한다');
+    it('출석 정보를 조회할 수 있어야 한다', async () => {
+      const expected = [
+        attendanceFactory.viewerIndexed(1).build(),
+        attendanceFactory.viewerIndexed(2).build(),
+        attendanceFactory.viewerIndexed(3).build(),
+      ];
+      repository.getAttendances = jest.fn().mockResolvedValue(expected);
+
+      const result = await application.getAttendances();
+
+      expect(result).toMatchObject(expected);
+    });
   });
 
   describe('getAttendanceOfBroadcast', () => {
-    it.todo('특정 방송일에 대한 출석 정보를 조회할 수 있어야 한다');
+    it('특정 방송일에 대한 출석 정보를 조회할 수 있어야 한다', async () => {
+      const expected = [
+        attendanceFactory.viewerIndexed(1).build(),
+        attendanceFactory.viewerIndexed(2).build(),
+        attendanceFactory.viewerIndexed(3).build(),
+      ];
+      repository.getAttendancesByBroadcastedAt = jest.fn().mockResolvedValue(expected);
+
+      const result = await application.getAttendanceOfBroadcast('2022-11-24');
+
+      expect(result).toMatchObject(expected);
+      expect(repository.getAttendancesByBroadcastedAt).toBeCalledWith('2022-11-24');
+    });
   });
 });
