@@ -109,108 +109,20 @@ describe('AttendancesApplication', () => {
       expect(repository.saveAttendance).toBeCalledWith(expected);
     });
 
-    // it('출석이 불가능한 경우 에러를 발생시킨다', async () => {
-    //   const recentAttendance = new Attendance();
-    //   recentAttendance.attendedAt = new Date(2022, 11, 24);
-    //   const viewer = new Viewer();
+    it.todo('최근 출석의 방송일이 현재 방송일과 다르다면 출석을 처리해야 한다');
 
-    //   repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
-    //   repository.saveAttendance = jest.fn();
-    //   viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
-    //   viewersRepository.save = jest.fn();
-    //   AttendancesService.isAttendable = jest.fn().mockReturnValue(false);
-    //   viewer.getAttendanceReward = jest.fn();
-    //   twitch.getSubscription.resolves(2);
+    it.todo('최근 출석의 방송일이 현재 방송일과 같다면 출석을 처리하지 않아야 한다');
 
-    //   const result = await application.attend({
-    //     twitchId: 'testviewer1',
-    //     username: '테스트시청자1',
-    //     attendedAt: new Date(2022, 11, 25),
-    //   });
+    it.todo('티어 정보 조회에 실패했을 경우 0티어 출석으로 처리해야 한다');
 
-    //   expect(result).toBeInstanceOf(BusinessError);
-    //   expect(result).toHaveProperty('error', 'already-attended');
-    //   expect(viewersRepository.save).not.toBeCalled();
-    //   expect(repository.saveAttendance).not.toBeCalled();
-    // });
-
-    // it('출석 정보 조회에 실패할 경우 에러를 발생시킨다', async () => {
-    //   const recentAttendance = new Attendance();
-    //   recentAttendance.attendedAt = new Date(2022, 11, 24);
-    //   const viewer = new Viewer();
-
-    //   repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
-    //   repository.saveAttendance = jest.fn();
-    //   viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(viewer);
-    //   viewersRepository.save = jest.fn();
-    //   AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
-    //   viewer.getAttendanceReward = jest.fn();
-    //   twitch.getSubscription.resolves(null);
-
-    //   const result = await application.attend({
-    //     twitchId: 'testviewer1',
-    //     username: '테스트시청자1',
-    //     attendedAt: new Date(2022, 11, 25),
-    //   });
-
-    //   expect(result).toBeInstanceOf(BusinessError);
-    //   expect(result).toHaveProperty('error', 'subscription-not-found');
-    //   expect(viewersRepository.save).not.toBeCalled();
-    //   expect(repository.saveAttendance).not.toBeCalled();
-    // });
-
-    // it('출석 포인트를 지급할 시청자 정보가 없을 경우 에러를 발생시킨다', async () => {
-    //   const recentAttendance = new Attendance();
-    //   recentAttendance.attendedAt = new Date(2022, 11, 24);
-
-    //   repository.getRecentAttendance = jest.fn().mockReturnValue(recentAttendance);
-    //   repository.saveAttendance = jest.fn();
-    //   viewersRepository.findByTwitchIdAndUsername = jest.fn().mockResolvedValue(null);
-    //   viewersRepository.save = jest.fn();
-    //   AttendancesService.isAttendable = jest.fn().mockReturnValue(true);
-    //   twitch.getSubscription.resolves(2);
-
-    //   const result = await application.attend({
-    //     twitchId: 'testviewer1',
-    //     username: '테스트시청자1',
-    //     attendedAt: new Date(2022, 11, 25),
-    //   });
-
-    //   expect(result).toBeInstanceOf(BusinessError);
-    //   expect(result).toHaveProperty('error', 'user-not-found');
-    //   expect(viewersRepository.save).not.toBeCalled();
-    //   expect(repository.saveAttendance).not.toBeCalled();
-    // });
+    it.todo('시청자 정보 조회에 실패했을 경우 출석을 처리하지 않아야 한다');
   });
 
-  // describe('getAttendances', () => {
-  //   it('출석 정보를 조회할 수 있어야 한다', async () => {
-  //     const attendances = [new Attendance(), new Attendance(), new Attendance()];
-  //     attendances[0].attendedAt = new Date(2022, 11, 24);
-  //     attendances[1].attendedAt = new Date(2022, 11, 25);
-  //     attendances[2].attendedAt = new Date(2022, 11, 26);
+  describe('getAttendances', () => {
+    it.todo('출석 정보를 조회할 수 있어야 한다');
+  });
 
-  //     repository.getAttendances = jest.fn().mockResolvedValue(attendances);
-
-  //     const result = await application.getAttendances();
-
-  //     expect(result).toBe(attendances);
-  //   });
-  // });
-
-  // describe('getAttendanceOfBroadcast', () => {
-  //   it('특정 방송일에 대한 출석 정보를 조회할 수 있어야 한다', async () => {
-  //     const attendances = [new Attendance(), new Attendance(), new Attendance()];
-  //     attendances[0].attendedAt = new Date(2022, 11, 24, 20);
-  //     attendances[1].attendedAt = new Date(2022, 11, 24, 21);
-  //     attendances[2].attendedAt = new Date(2022, 11, 25, 2);
-
-  //     repository.getAttendancesByBroadcastedAt = jest.fn().mockResolvedValue(attendances);
-
-  //     const result = await application.getAttendanceOfBroadcast('2022-11-24');
-
-  //     expect(result).toBe(attendances);
-  //     expect(repository.getAttendancesByBroadcastedAt).toBeCalledWith('2022-11-24');
-  //   });
-  // });
+  describe('getAttendanceOfBroadcast', () => {
+    it.todo('특정 방송일에 대한 출석 정보를 조회할 수 있어야 한다');
+  });
 });
