@@ -6,7 +6,6 @@ import * as twitch from 'src/util/twitch';
 import { ViewersRepository } from 'src/app/viewers/viewers.repository';
 
 import { ConfigService } from '@nestjs/config';
-import { AttendancesService } from './attendances.service';
 import { AttendancesRepository } from './repositories/attendances.repository';
 import { Attendance } from './entities/attendance.entity';
 import { AttendDto } from './dtos/attend.dto';
@@ -15,7 +14,6 @@ import { AttendDto } from './dtos/attend.dto';
 export class AttendancesApplication {
   constructor(
     private readonly attendancesRepository: AttendancesRepository,
-    private readonly attendancesService: AttendancesService,
     private readonly viewersRepository: ViewersRepository,
     private readonly configService: ConfigService,
   ) {}
@@ -29,27 +27,26 @@ export class AttendancesApplication {
     }
 
     const recent = await this.attendancesRepository.getRecentAttendance(attendDto.twitchId);
+    const attendance = new Attendance({ ...attendDto });
 
-    if (recent && !AttendancesService.isAttendable(recent.attendedAt)) {
+    if (recent?.broadcastedAt === attendance.broadcastedAt) {
       return new BusinessError('already-attended');
     }
 
     const tier = await twitch.getSubscription(channel, channelId, attendDto.twitchId);
-    if (!tier) {
-      return new BusinessError('subscription-not-found');
+    if (tier) {
+      attendance.tier = tier;
     }
-
-    const attendance = new Attendance({ ...attendDto, tier });
 
     const viewer = await this.viewersRepository.findByTwitchIdAndUsername(
       attendDto.username,
       attendDto.twitchId,
     );
     if (!viewer) {
-      return new BusinessError('user-not-found');
+      return new BusinessError('viewer-not-found');
     }
 
-    viewer.getAttendanceReward(tier);
+    viewer.getAttendanceReward(attendance.tier);
 
     await this.viewersRepository.save(viewer);
     await this.attendancesRepository.saveAttendance(attendance);
