@@ -1,24 +1,24 @@
 export type AttendanceInitializer = {
   twitchId: string;
   attendedAt: Date;
-  tier: number;
+  tier?: number;
   broadcastedAt?: string;
 };
 
 export class Attendance {
-  private _twitchId: string;
+  twitchId: string;
 
-  private _attendedAt: Date;
+  attendedAt: Date;
 
-  private _broadcastedAt: string;
+  broadcastedAt: string;
 
-  private _tier: number;
+  tier: number;
 
   constructor(intializer: AttendanceInitializer) {
-    this._twitchId = intializer.twitchId;
-    this._attendedAt = intializer.attendedAt;
-    this._tier = intializer.tier;
-    this._broadcastedAt = intializer.broadcastedAt
+    this.twitchId = intializer.twitchId;
+    this.attendedAt = intializer.attendedAt;
+    this.tier = intializer.tier ?? 0;
+    this.broadcastedAt = intializer.broadcastedAt
       ?? Attendance.calculateBroadcatedAt(intializer.attendedAt);
   }
 
@@ -31,21 +31,5 @@ export class Attendance {
     const day = `${attendedAt.getDate() + dayCalc}`.padStart(2, '0');
 
     return `${year}-${month}-${day}`;
-  }
-
-  get twitchId() {
-    return this._twitchId;
-  }
-
-  get attendedAt() {
-    return this._attendedAt;
-  }
-
-  get broadcastedAt() {
-    return this._broadcastedAt;
-  }
-
-  get tier() {
-    return this._tier;
   }
 }
