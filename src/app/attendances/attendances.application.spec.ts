@@ -90,6 +90,25 @@ describe('AttendancesApplication', () => {
       expect(twitch.getSubscription.calledWith('TMI_CHANNEL', 'TMI_CHANNEL_ID', 'testviewer1'));
     });
 
+    it('기준시 이전에 출석하는 경우 방송일은 전날로 설정되어야 한다', async () => {
+      const result = await application.attend({
+        twitchId: 'testviewer1',
+        username: '테스트시청자1',
+        attendedAt: new Date(2022, 11, 25, 9),
+      });
+
+      const expected = attendanceFactory.build({
+        attendedAt: new Date(2022, 11, 25, 9),
+        broadcastedAt: '2022-11-24',
+        twitchId: 'testviewer1',
+        tier: 2,
+      });
+
+      expect(result).not.toBeInstanceOf(BusinessError);
+      expect(viewersRepository.save).toBeCalledWith(viewer);
+      expect(repository.saveAttendance).toBeCalledWith(expected);
+    });
+
     // it('출석이 불가능한 경우 에러를 발생시킨다', async () => {
     //   const recentAttendance = new Attendance();
     //   recentAttendance.attendedAt = new Date(2022, 11, 24);
