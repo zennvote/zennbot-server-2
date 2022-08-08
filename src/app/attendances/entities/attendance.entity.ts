@@ -27,7 +27,7 @@ export class Attendance {
     const dayCalc = hour < 10 ? -1 : 0;
 
     const year = `${attendedAt.getFullYear()}`.padStart(4, '0');
-    const month = `${attendedAt.getMonth()}`.padStart(2, '0');
+    const month = `${attendedAt.getMonth() + 1}`.padStart(2, '0');
     const day = `${attendedAt.getDate() + dayCalc}`.padStart(2, '0');
 
     return `${year}-${month}-${day}`;
