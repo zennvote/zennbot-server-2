@@ -71,7 +71,7 @@ describe('AttendancesApplication', () => {
 
       const expected = attendanceFactory.build({
         attendedAt: new Date(2022, 11, 24, 22),
-        broadcastedAt: '2022-11-24',
+        broadcastedAt: '2022-12-24',
         twitchId: 'testviewer1',
         tier: 2,
       });
@@ -94,7 +94,7 @@ describe('AttendancesApplication', () => {
 
       const expected = attendanceFactory.build({
         attendedAt: new Date(2022, 11, 25, 9),
-        broadcastedAt: '2022-11-24',
+        broadcastedAt: '2022-12-24',
         twitchId: 'testviewer1',
         tier: 2,
       });
@@ -107,7 +107,7 @@ describe('AttendancesApplication', () => {
     it('최근 출석의 방송일이 현재 방송일과 다르다면 출석을 처리해야 한다', async () => {
       const recent = attendanceFactory.build({
         twitchId: 'testviewer1',
-        broadcastedAt: '2022-11-23',
+        broadcastedAt: '2022-12-23',
         attendedAt: new Date(2022, 11, 23, 22),
         tier: 2,
       });
@@ -121,7 +121,7 @@ describe('AttendancesApplication', () => {
 
       const expected = attendanceFactory.build({
         attendedAt: new Date(2022, 11, 24, 22),
-        broadcastedAt: '2022-11-24',
+        broadcastedAt: '2022-12-24',
         twitchId: 'testviewer1',
         tier: 2,
       });
@@ -133,7 +133,7 @@ describe('AttendancesApplication', () => {
     it('최근 출석의 방송일이 현재 방송일과 같다면 출석을 처리하지 않아야 한다', async () => {
       const recent = attendanceFactory.build({
         twitchId: 'testviewer1',
-        broadcastedAt: '2022-11-24',
+        broadcastedAt: '2022-12-24',
         attendedAt: new Date(2022, 11, 24, 20),
         tier: 2,
       });
@@ -161,7 +161,7 @@ describe('AttendancesApplication', () => {
 
       const expected = attendanceFactory.build({
         attendedAt: new Date(2022, 11, 24, 22),
-        broadcastedAt: '2022-11-24',
+        broadcastedAt: '2022-12-24',
         twitchId: 'testviewer1',
         tier: 0,
       });
@@ -209,10 +209,10 @@ describe('AttendancesApplication', () => {
       ];
       repository.getAttendancesByBroadcastedAt = jest.fn().mockResolvedValue(expected);
 
-      const result = await application.getAttendanceOfBroadcast('2022-11-24');
+      const result = await application.getAttendanceOfBroadcast('2022-12-24');
 
       expect(result).toMatchObject(expected);
-      expect(repository.getAttendancesByBroadcastedAt).toBeCalledWith('2022-11-24');
+      expect(repository.getAttendancesByBroadcastedAt).toBeCalledWith('2022-12-24');
     });
   });
 });
