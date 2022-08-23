@@ -7,7 +7,7 @@ COPY package.json ./
 COPY yarn.lock ./
 
 RUN yarn
-RUN npx prisma generate
+RUN yarn prisma:generate
 
 COPY . .
 
