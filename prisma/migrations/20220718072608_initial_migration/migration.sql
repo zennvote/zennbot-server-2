@@ -42,3 +42,9 @@ CREATE UNIQUE INDEX "manager_twitchId_key" ON "manager"("twitchId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_username_key" ON "user"("username");
+
+-- InsertDefaultSetting
+INSERT INTO "setting" ("key", "type", "flagValue")
+VALUES
+    ('request-enabled', 'flag', true),
+    ('goldenbell-enabled', 'flag', false);
