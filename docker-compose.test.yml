@@ -2,34 +2,24 @@ version: '3.0'
 
 services:
   web:
-    restart: always
     build:
       context: .
       dockerfile: Dockerfile-DEV
-    command: yarn start:dev
-    ports:
-      - "4100:3000"
-      - "4200:4000"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     env_file:
-      - .env
+      - .env.test
     networks:
       - zennbot-network
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
 
   postgres:
     image: postgres
-    ports:
-      - "4300:5432"
-    volumes:
-      - ${HOME}/zennbot-docker/data/postgres:/var/lib/postgres/data
-    restart: always
+    env_file:
+      - .env.test
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -41,19 +31,6 @@ services:
       zennbot-network:
         aliases:
           - zennbot-postgres
-
-  redis:
-    image: redis:latest
-    ports:
-      - "4400:6379"
-    restart: always
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-    networks:
-      zennbot-network:
-        aliases:
-          - zennbot-redis
   
 networks:
   zennbot-network:
