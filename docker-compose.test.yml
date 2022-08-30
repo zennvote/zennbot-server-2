@@ -20,8 +20,6 @@ services:
 
   postgres:
     image: postgres
-    volumes:
-      - ${HOME}/zennbot-docker/data/postgres:/var/lib/postgres/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
