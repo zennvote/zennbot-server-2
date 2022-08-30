@@ -58,13 +58,18 @@ import { GameModule } from './app/game/game.module';
       },
       channels: [process.env.TMI_CHANNEL ?? ''],
     }),
-    CacheModule.register({
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      isGlobal: true,
-      ttl: 0,
-    }),
+    CacheModule.register(
+      process.env.NODE_ENV === 'test' ? {
+        isGlobal: true,
+        ttl: 0,
+      } : {
+        store: redisStore,
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        isGlobal: true,
+        ttl: 0,
+      },
+    ),
     EventEmitterModule.forRoot(),
     ViewersModule,
     SongsModule,
