@@ -6,7 +6,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /usr/src/app
 
-COPY .env ./
+COPY .env* ./
 COPY package.json ./
 COPY yarn.lock ./
 COPY prisma ./prisma/
