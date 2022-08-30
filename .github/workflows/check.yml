@@ -27,10 +27,10 @@ jobs:
         output: .env.test
         decryption: true
 
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+
     - name: Build Docker
       run: docker compose -f docker-compose.test.yml build
-
-    - uses: satackey/action-docker-layer-caching@v0.0.11
 
     - name: Run test
       run: docker compose -f docker-compose.test.yml run --rm web yarn test:e2e
