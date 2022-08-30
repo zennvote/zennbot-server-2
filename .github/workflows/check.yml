@@ -24,8 +24,11 @@ jobs:
         AWS_DEFAULT_REGION: ap-northeast-2
       with:
         ssm-path: /ZENNBOT/TEST
-        output: .env.test
+        output: .env
         decryption: true
+
+    - name: Make Test Env
+      run: cp .env .env.test
 
     - uses: satackey/action-docker-layer-caching@v0.0.11
 
