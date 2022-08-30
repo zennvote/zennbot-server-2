@@ -14,4 +14,4 @@ jobs:
       run: yarn
 
     - name: Run test
-      run: yarn test
+      run: docker compose -f docker-compose.test.yml run --rm web yarn test:e2e
