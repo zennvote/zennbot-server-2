@@ -47,6 +47,13 @@ export class TmiService {
       }
 
       if (tags.subscriber) {
+        this.logger.http('TMI Subscribe Chat', {
+          channel,
+          tags,
+          displayName: tags['display-name'],
+          username: tags.username,
+          userId: tags['user-id'],
+        });
         this.eventEmitter.emit('subscriber-chat', {
           twitchId: tags.username,
           username: tags['display-name'],
