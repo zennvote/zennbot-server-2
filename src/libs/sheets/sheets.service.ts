@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { sheets_v4 as sheetsV4 } from 'googleapis';
 import { SheetsRequest, SHEETS_CLIENT } from './sheets.types';
 
@@ -6,6 +6,8 @@ const s = (value: number) => String.fromCharCode(value);
 
 @Injectable()
 export class SheetsService {
+  private readonly logger = new Logger(SheetsService.name);
+
   constructor(@Inject(SHEETS_CLIENT) private readonly client: sheetsV4.Sheets) { }
 
   public async getSheets<T extends ReadonlyArray<string>>(request: SheetsRequest<T>) {
@@ -62,10 +64,14 @@ export class SheetsService {
         values: [[value]],
       }));
 
-    await this.client.spreadsheets.values.batchUpdate({
+    this.logger.log('updateSheets > sheets update requested', { request, index, values });
+
+    const response = await this.client.spreadsheets.values.batchUpdate({
       spreadsheetId,
       requestBody: { data, valueInputOption: 'RAW' },
     });
+
+    this.logger.log('updateSheets > sheets updated', { response });
   }
 
   public async appendRow<T extends ReadonlyArray<string>>(
@@ -78,12 +84,16 @@ export class SheetsService {
 
     const value = [columns.map((column) => values[column])];
 
-    await this.client.spreadsheets.values.append({
+    this.logger.log('appendRow > sheets update requested', { request, values });
+
+    const response = await this.client.spreadsheets.values.append({
       spreadsheetId,
       range: `${sheetsName}!${s(64 + startColumn)}:${s(64 + startColumn + columns.length)}`,
       includeValuesInResponse: true,
       valueInputOption: 'RAW',
       requestBody: { values: value },
     });
+
+    this.logger.log('appendRow > sheets updated', { response });
   }
 }
