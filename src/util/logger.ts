@@ -12,8 +12,8 @@ export class MainLogger extends ConsoleLogger {
     format: winston.format.json(),
     defaultMeta: { service: 'user-service' },
     transports: [
-      new DailyRotateFile({ filename: 'logs/error.log', level: 'error' }),
-      new DailyRotateFile({ filename: 'logs/combined.log', level: 'debug' }),
+      new DailyRotateFile({ filename: 'logs/error-%DATE%.log', level: 'error' }),
+      new DailyRotateFile({ filename: 'logs/combined-%DATE%.log', level: 'debug' }),
     ],
   });
 
