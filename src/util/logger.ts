@@ -1,6 +1,7 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { isString } from 'class-validator';
 import * as winston from 'winston';
+import * as DailyRotateFile from 'winston-daily-rotate-file';
 
 type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug';
 
@@ -11,8 +12,8 @@ export class MainLogger extends ConsoleLogger {
     format: winston.format.json(),
     defaultMeta: { service: 'user-service' },
     transports: [
-      new winston.transports.File({ filename: 'error.log', level: 'error' }),
-      new winston.transports.File({ filename: 'combined.log', level: 'debug' }),
+      new DailyRotateFile({ filename: 'logs/error-%DATE%.log', level: 'error' }),
+      new DailyRotateFile({ filename: 'logs/combined-%DATE%.log', level: 'debug' }),
     ],
   });
 
