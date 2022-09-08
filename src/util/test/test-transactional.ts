@@ -1,23 +1,30 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-extraneous-dependencies */
 
-const prisma = new PrismaClient({ });
+import { PrismaClient } from '@prisma/client';
+import { ImplementationFn, TestFn } from 'ava';
+import { PrismaService } from 'src/libs/prisma/prisma.service';
 
-export const transactionalTest = async (
-  targetPrisma: PrismaClient,
-  fn: (transaction: Prisma.TransactionClient) => Promise<unknown>,
+type PrismaContext = { prisma: PrismaService };
+
+const prisma = new PrismaClient({});
+
+export const transactionalTest = async <T extends PrismaContext>(
+  testFn: TestFn<T>, title: string, implementation: ImplementationFn<unknown[], T>,
 ) => {
-  try {
-    await prisma.$transaction(async (transaction) => {
-      const mockTargetKeys = Object.keys(transaction).filter((key) => !key.startsWith('_'));
-      mockTargetKeys.forEach((key) => {
-        // eslint-disable-next-line no-param-reassign
-        (targetPrisma as any)[key] = transaction[key];
+  testFn(title, async (test, ...args) => {
+    try {
+      await prisma.$transaction(async (transaction) => {
+        const mockTargetKeys = Object.keys(transaction).filter((key) => !key.startsWith('_'));
+        mockTargetKeys.forEach((key) => {
+          test.context.prisma[key] = transaction[key];
+        });
+
+        await implementation(test, ...args);
+
+        throw new Error('rollback transaction');
       });
-
-      await fn(transaction);
-
-      throw new Error('rollback transaction');
-    });
-    // eslint-disable-next-line no-empty
-  } catch (e) { }
+      // eslint-disable-next-line no-empty
+    } catch (e) { }
+  });
 };
