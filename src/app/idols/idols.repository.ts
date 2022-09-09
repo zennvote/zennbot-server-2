@@ -8,7 +8,7 @@ export class IdolsRepository {
   constructor(
     private readonly sheetsService: SheetsService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   private readonly sheetsRequest = {
     spreadsheetId: this.configService.get('IDOL_SHEETS_ID'),
@@ -51,6 +51,17 @@ export class IdolsRepository {
     const formattedDate = `${month}월 ${day}일`;
 
     const idols = rows.filter((row) => row.birthday === formattedDate).map((row) => new Idol(row));
+
+    return idols;
+  }
+
+  async findBy(options: Partial<Idol>) {
+    const rows = await this.sheetsService.getSheets(this.sheetsRequest);
+
+    const optionEntries = Object.entries(options).filter(([, value]) => value !== undefined);
+    const idols = rows
+      .filter((row) => optionEntries.every(([key, value]) => row[key] === value))
+      .map((row) => new Idol(row));
 
     return idols;
   }

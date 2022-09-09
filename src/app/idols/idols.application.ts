@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { BusinessError } from 'src/util/business-error';
+import { IdolsRepository } from './idols.repository';
 import { IdolsService } from './idols.service';
 
 @Injectable()
 export class IdolsApplication {
-  constructor(private readonly idolsService: IdolsService) {}
+  constructor(
+    private readonly idolsService: IdolsService,
+    private readonly idolsRepository: IdolsRepository,
+  ) { }
 
   async searchIdol(keyword: string) {
     const result = await this.idolsService.searchIdols(keyword);
@@ -29,5 +33,21 @@ export class IdolsApplication {
     }
 
     return idol;
+  }
+
+  async getRandomIdol(company?: string) {
+    const idols = await this.idolsRepository.findBy({ company });
+
+    if (!idols.length) {
+      return new BusinessError('no-idol');
+    }
+
+    const randomIndex = Math.floor(Math.random() * idols.length);
+
+    if (idols.length <= randomIndex) {
+      return idols[randomIndex - 1];
+    }
+
+    return idols[randomIndex];
   }
 }

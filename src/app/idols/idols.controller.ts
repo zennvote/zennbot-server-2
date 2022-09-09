@@ -6,7 +6,7 @@ import { IdolsApplication } from './idols.application';
 
 @Controller('idols')
 export class IdolsController {
-  constructor(private readonly idolsApplication: IdolsApplication) {}
+  constructor(private readonly idolsApplication: IdolsApplication) { }
 
   @OnCommand('아이돌')
   async searchIdol(payload: CommandPayload) {
@@ -43,5 +43,23 @@ export class IdolsController {
     const idolNames = idols.map((idol) => idol.fullName).join(', ');
 
     payload.send(`오늘 생일인 아이돌은 ${idolNames}입니다`);
+  }
+
+  @OnCommand('랜덤돌')
+  async getRandomIdol(payload: CommandPayload) {
+    const [company] = payload.args;
+
+    const idol = await this.idolsApplication.getRandomIdol(company);
+
+    if (isBusinessError(idol)) {
+      switch (idol.error) {
+        case 'no-idol':
+          return payload.send('조건에 맞는 아이돌이 없습니다!');
+        default:
+          return;
+      }
+    }
+
+    payload.send(`랜덤 아이돌의 주인공은 [${idol.fullName}] 입니다!`);
   }
 }
