@@ -1,7 +1,7 @@
 export type AttendanceInitializer = {
   twitchId: string;
   attendedAt: Date;
-  tier?: number;
+  tier: number;
   broadcastedAt?: string;
 };
 
@@ -17,12 +17,12 @@ export class Attendance {
   constructor(intializer: AttendanceInitializer) {
     this.twitchId = intializer.twitchId;
     this.attendedAt = intializer.attendedAt;
-    this.tier = intializer.tier ?? 0;
+    this.tier = intializer.tier;
     this.broadcastedAt = intializer.broadcastedAt
       ?? Attendance.calculateBroadcatedAt(intializer.attendedAt);
   }
 
-  private static calculateBroadcatedAt(attendedAt: Date) {
+  public static calculateBroadcatedAt(attendedAt: Date) {
     const hour = attendedAt.getHours();
     const dayCalc = hour < 10 ? -1 : 0;
 
