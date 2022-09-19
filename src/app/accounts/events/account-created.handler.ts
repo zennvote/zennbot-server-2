@@ -7,6 +7,6 @@ export class AccountCreatedHandler implements IEventHandler<AccountCreatedEvent>
   private readonly logger = new MainLogger(AccountCreatedHandler.name);
 
   async handle(event: AccountCreatedEvent) {
-    this.logger.log('Account Created: ', event);
+    this.logger.log('Account Created: ', event.accountId);
   }
 }

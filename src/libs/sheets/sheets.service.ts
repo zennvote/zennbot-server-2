@@ -98,12 +98,12 @@ export class SheetsService {
     this.logger.log('appendRow > sheets updated', { response });
 
     const { updatedRange } = response.data.updates ?? {};
-    const index = parseInt(updatedRange?.match(/.*!(?:\w+?)(\d+)/)?.groups?.[1] ?? '0', 10) - startRow;
+    const index = parseInt(updatedRange?.match(/.*!(?:\w+?)(\d+)/)?.[1] ?? '0', 10);
 
     if (index === 0) {
       throw new Error('Unexpected Error during appendRow');
     }
 
-    return index;
+    return index - startRow;
   }
 }
