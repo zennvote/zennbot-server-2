@@ -6,7 +6,7 @@ import { CommandPayload } from 'src/libs/tmi/tmi.types';
 
 import { ManagerChatGuard } from '../managers/guards/manager-chat.guard';
 
-import { Viewer } from './viewers.entity';
+import { Viewer } from './entities/viewer.entity';
 import { ViewersService } from './viewers.service';
 
 @Controller('viewers')

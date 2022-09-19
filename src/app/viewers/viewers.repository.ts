@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
-import { Viewer, ViewerInitializer } from './viewers.entity';
+import { Viewer, ViewerInitializer } from './entities/viewer.entity';
 
 type ViewerRow = {
   index: number;

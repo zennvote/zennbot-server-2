@@ -1,5 +1,5 @@
 import { Factory } from 'fishery';
-import { Viewer } from 'src/app/viewers/viewers.entity';
+import { Viewer } from 'src/app/viewers/entities/viewer.entity';
 import { CommandPayload } from './tmi.types';
 
 type CommandPayloadTransientParams = {
