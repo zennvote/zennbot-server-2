@@ -81,6 +81,7 @@ export class SheetsService {
     const { spreadsheetId, columns } = request;
     const sheetsName = request.sheetsName ?? '';
     const startColumn = request.startColumn ?? 1;
+    const startRow = request.startRow ?? 1;
 
     const value = [columns.map((column) => values[column])];
 
@@ -95,5 +96,10 @@ export class SheetsService {
     });
 
     this.logger.log('appendRow > sheets updated', { response });
+
+    const { updatedRange } = response.data.updates ?? {};
+    const index = parseInt(updatedRange?.match(/.*!(?:\w+?)(\d+)/)?.groups?.[1] ?? '0', 10) - startRow;
+
+    return index;
   }
 }
