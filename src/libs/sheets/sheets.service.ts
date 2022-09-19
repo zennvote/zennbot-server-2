@@ -100,6 +100,10 @@ export class SheetsService {
     const { updatedRange } = response.data.updates ?? {};
     const index = parseInt(updatedRange?.match(/.*!(?:\w+?)(\d+)/)?.groups?.[1] ?? '0', 10) - startRow;
 
+    if (index === 0) {
+      throw new Error('Unexpected Error during appendRow');
+    }
+
     return index;
   }
 }
