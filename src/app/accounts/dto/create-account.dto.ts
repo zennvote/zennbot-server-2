@@ -1,5 +1,6 @@
 export class CreateAccountDto {
-  public username!: string;
-
-  public twitchId?: string;
+  constructor(
+    public username: string,
+    public twitchId?: string,
+  ) {}
 }

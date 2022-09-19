@@ -41,29 +41,6 @@ export class ViewersController {
   }
 
   @ManagerChatGuard()
-  @OnCommand('시청자등록')
-  async registerViewer(payload: CommandPayload) {
-    const [username, twitchId] = payload.args;
-
-    if (payload.args.length < 1) {
-      return payload.send('시청자 이름을 입력해주세요!');
-    }
-
-    const viewerFetcher = twitchId
-      ? () => this.viewersService.getViewer(twitchId, username)
-      : () => this.viewersService.getViewerByUsername(username);
-
-    const viewer = await viewerFetcher();
-    if (viewer) {
-      return payload.send('이미 유저가 존재합니다!');
-    }
-
-    await this.viewersService.createViewer(username, twitchId);
-
-    return payload.send(`새로운 시청자 ${username}님이 등록되었습니다!`);
-  }
-
-  @ManagerChatGuard()
   @OnCommand('지급')
   async givePointCommand(payload: CommandPayload) {
     const [inputType, name, inputPoint] = payload.args;
