@@ -21,6 +21,7 @@ import { AttendancesModule } from './app/attendances/attendances.module';
 import { PrismaModule } from './libs/prisma/prisma.module';
 import { HttpLoggerMiddleware } from './util/http-logger-middleware';
 import { GameModule } from './app/game/game.module';
+import { AccountsModule } from './app/accounts/accounts.module';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { GameModule } from './app/game/game.module';
     AttendancesModule,
     GameModule,
     PrismaModule,
+    AccountsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
