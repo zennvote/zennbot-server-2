@@ -1,5 +1,5 @@
-import { AccountCreatedHandler } from './account-created.handler';
+import { AccountRegisteredHandler } from './regstered.handler';
 
 export const AccountEventHandlers = [
-  AccountCreatedHandler,
+  AccountRegisteredHandler,
 ];
