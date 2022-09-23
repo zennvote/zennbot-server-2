@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 import { ManagerChatGuard } from 'src/app/managers/guards/manager-chat.guard';
+import { isBusinessError } from 'src/util/business-error';
 import { AccountsApplication } from './accounts.application';
 import { CreateAccountDto } from './dto/create-account.dto';
 
@@ -19,7 +20,14 @@ export class AccountsController {
     }
 
     const request = new CreateAccountDto(username, twitchId);
-    await this.accountsApplication.createAccount(request);
+    const result = await this.accountsApplication.createAccount(request);
+
+    if (isBusinessError(result)) {
+      switch (result.error) {
+      case 'already-exists':
+        return payload.send(`${username}님이 이미 존재합니다!`);
+      }
+    }
 
     return payload.send(`새로운 시청자 ${username}님이 등록되었습니다!`);
   }

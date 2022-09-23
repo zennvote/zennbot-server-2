@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Account, AccountProps } from 'src/domain/accounts/accounts.entity';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
-import { Account, AccountCreateParams } from './entities/account.entity';
-import { AccountCreatedEvent } from './events/account-created.event';
 
 type ViewerRow = {
   index: number;
@@ -38,11 +37,9 @@ export class AccountsRepository {
     return account;
   }
 
-  async create(accounts: Omit<AccountCreateParams, 'id'>) {
+  async create(accounts: Omit<AccountProps, 'id'>) {
     const id = await this.sheetsService.appendRow(this.sheetsInfo, accounts);
     const account = new Account({ ...accounts, id });
-
-    account.apply(new AccountCreatedEvent(id));
 
     return account;
   }
