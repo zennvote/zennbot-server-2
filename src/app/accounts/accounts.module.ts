@@ -7,6 +7,7 @@ import { AccountsApplication } from './accounts.application';
 import { AccountCommandHandlers } from './commands';
 import { AccountEventHandlers } from './events';
 import { AccountQuery } from './queries/accounts.query';
+import { AccountQueryHandlers } from './queries';
 
 @Module({
   imports: [CqrsModule],
@@ -17,6 +18,7 @@ import { AccountQuery } from './queries/accounts.query';
     AccountsApplication,
     ...AccountCommandHandlers,
     ...AccountEventHandlers,
+    ...AccountQueryHandlers,
   ],
 })
 export class AccountsModule {}

@@ -13,4 +13,12 @@ export class AccountQuery {
       where: { id: data.id },
     });
   }
+
+  async findOne(username: string, twitchId?: string) {
+    const datamodel = await this.prisma.accounts.findFirst({
+      where: { username, twitchId },
+    });
+
+    return datamodel;
+  }
 }
