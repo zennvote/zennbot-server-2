@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
-import { Viewer } from './viewers.entity';
+import { Viewer } from './entities/viewer.entity';
 import { ViewersRepository } from './viewers.repository';
 
 describe('ViewersRepository', () => {

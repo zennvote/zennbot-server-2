@@ -64,14 +64,14 @@ export class SheetsService {
         values: [[value]],
       }));
 
-    this.logger.log('updateSheets > sheets update requested', { request, index, values });
+    this.logger.verbose('updateSheets > sheets update requested', { request, index, values });
 
     const response = await this.client.spreadsheets.values.batchUpdate({
       spreadsheetId,
       requestBody: { data, valueInputOption: 'RAW' },
     });
 
-    this.logger.log('updateSheets > sheets updated', { response });
+    this.logger.verbose('updateSheets > sheets updated', { response });
   }
 
   public async appendRow<T extends ReadonlyArray<string>>(
@@ -81,10 +81,11 @@ export class SheetsService {
     const { spreadsheetId, columns } = request;
     const sheetsName = request.sheetsName ?? '';
     const startColumn = request.startColumn ?? 1;
+    const startRow = request.startRow ?? 1;
 
     const value = [columns.map((column) => values[column])];
 
-    this.logger.log('appendRow > sheets update requested', { request, values });
+    this.logger.verbose('appendRow > sheets update requested', { request, values });
 
     const response = await this.client.spreadsheets.values.append({
       spreadsheetId,
@@ -94,6 +95,15 @@ export class SheetsService {
       requestBody: { values: value },
     });
 
-    this.logger.log('appendRow > sheets updated', { response });
+    this.logger.verbose('appendRow > sheets updated', { response });
+
+    const { updatedRange } = response.data.updates ?? {};
+    const index = parseInt(updatedRange?.match(/.*!(?:\w+?)(\d+)/)?.[1] ?? '0', 10);
+
+    if (index === 0) {
+      throw new Error('Unexpected Error during appendRow');
+    }
+
+    return index - startRow;
   }
 }

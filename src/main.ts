@@ -6,7 +6,7 @@ import { setupSwagger } from './util/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: new MainLogger(),
+    logger: new MainLogger('MainLogger', { logLevels: ['error', 'warn', 'log', 'debug'] }),
   });
 
   app.enableCors({ origin: true, credentials: true });

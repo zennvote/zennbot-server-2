@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
-import { Viewer } from './viewers.entity';
+import { Viewer, ViewerInitializer } from './entities/viewer.entity';
 
 type ViewerRow = {
   index: number;
@@ -32,7 +32,7 @@ export class ViewersRepository {
   }
 
   /**
-   * username 혹은 twitchId로 검색할 시 시트 갱신을 위해 {@link findByTwitchIdAndUsername}을 사용할 것을 권장.
+   * username 및 twitchId로 검색할 시 시트 갱신을 위해 {@link findByTwitchIdAndUsername}을 사용할 것을 권장.
    */
   async findOne(option: Partial<Viewer> = {}) {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
@@ -93,8 +93,14 @@ export class ViewersRepository {
     return true;
   }
 
-  async create(viewer: Viewer) {
-    await this.sheetsService.appendRow(this.sheetsInfo, viewer);
+  async create(viewer: Omit<ViewerInitializer, 'index'>) {
+    const index = await this.sheetsService.appendRow(this.sheetsInfo, viewer);
+
+    if (index === 0) {
+      return null;
+    }
+
+    return new Viewer({ ...viewer, index });
   }
 
   private static rowToViewer(row: ViewerRow) {

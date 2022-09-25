@@ -1,5 +1,5 @@
 import { Factory } from 'fishery';
-import { Viewer } from '../viewers.entity';
+import { Viewer } from './viewer.entity';
 
 class ViewerFactory extends Factory<Viewer> {
   indexed(index: number) {
