@@ -88,7 +88,7 @@ export class AccountsController {
       command = new DepositePointCommand(new DepositePointDto(name, type, amount));
       result = await this.commandBus.execute<DepositePointCommand, DepositePointResult>(command);
     } else {
-      command = new WithdrawPointCommand(new WithdrawPointDto(name, type, amount));
+      command = new WithdrawPointCommand(new WithdrawPointDto(name, type, -amount));
       result = await this.commandBus.execute<WithdrawPointCommand, WithdrawPointResult>(command);
     }
 
