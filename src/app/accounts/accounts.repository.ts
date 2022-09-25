@@ -44,6 +44,16 @@ export class AccountsRepository {
     return account;
   }
 
+  async save(account: Account) {
+    await this.sheetsService.updateSheets(
+      this.sheetsInfo,
+      account.properties.id,
+      account.properties,
+    );
+
+    return account;
+  }
+
   private static rowToViewer(row: ViewerRow) {
     if (!row.username) {
       return null;
