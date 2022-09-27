@@ -21,6 +21,15 @@ export class AccountsRepository {
 
   constructor(private readonly sheetsService: SheetsService) {}
 
+  async findAll() {
+    const rows = await this.sheetsService.getSheets(this.sheetsInfo);
+    const accounts = rows
+      .map(AccountsRepository.rowToViewer)
+      .filter((account): account is Account => account !== null);
+
+    return accounts;
+  }
+
   async findAccount(username: string, twitchId?: string) {
     const rows = await this.sheetsService.getSheets(this.sheetsInfo);
 
