@@ -8,7 +8,7 @@ import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ViewersModule } from './app/viewers/viewers.module';
+import { ViewersModule } from './app/accounts/viewers.module';
 import { SongsModule } from './app/songs/songs.module';
 import { TmiModule } from './libs/tmi/tmi.module';
 import { ManagerModule } from './app/managers/managers.module';

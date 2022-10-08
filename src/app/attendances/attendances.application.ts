@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { BusinessError } from 'src/util/business-error';
 import * as twitch from 'src/util/twitch';
 
-import { ViewersRepository } from 'src/app/viewers/viewers.repository';
+import { ViewersRepository } from 'src/app/accounts/viewers.repository';
 
 import { ConfigService } from '@nestjs/config';
 import { AttendancesRepository } from './repositories/attendances.repository';

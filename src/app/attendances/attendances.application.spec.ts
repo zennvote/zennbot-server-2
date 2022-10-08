@@ -5,13 +5,13 @@ import * as Sinon from 'sinon';
 import { BusinessError } from 'src/util/business-error';
 import * as originalTwitch from 'src/util/twitch';
 
-import { viewerFactory } from 'src/app/viewers/entities/viewer.factory';
-import { ViewersRepository } from 'src/app/viewers/viewers.repository';
+import { viewerFactory } from 'src/app/accounts/entities/viewer.factory';
+import { ViewersRepository } from 'src/app/accounts/viewers.repository';
+import { Viewer } from 'src/app/accounts/viewers.entity';
 
 import { attendanceFactory } from './entities/attendance.factory';
 import { AttendancesRepository } from './repositories/attendances.repository';
 import { AttendancesApplication } from './attendances.application';
-import { Viewer } from '../viewers/viewers.entity';
 
 describe('AttendancesApplication', () => {
   let application: AttendancesApplication;
