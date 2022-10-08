@@ -46,8 +46,5 @@ module.exports = {
     'no-shadow': 'off',
     'consistent-return': 'off',
     'no-useless-constructor': 'off',
-    'lines-between-class-members': 'off',
-    'default-case': 'off',
-    'indent': ['error', 2, { 'ignoredNodes': ['PropertyDefinition'] }]
   },
 };

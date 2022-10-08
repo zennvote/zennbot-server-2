@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { FlagSetting } from 'src/app/settings/entities/setting.entity';
 import { SettingsService } from 'src/app/settings/settings.service';
 import { BusinessError, isBusinessError } from 'src/util/business-error';
-import { Viewer } from 'src/app/viewers/entities/viewer.entity';
+import { Viewer } from 'src/app/viewers/viewers.entity';
 
 import { ViewersService } from 'src/app/viewers/viewers.service';
 

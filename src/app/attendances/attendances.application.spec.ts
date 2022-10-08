@@ -11,7 +11,7 @@ import { ViewersRepository } from 'src/app/viewers/viewers.repository';
 import { attendanceFactory } from './entities/attendance.factory';
 import { AttendancesRepository } from './repositories/attendances.repository';
 import { AttendancesApplication } from './attendances.application';
-import { Viewer } from '../viewers/entities/viewer.entity';
+import { Viewer } from '../viewers/viewers.entity';
 
 describe('AttendancesApplication', () => {
   let application: AttendancesApplication;

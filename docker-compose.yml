@@ -12,6 +12,7 @@ services:
       - "4200:4000"
     volumes:
       - .:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - .env
     networks:
@@ -27,7 +28,7 @@ services:
     ports:
       - "4300:5432"
     volumes:
-      - ${HOME}/zennbot-docker/data/postgresql:/var/lib/postgresql/data
+      - ${HOME}/zennbot-docker/data/postgres:/var/lib/postgres/data
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}

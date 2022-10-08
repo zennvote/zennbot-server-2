@@ -20,17 +20,6 @@ model Attendance {
   @@map("attendance")
 }
 
-model Accounts {
-  id          Int     @id
-  username    String  @unique
-  twitchId    String? @unique
-  ticket      Int
-  ticketPiece Int
-  prefix      String?
-
-  @@map("account")
-}
-
 model Manager {
   id       Int    @id @default(autoincrement())
   twitchId String @unique @db.VarChar
