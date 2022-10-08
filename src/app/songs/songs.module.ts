@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ViewersModule } from 'src/app/viewers/viewers.module';
+import { ViewersModule } from 'src/app/accounts/viewers.module';
 import { SettingsModule } from 'src/app/settings/settings.module';
 import { SongsService } from './songs.service';
 import { SongsController } from './songs.controller';
