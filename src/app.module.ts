@@ -6,7 +6,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as redisStore from 'cache-manager-redis-store';
 import * as Joi from 'joi';
 
-import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ViewersModule } from './app/viewers/viewers.module';
@@ -68,7 +67,6 @@ import { AccountsModule } from './app/accounts/accounts.module';
       },
     ),
     EventEmitterModule.forRoot(),
-    ScheduleModule.forRoot(),
     ViewersModule,
     SongsModule,
     ManagerModule.forRoot(),
