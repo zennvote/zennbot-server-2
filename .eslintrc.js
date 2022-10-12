@@ -46,5 +46,9 @@ module.exports = {
     'no-shadow': 'off',
     'consistent-return': 'off',
     'no-useless-constructor': 'off',
+    'lines-between-class-members': 'off',
+    'no-use-before-define': 'off',
+    'class-methods-use-this': 'off',
+    'default-case': 'off',
   },
 };
