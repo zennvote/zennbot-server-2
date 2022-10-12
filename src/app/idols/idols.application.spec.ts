@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { isBusinessError } from 'src/util/business-error';
 import { IdolsApplication } from './idols.application';
 import { Idol } from './idols.entity';
+import { IdolsRepository } from './idols.repository';
 import { IdolsService } from './idols.service';
 
 describe('IdolsApplication', () => {
@@ -10,7 +11,11 @@ describe('IdolsApplication', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [IdolsApplication, { provide: IdolsService, useValue: {} }],
+      providers: [
+        IdolsApplication,
+        { provide: IdolsService, useValue: {} },
+        { provide: IdolsRepository, useValue: {} },
+      ],
     }).compile();
 
     application = module.get(IdolsApplication);
