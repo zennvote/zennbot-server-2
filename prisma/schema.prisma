@@ -42,3 +42,10 @@ model User {
 
   @@map("user")
 }
+
+model Viewer {
+  id        Int    @id @default(autoincrement())
+  twitchId  String @unique
+  username  String @unique
+  accountId Int
+}
