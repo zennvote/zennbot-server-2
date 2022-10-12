@@ -37,7 +37,7 @@ module.exports = {
       'ignorePackages',
       { 'js': 'never', 'jsx': 'never', 'ts': 'never', 'tsx': 'never' }
     ],
-    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/*.*spec.ts'] }],
+    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/*.*spec.ts', '**/*.ava.ts'] }],
     'import/prefer-default-export': 'off',
     'import/no-cycle': 'off',
     'no-case-declarations': 'off',
