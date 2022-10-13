@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Viewer } from 'src/domain/viewers/viewers.entity';
+import { ViewersRepository as ViewersRepositoryInterface } from 'src/domain/viewers/viewers.repository';
 
 @Injectable()
-export class ViewersRepository {
+export class ViewersRepository implements ViewersRepositoryInterface {
   public async isExisting(twitchId: string): Promise<boolean> {
     throw new Error('not implemented');
   }

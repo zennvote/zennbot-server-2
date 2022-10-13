@@ -4,12 +4,15 @@ import anyTest, { TestFn } from 'ava';
 import * as sinon from 'sinon';
 import { SinonSandbox } from 'sinon';
 
-import { RequestType, Song, SongProps } from 'src/domain/songs/songs.entity';
-import { viewerFactory } from 'src/domain/viewers/viewers.factory';
-import { SongsService } from 'src/domain/songs/songs.service';
-import { SongsRepository } from 'src/infrastructure/persistence/songs/songs.repository';
 import { isBusinessError } from 'src/util/business-error';
-import { songFactory } from '../songs/songs.factory';
+import { MockSongsRepository } from 'src/infrastructure/persistence/songs/songs.mock';
+
+import { RequestType, Song, SongProps } from 'src/domain/songs/songs.entity';
+import { SongsService } from 'src/domain/songs/songs.service';
+import { songFactory } from 'src/domain/songs/songs.factory';
+import { SongsRepository } from 'src/domain/songs/songs.repository';
+
+import { viewerFactory } from './viewers.factory';
 
 type TestContext = {
   sandbox: SinonSandbox;
@@ -21,11 +24,7 @@ test.beforeEach((test) => {
   const sandbox = sinon.createSandbox();
 
   test.context.sandbox = sandbox;
-  test.context.songsRepository = {
-    getCooltimeSongs: sandbox.fake.resolves([]),
-    getRequestedSongs: sandbox.fake.resolves([]),
-    save: sandbox.fake(async (song) => song),
-  };
+  test.context.songsRepository = new MockSongsRepository(sandbox);
 });
 
 test.afterEach((test) => {
