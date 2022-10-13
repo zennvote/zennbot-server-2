@@ -142,7 +142,7 @@
     ]
   },
   "c8": {
-    "reporter": ["html"],
+    "reporter": ["html", "json"],
     "all": true,
     "include": [
       "src/application",
