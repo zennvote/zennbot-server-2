@@ -4,10 +4,7 @@ import { Entity, EntityProps } from 'src/domain/types/entity';
 import { SongsService } from 'src/domain/songs/songs.service';
 import { RequestType, Song } from 'src/domain/songs/songs.entity';
 
-const requiredKey = ['id', 'twitchId', 'username', 'accountId'] as const;
-const optionalKey = [] as const;
-
-const constructorKey = [...requiredKey, ...optionalKey] as const;
+const constructorKey = ['id', 'twitchId', 'username', 'accountId'] as const;
 export type ViewerProps = EntityProps<Viewer, typeof constructorKey>;
 
 export class Viewer extends Entity {

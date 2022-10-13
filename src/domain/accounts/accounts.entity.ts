@@ -5,7 +5,7 @@ const requiredKey = ['id', 'username', 'ticket', 'ticketPiece'] as const;
 const optionalKey = ['twitchId', 'prefix'] as const;
 
 const constructorKey = [...requiredKey, ...optionalKey] as const;
-export type AccountProps = EntityProps<Account, typeof constructorKey>;
+export type AccountProps = EntityProps<Account, typeof requiredKey, typeof optionalKey>;
 
 export class Account extends Entity {
   public readonly id!: number;

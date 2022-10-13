@@ -18,6 +18,12 @@ export abstract class Entity {
   }
 }
 
-export type EntityProps<T extends Entity, K extends readonly (keyof T)[]> = {
-  [Key in K[number]]: T[Key]
+export type EntityProps<
+  T extends Entity,
+  K extends readonly (keyof T)[],
+  O extends readonly (keyof T)[] = [],
+> = {
+  [Key in K[number]]: T[Key];
+} & {
+  [Key in O[number]]?: T[Key];
 };
