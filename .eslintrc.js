@@ -50,5 +50,6 @@ module.exports = {
     'no-use-before-define': 'off',
     'class-methods-use-this': 'off',
     'default-case': 'off',
+    'operator-linebreak': 'off',
   },
 };
