@@ -15,13 +15,15 @@ import {
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { map } from 'rxjs';
 
-import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';
-import { isBusinessError } from 'src/util/business-error';
+import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 
-import { OnCommand } from 'src/libs/tmi/tmi.decorators';
-import Song, { RequestType } from './songs.entity';
+import { isBusinessError } from 'src/util/business-error';
+
+import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';
+
 import { SongsApplication } from './songs.application';
+import Song, { RequestType } from './songs.entity';
 
 @Controller('songs')
 export class SongsController {

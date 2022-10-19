@@ -5,12 +5,13 @@ import * as sinon from 'sinon';
 import { SinonSandbox } from 'sinon';
 
 import { isBusinessError } from 'src/util/business-error';
+
 import { MockSongsRepository } from 'src/infrastructure/persistence/songs/songs.mock';
 
 import { RequestType, Song, SongProps } from 'src/domain/songs/songs.entity';
-import { SongsService } from 'src/domain/songs/songs.service';
 import { songFactory } from 'src/domain/songs/songs.factory';
 import { SongsRepository } from 'src/domain/songs/songs.repository';
+import { SongsService } from 'src/domain/songs/songs.service';
 
 import { viewerFactory } from './viewers.factory';
 

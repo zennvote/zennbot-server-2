@@ -1,8 +1,8 @@
 import { BusinessError } from 'src/util/business-error';
-import { Entity, EntityProps } from 'src/domain/types/entity';
 
-import { SongsService } from 'src/domain/songs/songs.service';
 import { RequestType, Song } from 'src/domain/songs/songs.entity';
+import { SongsService } from 'src/domain/songs/songs.service';
+import { Entity, EntityProps } from 'src/domain/types/entity';
 
 const constructorKey = ['id', 'twitchId', 'username', 'accountId'] as const;
 export type ViewerProps = EntityProps<Viewer, typeof constructorKey>;

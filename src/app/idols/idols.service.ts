@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { IdolsRepository } from './idols.repository';
 
 @Injectable()

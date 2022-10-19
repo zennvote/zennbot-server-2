@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { Idol } from './idols.entity';
 import { IdolsRepository } from './idols.repository';
 import { IdolsService } from './idols.service';

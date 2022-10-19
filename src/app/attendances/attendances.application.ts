@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { BusinessError } from 'src/util/business-error';
 import * as twitch from 'src/util/twitch';
 
 import { ViewersRepository } from 'src/app/accounts/viewers.repository';
 
-import { ConfigService } from '@nestjs/config';
-import { AttendancesRepository } from './repositories/attendances.repository';
-import { Attendance } from './entities/attendance.entity';
 import { AttendDto } from './dtos/attend.dto';
+import { Attendance } from './entities/attendance.entity';
+import { AttendancesRepository } from './repositories/attendances.repository';
 
 @Injectable()
 export class AttendancesApplication {

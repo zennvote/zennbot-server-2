@@ -1,4 +1,5 @@
 import { Factory } from 'fishery';
+
 import { Viewer, ViewerProps } from 'src/domain/viewers/viewers.entity';
 
 export const viewerFactory = Factory.define<ViewerProps, Record<string, never>, Viewer>(

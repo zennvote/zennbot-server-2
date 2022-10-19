@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+
 import { ViewersModule } from 'src/app/accounts/viewers.module';
+
 import { AttendancesApplication } from './attendances.application';
-import { AttendancesRepository } from './repositories/attendances.repository';
 import { AttendancesController } from './attendances.controller';
+import { AttendancesRepository } from './repositories/attendances.repository';
 
 @Module({
   imports: [ViewersModule],

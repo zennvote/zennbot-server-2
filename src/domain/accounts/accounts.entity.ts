@@ -1,4 +1,5 @@
 import { BusinessError } from 'src/util/business-error';
+
 import { Entity, EntityProps } from 'src/domain/types/entity';
 
 const requiredKey = ['id', 'username', 'ticket', 'ticketPiece'] as const;

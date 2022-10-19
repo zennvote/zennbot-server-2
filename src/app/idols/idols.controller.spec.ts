@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
+
 import { BusinessError } from 'src/util/business-error';
+
 import { IdolsApplication } from './idols.application';
 import { IdolsController } from './idols.controller';
 import { Idol } from './idols.entity';

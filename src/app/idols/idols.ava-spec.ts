@@ -1,16 +1,18 @@
 /* eslint-disable no-param-reassign */
 
 import { INestApplication } from '@nestjs/common';
-import anyTest, { TestFn } from 'ava';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test } from '@nestjs/testing';
+import anyTest, { TestFn } from 'ava';
 import { sheets_v4 as sheetsV4 } from 'googleapis';
 import * as Sinon from 'sinon';
 
-import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 import { SHEETS_CLIENT } from 'src/libs/sheets/sheets.types';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { commandPayloadFactory } from 'src/libs/tmi/tmi.factory';
+
+import { AppModule } from 'src/app.module';
+
 import { getRowFromIdol, idolFactory } from './idols.factory';
 
 type TestContext = {

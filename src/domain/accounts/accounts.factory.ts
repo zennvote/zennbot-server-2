@@ -1,4 +1,5 @@
 import { Factory } from 'fishery';
+
 import { Account, AccountProps } from './accounts.entity';
 
 export const accountsFactory = Factory.define<AccountProps, Record<string, never>, Account>(

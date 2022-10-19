@@ -1,5 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { Client, Options } from 'tmi.js';
+
 import { TmiService } from './tmi.service';
 import { TMI_CLIENT } from './tmi.types';
 

@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
+
 import { BusinessError, isBusinessError } from 'src/util/business-error';
 
 import { AccountsRepository } from 'src/infrastructure/persistence/accounts/accounts.repository';
+import { SettingsRepository } from 'src/infrastructure/persistence/settings/settings.repository';
 import { SongsRepository } from 'src/infrastructure/persistence/songs/songs.repository';
 import { ViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.repository';
 
 import * as Settings from 'src/domain/settings/settings-store';
-import { SongsService } from 'src/domain/songs/songs.service';
-import { RequestType } from 'src/domain/songs/songs.entity';
-import { SettingsRepository } from 'src/infrastructure/persistence/settings/settings.repository';
 import { SettingsService } from 'src/domain/settings/settings.service';
+import { RequestType } from 'src/domain/songs/songs.entity';
+import { SongsService } from 'src/domain/songs/songs.service';
 
 @Injectable()
 export class SongsApplication {

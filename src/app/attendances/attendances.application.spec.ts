@@ -6,12 +6,12 @@ import { BusinessError } from 'src/util/business-error';
 import * as originalTwitch from 'src/util/twitch';
 
 import { viewerFactory } from 'src/app/accounts/entities/viewer.factory';
-import { ViewersRepository } from 'src/app/accounts/viewers.repository';
 import { Viewer } from 'src/app/accounts/viewers.entity';
+import { ViewersRepository } from 'src/app/accounts/viewers.repository';
 
+import { AttendancesApplication } from './attendances.application';
 import { attendanceFactory } from './entities/attendance.factory';
 import { AttendancesRepository } from './repositories/attendances.repository';
-import { AttendancesApplication } from './attendances.application';
 
 describe('AttendancesApplication', () => {
   let application: AttendancesApplication;

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
 import { AuthRepository } from 'src/app/auth/auth.repository';
+
 import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 

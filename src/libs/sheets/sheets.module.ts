@@ -1,6 +1,8 @@
-import { DynamicModule, Global, Module } from '@nestjs/common';
 import { readFileSync } from 'fs';
+
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import { google } from 'googleapis';
+
 import { SheetsService } from './sheets.service';
 import { SHEETS_CLIENT } from './sheets.types';
 

@@ -9,18 +9,18 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ViewersModule } from './app/accounts/viewers.module';
-import { SongsModule } from './app/songs/songs.module';
-import { TmiModule } from './libs/tmi/tmi.module';
-import { ManagerModule } from './app/managers/managers.module';
-import { SheetsModule } from './libs/sheets/sheets.module';
-import { UsersModule } from './app/users/users.module';
-import { AuthModule } from './app/auth/auth.module';
-import { SettingsModule } from './app/settings/settings.module';
-import { IdolsModule } from './app/idols/idols.module';
 import { AttendancesModule } from './app/attendances/attendances.module';
-import { PrismaModule } from './libs/prisma/prisma.module';
-import { HttpLoggerMiddleware } from './util/http-logger-middleware';
+import { AuthModule } from './app/auth/auth.module';
 import { GameModule } from './app/game/game.module';
+import { IdolsModule } from './app/idols/idols.module';
+import { ManagerModule } from './app/managers/managers.module';
+import { SettingsModule } from './app/settings/settings.module';
+import { SongsModule } from './app/songs/songs.module';
+import { UsersModule } from './app/users/users.module';
+import { PrismaModule } from './libs/prisma/prisma.module';
+import { SheetsModule } from './libs/sheets/sheets.module';
+import { TmiModule } from './libs/tmi/tmi.module';
+import { HttpLoggerMiddleware } from './util/http-logger-middleware';
 
 @Module({
   imports: [

@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { Factory } from 'fishery';
+
 import { User } from './user.entity';
 
 class UserFactory extends Factory<User> {

@@ -1,4 +1,5 @@
 import { SinonSandbox } from 'sinon';
+
 import { Account } from 'src/domain/accounts/accounts.entity';
 import { AccountsRepository } from 'src/domain/accounts/accounts.repository';
 

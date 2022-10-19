@@ -1,7 +1,10 @@
 import { Controller } from '@nestjs/common';
+
 import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
+
 import { isBusinessError } from 'src/util/business-error';
+
 import { IdolsApplication } from './idols.application';
 
 @Controller('idols')

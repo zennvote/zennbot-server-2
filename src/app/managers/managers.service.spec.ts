@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { PrismaService } from 'src/libs/prisma/prisma.service';
+
 import { ManagersService } from './managers.service';
 
 describe('ManagersService', () => {
