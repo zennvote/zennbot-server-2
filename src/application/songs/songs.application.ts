@@ -36,10 +36,12 @@ export class SongsApplication {
     const account = await this.accountsRepository.findByTwitchIdAndUsername(twitchId, username);
     if (account === null) return new BusinessError('no-account');
 
-    const paymentResult = account.payForRequestSong();
+    const isGoldenbellEnabled = await this.settingsService.getSetting(Settings.IsGoldenbellEnabled);
+
+    const paymentResult = isGoldenbellEnabled ? null : account.payForRequestSong();
     if (isBusinessError(paymentResult)) return paymentResult;
 
-    const requestType = await this.getRequestType(paymentResult);
+    const requestType = await this.getRequestType(paymentResult, isGoldenbellEnabled);
     const song = await viewer.requestSong(title, requestType, this.songsService);
     if (isBusinessError(song)) return song;
 
@@ -51,9 +53,7 @@ export class SongsApplication {
     return persisted;
   }
 
-  private async getRequestType(paymentResult: 'ticket' | 'ticketPiece') {
-    const isGoldenbellEnabled = await this.settingsService.getSetting(Settings.IsGoldenbellEnabled);
-
+  private async getRequestType(paymentResult: 'ticket' | 'ticketPiece' | null, isGoldenbellEnabled: boolean) {
     if (isGoldenbellEnabled) return RequestType.freemode;
     if (paymentResult === 'ticket') return RequestType.ticket;
     if (paymentResult === 'ticketPiece') return RequestType.ticketPiece;
