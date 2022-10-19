@@ -37,7 +37,7 @@ module.exports = {
       'ignorePackages',
       { 'js': 'never', 'jsx': 'never', 'ts': 'never', 'tsx': 'never' }
     ],
-    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/*.*spec.ts'] }],
+    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/*.*spec.ts', '**/*.ava.ts', '**/*.mock.ts'] }],
     'import/prefer-default-export': 'off',
     'import/no-cycle': 'off',
     'no-case-declarations': 'off',
@@ -46,5 +46,10 @@ module.exports = {
     'no-shadow': 'off',
     'consistent-return': 'off',
     'no-useless-constructor': 'off',
+    'lines-between-class-members': 'off',
+    'no-use-before-define': 'off',
+    'class-methods-use-this': 'off',
+    'default-case': 'off',
+    'operator-linebreak': 'off',
   },
 };
