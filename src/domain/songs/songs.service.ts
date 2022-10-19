@@ -1,5 +1,6 @@
-import { SongsRepository } from 'src/domain/songs/songs.repository';
 import { Viewer } from 'src/domain/viewers/viewers.entity';
+
+import { SongsRepository } from './songs.repository';
 
 export class SongsService {
   constructor(private readonly songsRepository: SongsRepository) {}

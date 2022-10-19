@@ -1,4 +1,4 @@
-import { Viewer } from 'src/domain/viewers/viewers.entity';
+import { Viewer } from './viewers.entity';
 
 export interface ViewersRepository {
   isExisting(twitchId: string): Promise<boolean>;
