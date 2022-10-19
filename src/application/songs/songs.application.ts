@@ -27,7 +27,7 @@ export class SongsApplication {
   }
 
   public async requestSong(twitchId: string, username: string, title: string) {
-    const isRequestEnabled = this.settingsService.getSetting(Settings.IsRequestEnabled);
+    const isRequestEnabled = await this.settingsService.getSetting(Settings.IsRequestEnabled);
     if (!isRequestEnabled) return new BusinessError('request-not-enabled');
 
     const viewer = await this.viewersRepository.findOne(twitchId);
