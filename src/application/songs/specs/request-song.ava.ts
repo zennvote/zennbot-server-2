@@ -17,6 +17,7 @@ import { Account, AccountProps } from 'src/domain/accounts/accounts.entity';
 import { songFactory } from 'src/domain/songs/songs.factory';
 import { MockSettingsRepository } from 'src/infrastructure/persistence/settings/settings.mock';
 import { Viewer } from 'src/domain/viewers/viewers.entity';
+import { IsGoldenbellEnabled, IsRequestEnabled } from 'src/domain/settings/settings-store';
 import { SongsApplication } from '../songs.application';
 
 type TestContext = {
@@ -127,6 +128,41 @@ test('조각을 통한 신청곡 신청 및 결제가 완료되어야 한다', a
   test.is(result.requestType, RequestType.ticketPiece);
 });
 
+test('골든벨일 시 포인트 소모 없이 신청되어야 한다', async (test) => {
+  const { application, viewer } = test.context;
+
+  const account = await accountsFactory.create({
+    twitchId: viewer.twitchId,
+    username: viewer.username,
+    ticket: 3,
+    ticketPiece: 10,
+  });
+  test.context.account = account;
+  test.context.settingsRepository.MockSettings[IsGoldenbellEnabled] = true;
+
+  const result = await application.requestSong(viewer.twitchId, viewer.username, 'test song');
+
+  test.false(isBusinessError(result));
+  if (isBusinessError(result)) return test.fail();
+
+  test.is(result.requestType, RequestType.freemode);
+  test.is(account.ticket, 3);
+  test.is(account.ticketPiece, 10);
+});
+
+test('신청 비활성화 시 실패해야 한다', async (test) => {
+  const { application, viewer } = test.context;
+
+  test.context.settingsRepository.MockSettings[IsRequestEnabled] = false;
+
+  const result = await application.requestSong(viewer.twitchId, viewer.username, 'test song');
+
+  test.true(isBusinessError(result));
+  if (!isBusinessError(result)) return test.fail();
+
+  test.is(result.error, 'request-not-enabled');
+});
+
 test('존재하지 않는 시청자의 경우 실패해야 한다.', async (test) => {
   const { sandbox, application } = test.context;
 
@@ -170,6 +206,24 @@ test('포인트가 부족한 경우 실패해야 한다.', async (test) => {
   if (!isBusinessError(result)) return test.fail();
 
   test.is(result.error, 'not-enough-point');
+});
+
+test('골든벨일 경우 포인트가 부족해도 신청 가능해야 한다.', async (test) => {
+  const { sandbox, application, viewer } = test.context;
+
+  const account = await accountsFactory.create({
+    twitchId: viewer.twitchId,
+    username: viewer.username,
+  });
+  test.context.accountsRepository.findByTwitchIdAndUsername = sandbox.fake.resolves(account);
+  test.context.settingsRepository.MockSettings[IsGoldenbellEnabled] = true;
+
+  const result = await application.requestSong(viewer.twitchId, viewer.username, 'test song');
+
+  test.false(isBusinessError(result));
+  if (isBusinessError(result)) return test.fail();
+
+  test.is(result.requestType, RequestType.freemode);
 });
 
 test('쿨타임인 경우 실패해야 한다.', async (test) => {
