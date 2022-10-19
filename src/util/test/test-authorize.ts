@@ -1,5 +1,6 @@
-import { User } from 'src/app/users/entities/user.entity';
 import * as jwt from 'jsonwebtoken';
+
+import { User } from 'src/app/users/entities/user.entity';
 
 export const getAuthorizeToken = (user: User): ['Authorization', string] => {
   if (process.env.JWT_SECRET === undefined) {

@@ -3,21 +3,22 @@
 import anyTest, { ExecutionContext, TestFn } from 'ava';
 import * as sinon from 'sinon';
 import { SinonSandbox } from 'sinon';
+
 import { isBusinessError } from 'src/util/business-error';
 
 import { MockAccountsRepository } from 'src/infrastructure/persistence/accounts/accounts.mock';
+import { MockSettingsRepository } from 'src/infrastructure/persistence/settings/settings.mock';
 import { MockSongsRepository } from 'src/infrastructure/persistence/songs/songs.mock';
 import { MockViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.mock';
 
-import { viewerFactory } from 'src/domain/viewers/viewers.factory';
-import { accountsFactory } from 'src/domain/accounts/accounts.factory';
-import { RequestType, Song, SongProps } from 'src/domain/songs/songs.entity';
 import { Account, AccountProps } from 'src/domain/accounts/accounts.entity';
-
-import { songFactory } from 'src/domain/songs/songs.factory';
-import { MockSettingsRepository } from 'src/infrastructure/persistence/settings/settings.mock';
-import { Viewer } from 'src/domain/viewers/viewers.entity';
+import { accountsFactory } from 'src/domain/accounts/accounts.factory';
 import { IsGoldenbellEnabled, IsRequestEnabled } from 'src/domain/settings/settings-store';
+import { RequestType, Song, SongProps } from 'src/domain/songs/songs.entity';
+import { songFactory } from 'src/domain/songs/songs.factory';
+import { Viewer } from 'src/domain/viewers/viewers.entity';
+import { viewerFactory } from 'src/domain/viewers/viewers.factory';
+
 import { SongsApplication } from '../songs.application';
 
 type TestContext = {

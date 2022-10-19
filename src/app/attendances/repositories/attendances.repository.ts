@@ -1,6 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
 import { Attendance as PrismaAttendance } from '@prisma/client';
+import { Cache } from 'cache-manager';
 
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 

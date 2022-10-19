@@ -1,4 +1,5 @@
 import { Test } from '@nestjs/testing';
+
 import { FlagSetting, Setting } from './entities/setting.entity';
 import { SettingsRepository } from './settings.repository';
 import { SettingsService } from './settings.service';

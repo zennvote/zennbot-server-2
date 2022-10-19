@@ -1,10 +1,11 @@
 import { Test } from '@nestjs/testing';
+
+import { BusinessError, isBusinessError } from 'src/util/business-error';
+
+import { Viewer } from 'src/app/accounts/viewers.entity';
+import { ViewersService } from 'src/app/accounts/viewers.service';
 import { FlagSetting } from 'src/app/settings/entities/setting.entity';
 import { SettingsService } from 'src/app/settings/settings.service';
-import { BusinessError, isBusinessError } from 'src/util/business-error';
-import { Viewer } from 'src/app/accounts/viewers.entity';
-
-import { ViewersService } from 'src/app/accounts/viewers.service';
 
 import { SongsApplication } from './songs.application';
 import Song, { RequestType } from './songs.entity';

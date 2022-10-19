@@ -1,5 +1,6 @@
 import { NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
+
 import { MainLogger } from './logger';
 
 export class HttpLoggerMiddleware implements NestMiddleware {

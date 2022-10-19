@@ -1,4 +1,5 @@
 import { SinonSandbox } from 'sinon';
+
 import { SettingTypeMap } from 'src/domain/settings/settings-store';
 import { SettingsRepository } from 'src/domain/settings/settings.repository';
 

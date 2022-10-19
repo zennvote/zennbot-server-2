@@ -40,6 +40,50 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/*.*spec.ts', '**/*.ava.ts', '**/*.mock.ts'] }],
     'import/prefer-default-export': 'off',
     'import/no-cycle': 'off',
+    'import/order': [
+      'error',
+      {
+        'groups': [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        'pathGroups': [
+          {
+            'pattern': 'src/libs/**',
+            'group': 'external',
+            'position': 'after',
+          },
+          {
+            'pattern': 'src/util/**',
+            'group': 'external',
+            'position': 'after',
+          },
+          {
+            'pattern': 'src/infrastructure/**',
+            'group': 'internal',
+            'position': 'before',
+          },
+          {
+            'pattern': 'src/application/**',
+            'group': 'internal',
+          },
+          {
+            'pattern': 'src/domain/**',
+            'group': 'internal',
+            'position': 'after',
+          }
+        ],
+        'newlines-between': 'always',
+        'alphabetize': {
+          'order': 'asc',
+          'caseInsensitive': true
+        },
+      },
+    ],
     'no-case-declarations': 'off',
     'max-classes-per-file': 'off',
     'no-underscore-dangle': 'off',

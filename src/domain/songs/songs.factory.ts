@@ -1,4 +1,5 @@
 import { Factory } from 'fishery';
+
 import { RequestType, Song, SongProps } from './songs.entity';
 
 export const songFactory = Factory.define<SongProps, Record<string, never>, Song>(

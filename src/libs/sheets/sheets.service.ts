@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { sheets_v4 as sheetsV4 } from 'googleapis';
+
 import { SheetsRequest, SHEETS_CLIENT } from './sheets.types';
 
 const s = (value: number) => String.fromCharCode(value);

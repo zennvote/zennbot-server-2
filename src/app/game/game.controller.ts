@@ -1,6 +1,8 @@
 import { Controller } from '@nestjs/common';
+
 import { OnCommand } from 'src/libs/tmi/tmi.decorators';
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
+
 import { RollDiceDto } from './dtos/roll-dice.dto';
 import { GameApplication } from './game.application';
 

@@ -1,5 +1,6 @@
-import { Entity, EntityProps } from 'src/domain/types/entity';
 import { BusinessError } from 'src/util/business-error';
+
+import { Entity, EntityProps } from 'src/domain/types/entity';
 
 export enum RequestType {
   ticket = '티켓',

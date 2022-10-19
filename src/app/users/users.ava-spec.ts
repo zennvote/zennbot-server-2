@@ -1,14 +1,16 @@
 /* eslint-disable no-param-reassign */
 
 import { INestApplication } from '@nestjs/common';
-import anyTest, { TestFn } from 'ava';
-import * as request from 'supertest';
-import * as bcrypt from 'bcrypt';
 import { Test } from '@nestjs/testing';
+import anyTest, { TestFn } from 'ava';
+import * as bcrypt from 'bcrypt';
+import * as request from 'supertest';
+
+import { PrismaService } from 'src/libs/prisma/prisma.service';
+
+import { transactionalTest } from 'src/util/test/test-transactional';
 
 import { AppModule } from 'src/app.module';
-import { PrismaService } from 'src/libs/prisma/prisma.service';
-import { transactionalTest } from 'src/util/test/test-transactional';
 
 type TestContext = {
   app: INestApplication,

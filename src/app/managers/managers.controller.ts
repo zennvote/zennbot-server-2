@@ -2,7 +2,9 @@ import {
   Body, Controller, Delete, Get, Param, Post, UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+
 import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';
+
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { Manager } from './managers.entity';
 import { ManagersService } from './managers.service';

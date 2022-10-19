@@ -1,4 +1,4 @@
-import { Song } from 'src/domain/songs/songs.entity';
+import { Song } from './songs.entity';
 
 export interface SongsRepository {
   save(song: Song): Promise<Song>;

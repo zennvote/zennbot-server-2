@@ -1,4 +1,5 @@
 import { Factory } from 'fishery';
+
 import { Attendance } from './attendance.entity';
 
 type AttendanceTransientParams = {

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
 import { PrismaService } from 'src/libs/prisma/prisma.service';
+
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { Manager } from './managers.entity';
 

@@ -1,14 +1,13 @@
+import { DynamicModule, Module, OnApplicationBootstrap } from '@nestjs/common';
 import {
   DiscoveryModule, DiscoveryService, MetadataScanner, Reflector,
 } from '@nestjs/core';
-import { DynamicModule, Module, OnApplicationBootstrap } from '@nestjs/common';
 
 import { CommandPayload } from 'src/libs/tmi/tmi.types';
 
 import { MANAGER_CHAT_GUARD_METADATA } from './guards/manager-chat.guard';
-
-import { ManagersService } from './managers.service';
 import { ManagersController } from './managers.controller';
+import { ManagersService } from './managers.service';
 
 @Module({
   imports: [DiscoveryModule],

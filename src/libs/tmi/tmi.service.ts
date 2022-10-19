@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { MainLogger } from 'src/util/logger';
 import { Client } from 'tmi.js';
+
+import { MainLogger } from 'src/util/logger';
+
 import { TMI_CLIENT } from './tmi.types';
 
 @Injectable()

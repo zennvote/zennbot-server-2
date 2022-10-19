@@ -1,4 +1,5 @@
 import { Factory } from 'fishery';
+
 import { Viewer } from '../viewers.entity';
 
 class ViewerFactory extends Factory<Viewer> {
