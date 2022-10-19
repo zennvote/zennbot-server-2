@@ -5,10 +5,4 @@ export class SettingsRepository implements SettingsRepositoryInterface {
   getSetting<Key extends keyof SettingTypeMap>(key: Key): Promise<SettingTypeMap[Key]> {
     throw new Error('Method not implemented.');
   }
-  setSetting<Key extends keyof SettingTypeMap>(
-    key: Key,
-    value: SettingTypeMap[Key],
-  ): Promise<SettingTypeMap[Key]> {
-    throw new Error('Method not implemented.');
-  }
 }

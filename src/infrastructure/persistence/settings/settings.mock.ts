@@ -11,5 +11,4 @@ export class MockSettingsRepository implements SettingsRepository {
   };
 
   public getSetting = this.sinon.fake(async (key) => this.MockSettings[key]);
-  public setSetting = this.sinon.fake(async (key, value) => value);
 }

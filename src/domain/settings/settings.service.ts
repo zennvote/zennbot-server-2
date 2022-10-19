@@ -9,10 +9,4 @@ export class SettingsService {
   ): Promise<SettingTypeMap[Key]> {
     return this.settingsRepository.getSetting(key);
   }
-
-  public async setSetting<Key extends keyof SettingTypeMap>(
-    key: Key,
-  ): Promise<SettingTypeMap[Key]> {
-    return this.settingsRepository.getSetting(key);
-  }
 }
