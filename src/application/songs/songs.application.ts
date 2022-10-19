@@ -57,6 +57,8 @@ export class SongsApplication {
     if (isGoldenbellEnabled) return RequestType.freemode;
     if (paymentResult === 'ticket') return RequestType.ticket;
     if (paymentResult === 'ticketPiece') return RequestType.ticketPiece;
+    /* c8 ignore next 4 */
+    /* ignore logically unreachable code */
 
     throw new Error('invalid payment result');
   }
