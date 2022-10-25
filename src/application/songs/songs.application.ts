@@ -31,10 +31,10 @@ export class SongsApplication {
     const isRequestEnabled = await this.settingsService.getSetting(Settings.IsRequestEnabled);
     if (!isRequestEnabled) return new BusinessError('request-not-enabled');
 
-    const viewer = await this.viewersRepository.findOne(twitchId);
+    const viewer = await this.viewersRepository.findOne(twitchId, username);
     if (viewer === null) return new BusinessError('no-viewer');
 
-    const account = await this.accountsRepository.findByTwitchIdAndUsername(twitchId, username);
+    const account = await this.accountsRepository.find(viewer.id);
     if (account === null) return new BusinessError('no-account');
 
     const isGoldenbellEnabled = await this.settingsService.getSetting(Settings.IsGoldenbellEnabled);

@@ -60,17 +60,22 @@ describe('SheetsService', () => {
 
   describe('updateSheets', () => {
     it('시트의 특정 row를 수정할 수 있어야 한다.', async () => {
-      const batchUpdateMock = jest.fn();
-      sheetsClient.spreadsheets.values.batchUpdate = batchUpdateMock;
+      const updateMock = jest.fn().mockResolvedValue({
+        data: { updatedData: { values: [['testviewer7', 'testviewer7', '12', '16', undefined]] } },
+      });
+      sheetsClient.spreadsheets.values.update = updateMock;
 
       await service.updateSheets(sheetsRequest, 7, { ticket: 12, ticketPiece: 16, twitchId: 'testviewer7' });
 
-      expect(batchUpdateMock).toBeCalled();
-      expect(batchUpdateMock.mock.calls[0][0].requestBody.data).toIncludeAllMembers([
-        { range: '!A13', values: [['testviewer7']] },
-        { range: '!C13', values: [[16]] },
-        { range: '!D13', values: [[12]] },
-      ]);
+      expect(updateMock).toBeCalled();
+      expect(updateMock.mock.calls[0][0].range).toBe('A13:E13');
+      expect(updateMock.mock.calls[0][0].requestBody.values).toMatchObject([[
+        'testviewer7',
+        undefined,
+        16,
+        12,
+        undefined,
+      ]]);
     });
   });
 });

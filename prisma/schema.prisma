@@ -48,4 +48,16 @@ model Viewer {
   twitchId  String @unique
   username  String @unique
   accountId Int
+  Song      Song[]
+}
+
+model Song {
+  id           Int       @id @default(autoincrement())
+  title        String
+  consumedAt   DateTime?
+  requestorId  Int
+  requestType  String
+  displayOrder Int
+
+  requestor Viewer @relation(fields: [requestorId], references: [id])
 }
