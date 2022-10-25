@@ -70,7 +70,7 @@ const setupDefaultCase = async (test: ExecutionContext<TestContext>) => {
   test.context.account = account;
 
   test.context.viewersRepository.findOne = sandbox.fake(async () => test.context.viewer);
-  test.context.accountsRepository.findByTwitchIdAndUsername =
+  test.context.accountsRepository.find =
     sandbox.fake(async () => test.context.account);
   test.context.songsRepository.save = sandbox.fake(async (song) => {
     (song.id as any) = 3;
@@ -180,7 +180,7 @@ test('존재하지 않는 시청자의 경우 실패해야 한다.', async (test
 test('Account가 존재하지 않는 시청자의 경우 실패해야 한다.', async (test) => {
   const { sandbox, application } = test.context;
 
-  test.context.accountsRepository.findByTwitchIdAndUsername = sandbox.fake.resolves(null);
+  test.context.accountsRepository.find = sandbox.fake.resolves(null);
 
   const result = await application.requestSong('no-user', 'no-user', 'test song');
 
@@ -199,7 +199,7 @@ test('포인트가 부족한 경우 실패해야 한다.', async (test) => {
     username: viewer.username,
   });
   test.context.viewersRepository.findOne = sandbox.fake.resolves(viewer);
-  test.context.accountsRepository.findByTwitchIdAndUsername = sandbox.fake.resolves(account);
+  test.context.accountsRepository.find = sandbox.fake.resolves(account);
 
   const result = await application.requestSong(viewer.twitchId, viewer.username, 'test song');
 
@@ -216,7 +216,7 @@ test('골든벨일 경우 포인트가 부족해도 신청 가능해야 한다.'
     twitchId: viewer.twitchId,
     username: viewer.username,
   });
-  test.context.accountsRepository.findByTwitchIdAndUsername = sandbox.fake.resolves(account);
+  test.context.accountsRepository.find = sandbox.fake.resolves(account);
   test.context.settingsRepository.MockSettings[IsGoldenbellEnabled] = true;
 
   const result = await application.requestSong(viewer.twitchId, viewer.username, 'test song');
@@ -237,7 +237,7 @@ test('쿨타임인 경우 실패해야 한다.', async (test) => {
     ticket: 10,
   });
   test.context.viewersRepository.findOne = sandbox.fake.resolves(viewer);
-  test.context.accountsRepository.findByTwitchIdAndUsername = sandbox.fake.resolves(account);
+  test.context.accountsRepository.find = sandbox.fake.resolves(account);
   test.context.songsRepository.getCooltimeSongs = sandbox.fake.resolves(
     [await songFactory.create({ requestorId: viewer.id })],
   );
