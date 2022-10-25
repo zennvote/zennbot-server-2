@@ -1,44 +1,39 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { sheets_v4 as sheetsV4 } from 'googleapis';
 
 import { SheetsRequest, SHEETS_CLIENT } from './sheets.types';
+import { convertToRowType, getIndexFromRange, getRange } from './sheets.util';
 
-const s = (value: number) => String.fromCharCode(value);
+const fillDefaultValue = <T extends ReadonlyArray<string>>(
+  request: SheetsRequest<T>,
+): Required<SheetsRequest<T>> => ({
+    startRow: 1,
+    startColumn: 1,
+    sheetsName: '',
+    ...request,
+  });
 
 @Injectable()
 export class SheetsService {
-  private readonly logger = new Logger(SheetsService.name);
-
   constructor(@Inject(SHEETS_CLIENT) private readonly client: sheetsV4.Sheets) { }
 
   public async getSheets<T extends ReadonlyArray<string>>(request: SheetsRequest<T>) {
-    type RowType = { [key in T[number]]: string | undefined };
-
-    const { spreadsheetId, columns } = request;
-    const sheetsName = '';
-    const startColumn = request.startColumn ?? 1;
-    const startRow = request.startRow ?? 1;
-
-    const range = `${sheetsName}!${s(64 + startColumn)}${startRow}:${s(64 + startColumn + columns.length)}`;
-
     const {
-      data: { values },
-    } = await this.client.spreadsheets.values.get({ spreadsheetId, range });
+      spreadsheetId, columns, startColumn, startRow, sheetsName,
+    } = fillDefaultValue(request);
 
-    if (!values) {
-      return [] as ({ index: number } & RowType)[];
-    }
+    const range = getRange({
+      sheetsName,
+      start: { column: startColumn, row: startRow },
+      end: { column: startColumn + columns.length },
+    });
 
-    const result = values.map((row, index) => ({
-      index,
-      ...(Object.fromEntries(
-        row
-          .map((value, keyIndex) => (
-            columns[keyIndex] ? [columns[keyIndex], value as string] : undefined
-          ))
-          .filter((value): value is string[] => value !== undefined),
-      ) as RowType),
-    }));
+    const { data: { values } }
+      = await this.client.spreadsheets.values.get({ spreadsheetId, range });
+
+    if (!values) return [];
+
+    const result = values.map((row, index) => convertToRowType(columns, index, row));
 
     return result;
   }
@@ -48,53 +43,59 @@ export class SheetsService {
     index: number,
     values: { [key in T[number]]?: any },
   ) {
-    const { spreadsheetId, columns } = request;
-    const sheetsName = '';
-    const startColumn = request.startColumn ?? 1;
-    const startRow = request.startRow ?? 1;
+    const {
+      spreadsheetId, columns, startColumn, startRow, sheetsName,
+    } = fillDefaultValue(request);
 
-    const columnTable = Object.fromEntries(
-      columns.map((column, columnIndex) => [column, s(64 + startColumn + columnIndex)]),
-    );
-
-    const data = Object
-      .entries(values)
-      .filter(([key]) => !!columnTable[key])
-      .map(([key, value]) => ({
-        range: `${sheetsName}!${columnTable[key]}${index + startRow}`,
-        values: [[value]],
-      }));
-
-    this.logger.log('updateSheets > sheets update requested', { request, index, values });
-
-    const response = await this.client.spreadsheets.values.batchUpdate({
-      spreadsheetId,
-      requestBody: { data, valueInputOption: 'RAW' },
+    const range = getRange({
+      sheetsName,
+      start: { column: startColumn, row: startRow + index },
+      end: { column: startColumn + columns.length, row: startRow + index },
     });
 
-    this.logger.log('updateSheets > sheets updated', { response });
+    const data = columns.map((column) => values[column]);
+
+    const { data: { updatedData } } = await this.client.spreadsheets.values.update({
+      spreadsheetId,
+      range,
+      includeValuesInResponse: true,
+      valueInputOption: 'RAW',
+      requestBody: { values: [data] },
+    });
+
+    if (!updatedData?.values?.[0]) throw new Error('Cannot get updated data');
+
+    return convertToRowType(columns, index, updatedData.values[0]);
   }
 
   public async appendRow<T extends ReadonlyArray<string>>(
     request: SheetsRequest<T>,
     values: { [key in T[number]]?: any },
   ) {
-    const { spreadsheetId, columns } = request;
-    const sheetsName = request.sheetsName ?? '';
-    const startColumn = request.startColumn ?? 1;
+    const {
+      spreadsheetId, columns, startColumn, startRow, sheetsName,
+    } = fillDefaultValue(request);
 
-    const value = [columns.map((column) => values[column])];
+    const range = getRange({
+      sheetsName,
+      start: { column: startColumn },
+      end: { column: startColumn + columns.length },
+    });
+    const data = columns.map((column) => values[column]);
 
-    this.logger.log('appendRow > sheets update requested', { request, values });
-
-    const response = await this.client.spreadsheets.values.append({
+    const { data: { updates } } = await this.client.spreadsheets.values.append({
       spreadsheetId,
-      range: `${sheetsName}!${s(64 + startColumn)}:${s(64 + startColumn + columns.length)}`,
+      range,
       includeValuesInResponse: true,
       valueInputOption: 'RAW',
-      requestBody: { values: value },
+      requestBody: { values: [data] },
     });
 
-    this.logger.log('appendRow > sheets updated', { response });
+    if (!updates?.updatedData?.values?.[0] || !updates?.updatedData.range) {
+      throw new Error('Cannot get updated data');
+    }
+    const index = getIndexFromRange(updates.updatedData.range, startRow);
+
+    return convertToRowType(columns, index, updates.updatedData.values[0]);
   }
 }
