@@ -43,10 +43,10 @@ test.beforeEach(async (test) => {
   test.context.settingsRepository = new MockSettingsRepository(sandbox);
 
   test.context.application = new SongsApplication(
-    test.context.viewersRepository,
-    test.context.accountsRepository,
-    test.context.songsRepository,
-    test.context.settingsRepository,
+    test.context.viewersRepository as any,
+    test.context.accountsRepository as any,
+    test.context.songsRepository as any,
+    test.context.settingsRepository as any,
   );
 
   await setupDefaultCase(test);
