@@ -50,7 +50,7 @@ export class SheetsService {
     const range = getRange({
       sheetsName,
       start: { column: startColumn, row: startRow + index },
-      end: { column: startColumn + columns.length, row: startRow + index },
+      end: { column: startColumn + columns.length - 1, row: startRow + index },
     });
 
     const data = columns.map((column) => values[column]);
@@ -79,7 +79,7 @@ export class SheetsService {
     const range = getRange({
       sheetsName,
       start: { column: startColumn },
-      end: { column: startColumn + columns.length },
+      end: { column: startColumn + columns.length - 1 },
     });
     const data = columns.map((column) => values[column]);
 
