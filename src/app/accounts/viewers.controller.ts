@@ -19,27 +19,6 @@ export class ViewersController {
     return this.viewersService.getViewers();
   }
 
-  @OnCommand('조각')
-  async whoAmICommand(payload: CommandPayload) {
-    const twitchId = payload.tags.username;
-    const username = payload.tags['display-name'];
-
-    if (!twitchId || !username) {
-      return;
-    }
-
-    const viewer = await this.viewersService.getViewer(twitchId, username);
-
-    if (!viewer) {
-      return payload.send(`${username}님의 데이터가 존재하지 않습니다!`);
-    }
-
-    const { ticket, ticketPiece, prefix } = viewer;
-    const formattedPrefix = prefix ? `[${prefix}] ` : '';
-
-    payload.send(`${formattedPrefix}${username} 티켓 ${ticket}장 | 조각 ${ticketPiece}장 보유중`);
-  }
-
   @ManagerChatGuard()
   @OnCommand('시청자등록')
   async registerViewer(payload: CommandPayload) {
