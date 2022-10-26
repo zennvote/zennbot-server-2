@@ -11,6 +11,7 @@ export const viewerFactory = Factory.define<ViewerProps, Record<string, never>, 
       accountId: -1,
       twitchId: `테스트시청자${sequence}`,
       username: `testviewer${sequence}`,
+      viasIdolIds: [],
       ...params,
     };
   },

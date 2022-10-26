@@ -4,7 +4,7 @@ import { RequestType, Song } from 'src/domain/songs/songs.entity';
 import { SongsService } from 'src/domain/songs/songs.service';
 import { Entity, EntityProps } from 'src/domain/types/entity';
 
-const constructorKey = ['id', 'twitchId', 'username', 'accountId'] as const;
+const constructorKey = ['id', 'twitchId', 'username', 'accountId', 'viasIdolIds'] as const;
 export type ViewerProps = EntityProps<Viewer, typeof constructorKey>;
 
 export class Viewer extends Entity {
@@ -12,6 +12,7 @@ export class Viewer extends Entity {
   public readonly twitchId!: string;
   public readonly username!: string;
   public readonly accountId!: number;
+  public readonly viasIdolIds!: number[];
 
   constructor(props: ViewerProps) {
     super(props, constructorKey);
