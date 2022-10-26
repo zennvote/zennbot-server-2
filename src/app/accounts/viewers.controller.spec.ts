@@ -60,54 +60,6 @@ describe('ViewersController', () => {
     });
   });
 
-  describe('COMMAND 조각', () => {
-    it('사용자의 정보를 반환해야 한다.', async () => {
-      service.getViewer = jest.fn(
-        async (): Promise<Viewer> => new Viewer({
-          index: 1,
-          ticket: 10,
-          ticketPiece: 12,
-          username: '테스트유저1',
-          prefix: 'test-prefix',
-        }),
-      );
-      const sendFn = jest.fn();
-
-      await controller.whoAmICommand({
-        message: '!조각',
-        args: [],
-        channel: 'channel',
-        tags: {
-          username: 'testuser1',
-          'display-name': '테스트유저1',
-        },
-        send: sendFn,
-      });
-
-      expect(service.getViewer).toBeCalledWith('testuser1', '테스트유저1');
-      expect(sendFn).toBeCalledWith('[test-prefix] 테스트유저1 티켓 10장 | 조각 12장 보유중');
-    });
-
-    it('사용자 정보가 없을 시 경고 메시지를 반환해야 한다', async () => {
-      service.getViewer = jest.fn(async () => null);
-      const sendFn = jest.fn();
-
-      await controller.whoAmICommand({
-        message: '!조각',
-        args: [],
-        channel: 'channel',
-        tags: {
-          username: 'testuser1',
-          'display-name': '테스트유저1',
-        },
-        send: sendFn,
-      });
-
-      expect(service.getViewer).toBeCalledWith('testuser1', '테스트유저1');
-      expect(sendFn).toBeCalledWith('테스트유저1님의 데이터가 존재하지 않습니다!');
-    });
-  });
-
   describe('COMMAND 지급', () => {
     it('헤당 유저에게 티켓을 지급해야 한다', async () => {
       service.setPointsWithUsername = jest.fn(async () => true);
