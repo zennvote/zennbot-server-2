@@ -17,6 +17,7 @@ import { ManagerModule } from './app/managers/managers.module';
 import { SettingsModule } from './app/settings/settings.module';
 import { SongsModule } from './app/songs/songs.module';
 import { UsersModule } from './app/users/users.module';
+import { RepositoryModule } from './infrastructure/persistence/repository.module';
 import { TmiControllerModules } from './infrastructure/presentation/tmi/tmi.controller';
 import { PrismaModule } from './libs/prisma/prisma.module';
 import { SheetsModule } from './libs/sheets/sheets.module';
@@ -83,6 +84,7 @@ import { HttpLoggerMiddleware } from './util/http-logger-middleware';
     AttendancesModule,
     GameModule,
     PrismaModule,
+    RepositoryModule,
     ...TmiControllerModules,
   ],
   controllers: [AppController],
