@@ -1,7 +1,7 @@
 import { Entity, EntityProps } from 'src/domain/types/entity';
 
 const requiredKey = [
-  'lastName', 'birthday', 'age', 'height', 'weight', 'hometown', 'introduction',
+  'id', 'lastName', 'birthday', 'age', 'height', 'weight', 'hometown', 'introduction',
 ] as const;
 const optionalKey = [
   'firstName', 'company', 'unit', 'type', 'threeSize', 'cv',
