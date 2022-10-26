@@ -2,12 +2,12 @@
 
 import anyTest, { TestFn } from 'ava';
 
-import { Idol } from './idols.entity';
+import { idolsFactory } from './idols.factory';
 
 const test = anyTest as TestFn;
 
-test('형식에 맞게 아이돌 정보를 출력할 수 있어야 한다.', (test) => {
-  const idol = new Idol({
+test('형식에 맞게 아이돌 정보를 출력할 수 있어야 한다.', async (test) => {
+  const idol = await idolsFactory.clearOptional().create({
     firstName: '히구치',
     lastName: '마도카',
     company: '283',
@@ -28,8 +28,8 @@ test('형식에 맞게 아이돌 정보를 출력할 수 있어야 한다.', (te
   test.is(result, '히구치 마도카 / 283 프로덕션, noctchill 소속, 쿨타입 / 10월 27일생 / 17세 / 159cm, 47kg, 79-55-79 / 도쿄 출신 / CV. 츠지야 리오 / 본심을 알다가도 모를 아티스트 아이돌');
 });
 
-test('nullable한 정보를 정상적으로 표기해야 한다.', (test) => {
-  const idol = new Idol({
+test('nullable한 정보를 정상적으로 표기해야 한다.', async (test) => {
+  const idol = await idolsFactory.clearOptional().create({
     lastName: '마도카',
     company: '283',
     birthday: '10월 27일',
@@ -45,8 +45,8 @@ test('nullable한 정보를 정상적으로 표기해야 한다.', (test) => {
   test.is(result, '마도카 / 283 프로덕션 / 10월 27일생 / 17세 / 159cm, 47kg / 도쿄 출신 / 본심을 알다가도 모를 아티스트 아이돌');
 });
 
-test('비정규 정보를 정상적으로 표기해야 한다.', (test) => {
-  const idol = new Idol({
+test('비정규 정보를 정상적으로 표기해야 한다.', async (test) => {
+  const idol = await idolsFactory.clearOptional().create({
     lastName: '마도카',
     company: '불명',
     birthday: '불명',

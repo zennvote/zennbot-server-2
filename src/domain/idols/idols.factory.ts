@@ -2,7 +2,18 @@ import { Factory } from 'fishery';
 
 import { Idol, IdolProps } from './idols.entity';
 
-export const idolsFactory = Factory.define<IdolProps, Record<string, never>, Idol>(
+class IdolsFactory extends Factory<IdolProps, Record<string, never>, Idol> {
+  clearOptional() {
+    return this.params({
+      firstName: undefined,
+      type: undefined,
+      threeSize: undefined,
+      cv: undefined,
+    });
+  }
+}
+
+export const idolsFactory = IdolsFactory.define(
   ({ params, sequence, onCreate }) => {
     onCreate((props) => new Idol(props));
 
