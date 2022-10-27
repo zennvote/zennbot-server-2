@@ -8,9 +8,10 @@ export const viewerFactory = Factory.define<ViewerProps, Record<string, never>, 
 
     return {
       id: sequence,
-      accountId: -1,
       twitchId: `테스트시청자${sequence}`,
       username: `testviewer${sequence}`,
+      ticket: 0,
+      ticketPiece: 0,
       viasIdolIds: [],
       ...params,
     };

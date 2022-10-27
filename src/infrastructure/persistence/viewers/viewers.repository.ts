@@ -1,90 +1,105 @@
 import { Injectable } from '@nestjs/common';
-import { Viewer as ViewerDataModel } from '@prisma/client';
 
 import { PrismaService } from 'src/libs/prisma/prisma.service';
-
-import { AccountsRepository } from 'src/infrastructure/persistence/accounts/accounts.repository';
+import { SheetsService } from 'src/libs/sheets/sheets.service';
 
 import { Viewer } from 'src/domain/viewers/viewers.entity';
 import { ViewersRepository as ViewersRepositoryInterface } from 'src/domain/viewers/viewers.repository';
 
+type ViewerDataModel = {
+  index: number;
+  twitchId?: string;
+  username?: string;
+  ticketPiece?: string;
+  ticket?: string;
+  prefix?: string;
+}
+
 @Injectable()
 export class ViewersRepository implements ViewersRepositoryInterface {
+  private readonly sheetsInfo = {
+    spreadsheetId: process.env.SHEETS_ID ?? '',
+    columns: [
+      'twitchId',
+      'username',
+      'ticketPiece',
+      'ticket',
+      'prefix',
+    ] as const,
+    startRow: 6,
+  };
+
   constructor(
     private readonly prisma: PrismaService,
-    private readonly accountsRepository: AccountsRepository,
+    private readonly sheets: SheetsService,
   ) {}
 
-  public async isExisting(twitchId: string): Promise<boolean> {
-    const result = await this.prisma.viewer.findFirst({ where: { twitchId } });
+  async findOne(twitchId: string, username: string): Promise<Viewer | null> {
+    const rows = await this.sheets.getSheets(this.sheetsInfo);
 
-    return result !== null;
-  }
+    const row = rows.find((row) => row.twitchId === twitchId || row.username === username);
+    if (!row) return null;
 
-  public async findOne(twitchId: string, username: string): Promise<Viewer | null> {
-    const result = await this.prisma.viewer.findFirst({
-      where: { OR: [{ twitchId }, { username }] },
-      include: { biasIdols: { select: { idolId: true } } },
-    });
-
-    if (!result) {
-      const account = await this.accountsRepository.findByTwitchIdAndUsername(twitchId, username);
-      if (!account) return null;
-
-      return this.create(new Viewer({
-        id: -1, twitchId, username, accountId: account.id, viasIdolIds: [],
-      }));
+    if (row.username !== username || row.twitchId !== twitchId) {
+      await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
 
-    return convertFromDataModel(result);
+    const biasIdolQuery = await this.prisma.biasIdol.findMany({
+      where: { viewerId: row.index },
+      select: { idolId: true },
+    });
+    const biasIdolIds = biasIdolQuery.map((query) => query.idolId);
+
+    return convertFromDataModel(row, biasIdolIds);
   }
 
-  public async findByBiasIdols(idolId: number): Promise<Viewer[]> {
-    const result = await this.prisma.viewer.findMany({
-      where: {
-        biasIdols: { some: { idolId } },
+  async findByBiasIdols(idolId: number): Promise<Viewer[]> {
+    const viewerQuery = await this.prisma.biasIdol.findMany({
+      where: { idolId },
+      include: {
+        viewer: { include: { biasIdols: true } },
       },
-      include: { biasIdols: { select: { idolId: true } } },
     });
 
-    return result.map(convertFromDataModel);
+    const rows = await this.sheets.getSheets(this.sheetsInfo);
+    const filtered = viewerQuery
+      .map((query) => convertFromDataModel(
+        rows[query.viewerId],
+        query.viewer.biasIdols.map((bias) => bias.idolId),
+      ));
+
+    return filtered;
   }
 
-  public async save(viewer: Viewer): Promise<Viewer> {
+  async save(viewer: Viewer): Promise<Viewer> {
     if (!viewer.persisted) {
       return this.create(viewer);
     }
 
-    const result = await this.prisma.viewer.update({
-      data: viewer,
-      where: { id: viewer.id },
-      include: { biasIdols: { select: { idolId: true } } },
-    });
+    const result = await this.sheets.updateSheets(this.sheetsInfo, viewer.id, viewer);
 
-    return convertFromDataModel(result);
+    return convertFromDataModel(result, viewer.viasIdolIds);
   }
 
   private async create(viewer: Viewer): Promise<Viewer> {
-    const result = await this.prisma.viewer.create({
-      data: {
-        ...viewer, id: undefined,
-      },
-    });
+    const result = await this.sheets.appendRow(this.sheetsInfo, viewer);
 
-    return convertFromDataModel(result);
+    return convertFromDataModel(result, []);
   }
 }
 
-type DataModel = ViewerDataModel & {
-  biasIdols?: {
-      idolId: number;
-  }[];
-};
+const convertFromDataModel = (row: ViewerDataModel, viasIdolIds: number[]) => {
+  if (!row.username || !row.ticket || !row.ticketPiece) {
+    throw new Error(`Essential row was empty: ${JSON.stringify(row)}`);
+  }
 
-const convertFromDataModel = (datamodel: DataModel) => new Viewer({
-  id: datamodel.id,
-  twitchId: datamodel.twitchId,
-  username: datamodel.twitchId,
-  accountId: datamodel.accountId,
-  viasIdolIds: (datamodel.biasIdols ?? []).map((biasIdol) => biasIdol.idolId),
-});
+  return new Viewer({
+    id: row.index,
+    twitchId: row.twitchId,
+    username: row.username,
+    ticket: parseInt(row.ticket, 10),
+    ticketPiece: parseInt(row.ticketPiece, 10),
+    prefix: row.prefix,
+    viasIdolIds,
+  });
+};
