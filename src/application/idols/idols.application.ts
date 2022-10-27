@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { BusinessError } from 'src/util/business-error';
 
+import { IdolsRepository } from 'src/infrastructure/persistence/idols/idols.repository';
 import { ViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.repository';
-
-import { IdolsRepository } from 'src/domain/idols/idols.repository';
 
 @Injectable()
 export class IdolsApplication {
@@ -12,6 +11,10 @@ export class IdolsApplication {
     private readonly idolsRepository: IdolsRepository,
     private readonly viewersRepository: ViewersRepository,
   ) {}
+
+  public async queryIdols() {
+    return this.idolsRepository.all();
+  }
 
   public async queryBiasProducer(keyword: string) {
     const idols = await this.idolsRepository.findByKeyword(keyword);
