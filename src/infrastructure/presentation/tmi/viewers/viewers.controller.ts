@@ -5,12 +5,12 @@ import { CommandPayload } from 'src/libs/tmi/tmi.types';
 
 import { isBusinessError } from 'src/util/business-error';
 
-import { AccountsApplication } from 'src/application/accounts/accounts.application';
+import { ViewersApplication } from 'src/application/viewers/viewers.application';
 
-@Controller('accounts')
-export class AccountsController {
+@Controller('viewers')
+export class ViewersController {
   constructor(
-    private readonly application: AccountsApplication,
+    private readonly application: ViewersApplication,
   ) {}
 
   @OnCommand('조각')
@@ -19,18 +19,17 @@ export class AccountsController {
     const username = payload.tags['display-name'];
     if (!twitchId || !username) return;
 
-    const result = await this.application.queryAccountProfile(twitchId, username);
+    const result = await this.application.queryViewer(twitchId, username);
     if (isBusinessError(result)) {
       switch (result.error) {
         case 'no-viewer':
-        case 'no-account':
           return payload.send(`${username}님의 데이터가 존재하지 않습니다!`);
       }
     }
 
-    const { ticket, ticketPiece, prefix } = result.account;
+    const { ticket, ticketPiece, prefix } = result;
     const formattedPrefix = prefix ? `[${prefix}] ` : '';
 
-    payload.send(`${formattedPrefix}${result.account.username} 티켓 ${ticket}장 | 조각 ${ticketPiece}장 보유중`);
+    payload.send(`${formattedPrefix}${result.username} 티켓 ${ticket}장 | 조각 ${ticketPiece}장 보유중`);
   }
 }

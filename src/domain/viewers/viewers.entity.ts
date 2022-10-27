@@ -23,13 +23,13 @@ export class Viewer extends Entity {
     super(props, constructorKey);
   }
 
-  public async requestSong(title: string, songsService: SongsService) {
+  public async requestSong(title: string, isFreemode: boolean, songsService: SongsService) {
     const isInCooltime = await songsService.isViewerInCooltime(this);
     if (isInCooltime) return new BusinessError('in-cooltime');
 
-    if (this.ticket < 1 && this.ticketPiece < 3) return new BusinessError('not-enough-point');
+    if (!isFreemode && (this.ticket < 1 && this.ticketPiece < 3)) return new BusinessError('not-enough-point');
 
-    const requestType = this.ticket > 0 ? RequestType.ticket : RequestType.ticketPiece;
+    const requestType = this.getRequestType(isFreemode);
     switch (requestType) {
       case RequestType.ticket:
         this.mutable.ticket -= 1;
@@ -45,5 +45,12 @@ export class Viewer extends Entity {
       requestorId: this.id,
       requestType,
     });
+  }
+
+  private getRequestType(isFreemode: boolean) {
+    if (isFreemode) return RequestType.freemode;
+    if (this.ticket > 0) return RequestType.ticket;
+
+    return RequestType.ticketPiece;
   }
 }

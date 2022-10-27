@@ -1,5 +1,5 @@
-import { AccountsModule } from './accounts/accounts.module';
+import { ViewersModule } from './viewers/viewers.module';
 
 export const TmiControllerModules = [
-  AccountsModule,
+  ViewersModule,
 ];
