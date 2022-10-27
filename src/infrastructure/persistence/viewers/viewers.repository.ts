@@ -1,25 +1,105 @@
 import { Injectable } from '@nestjs/common';
 
+import { PrismaService } from 'src/libs/prisma/prisma.service';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
 
 import { Viewer } from 'src/domain/viewers/viewers.entity';
 import { ViewersRepository as ViewersRepositoryInterface } from 'src/domain/viewers/viewers.repository';
 
+type ViewerDataModel = {
+  index: number;
+  twitchId?: string;
+  username?: string;
+  ticketPiece?: string;
+  ticket?: string;
+  prefix?: string;
+}
+
 @Injectable()
 export class ViewersRepository implements ViewersRepositoryInterface {
+  private readonly sheetsInfo = {
+    spreadsheetId: process.env.SHEETS_ID ?? '',
+    columns: [
+      'twitchId',
+      'username',
+      'ticketPiece',
+      'ticket',
+      'prefix',
+    ] as const,
+    startRow: 6,
+  };
+
   constructor(
+    private readonly prisma: PrismaService,
     private readonly sheets: SheetsService,
   ) {}
 
-  findOne(twitchId: string, username: string): Promise<Viewer | null> {
-    throw new Error('Method not implemented.');
+  async findOne(twitchId: string, username: string): Promise<Viewer | null> {
+    const rows = await this.sheets.getSheets(this.sheetsInfo);
+
+    const row = rows.find((row) => row.twitchId === twitchId || row.username === username);
+    if (!row) return null;
+
+    if (row.username !== username || row.twitchId !== twitchId) {
+      await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
+    }
+
+    const biasIdolQuery = await this.prisma.biasIdol.findMany({
+      where: { viewerId: row.index },
+      select: { idolId: true },
+    });
+    const biasIdolIds = biasIdolQuery.map((query) => query.idolId);
+
+    return convertFromDataModel(row, biasIdolIds);
   }
 
-  findByBiasIdols(idolId: number): Promise<Viewer[]> {
-    throw new Error('Method not implemented.');
+  async findByBiasIdols(idolId: number): Promise<Viewer[]> {
+    const viewerQuery = await this.prisma.biasIdol.findMany({
+      where: { idolId },
+      include: {
+        viewer: { include: { biasIdols: true } },
+      },
+    });
+
+    const rows = await this.sheets.getSheets(this.sheetsInfo);
+    const filtered = viewerQuery
+      .map((query) => convertFromDataModel(
+        rows[query.viewerId],
+        query.viewer.biasIdols.map((bias) => bias.idolId),
+      ));
+
+    return filtered;
   }
 
-  save(viewer: Viewer): Promise<Viewer> {
-    throw new Error('Method not implemented.');
+  async save(viewer: Viewer): Promise<Viewer> {
+    if (!viewer.persisted) {
+      return this.create(viewer);
+    }
+
+    const result = await this.sheets.updateSheets(this.sheetsInfo, viewer.id, viewer);
+
+    return convertFromDataModel(result, viewer.viasIdolIds);
+  }
+
+  private async create(viewer: Viewer): Promise<Viewer> {
+    const result = await this.sheets.appendRow(this.sheetsInfo, viewer);
+
+    return convertFromDataModel(result, []);
   }
 }
+
+const convertFromDataModel = (row: ViewerDataModel, viasIdolIds: number[]) => {
+  if (!row.username || !row.ticket || !row.ticketPiece) {
+    throw new Error(`Essential row was empty: ${JSON.stringify(row)}`);
+  }
+
+  return new Viewer({
+    id: row.index,
+    twitchId: row.twitchId,
+    username: row.username,
+    ticket: parseInt(row.ticket, 10),
+    ticketPiece: parseInt(row.ticketPiece, 10),
+    prefix: row.prefix,
+    viasIdolIds,
+  });
+};
