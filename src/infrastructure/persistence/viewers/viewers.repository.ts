@@ -24,6 +24,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
   public async findOne(twitchId: string, username: string): Promise<Viewer | null> {
     const result = await this.prisma.viewer.findFirst({
       where: { OR: [{ twitchId }, { username }] },
+      include: { biasIdols: { select: { idolId: true } } },
     });
 
     if (!result) {
@@ -31,11 +32,22 @@ export class ViewersRepository implements ViewersRepositoryInterface {
       if (!account) return null;
 
       return this.create(new Viewer({
-        id: -1, twitchId, username, accountId: account.id,
+        id: -1, twitchId, username, accountId: account.id, viasIdolIds: [],
       }));
     }
 
     return convertFromDataModel(result);
+  }
+
+  public async findByBiasIdols(idolId: number): Promise<Viewer[]> {
+    const result = await this.prisma.viewer.findMany({
+      where: {
+        biasIdols: { some: { idolId } },
+      },
+      include: { biasIdols: { select: { idolId: true } } },
+    });
+
+    return result.map(convertFromDataModel);
   }
 
   public async save(viewer: Viewer): Promise<Viewer> {
@@ -46,6 +58,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     const result = await this.prisma.viewer.update({
       data: viewer,
       where: { id: viewer.id },
+      include: { biasIdols: { select: { idolId: true } } },
     });
 
     return convertFromDataModel(result);
@@ -62,9 +75,16 @@ export class ViewersRepository implements ViewersRepositoryInterface {
   }
 }
 
-const convertFromDataModel = (datamodel: ViewerDataModel) => new Viewer({
+type DataModel = ViewerDataModel & {
+  biasIdols?: {
+      idolId: number;
+  }[];
+};
+
+const convertFromDataModel = (datamodel: DataModel) => new Viewer({
   id: datamodel.id,
   twitchId: datamodel.twitchId,
   username: datamodel.twitchId,
   accountId: datamodel.accountId,
+  viasIdolIds: (datamodel.biasIdols ?? []).map((biasIdol) => biasIdol.idolId),
 });
