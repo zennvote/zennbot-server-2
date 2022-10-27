@@ -7,4 +7,5 @@ export class MockIdolsRepository implements IdolsRepository {
 
   public findByKeyword = this.sinon.fake.resolves([]);
   public findMany = this.sinon.fake.resolves([]);
+  public all = this.sinon.fake.resolves([]);
 }
