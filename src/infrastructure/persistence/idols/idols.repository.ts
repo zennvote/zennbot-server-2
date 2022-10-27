@@ -25,7 +25,7 @@ type IdolDataModel = {
 @Injectable()
 export class IdolsRepository implements IdolsRepositoryInterface {
   private readonly sheetsInfo = {
-    spreadsheetId: process.env.SHEETS_ID ?? '',
+    spreadsheetId: process.env.IDOL_SHEETS_ID ?? '',
     columns: [
       'firstName',
       'lastName',
@@ -69,6 +69,12 @@ export class IdolsRepository implements IdolsRepositoryInterface {
       .map(convertFromDataModel);
 
     return idols;
+  }
+
+  public async all(): Promise<Idol[]> {
+    const rows = await this.sheets.getSheets(this.sheetsInfo);
+
+    return rows.map(convertFromDataModel);
   }
 }
 
