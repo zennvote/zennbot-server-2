@@ -51,6 +51,19 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     return convertFromDataModel(row, biasIdolQuery?.idolId ?? []);
   }
 
+  async findOneByUsername(username: string): Promise<Viewer | null> {
+    const rows = await this.sheets.getSheets(this.sheetsInfo);
+
+    const row = rows.find((row) => row.username === username);
+    if (!row) return null;
+
+    const biasIdolQuery = await this.prisma.biasIdol.findUnique({
+      where: { viewerUsername: row.username },
+    });
+
+    return convertFromDataModel(row, biasIdolQuery?.idolId ?? []);
+  }
+
   async findByBiasIdols(idolId: number): Promise<Viewer[]> {
     const viewerQuery = await this.prisma.biasIdol.findMany({
       where: { idolId: { has: idolId } },
@@ -76,7 +89,13 @@ export class ViewersRepository implements ViewersRepositoryInterface {
 
     const result = await this.sheets.updateSheets(this.sheetsInfo, viewer.id, viewer);
 
-    return convertFromDataModel(result, viewer.viasIdolIds);
+    const biasResult = await this.prisma.biasIdol.upsert({
+      where: { viewerUsername: viewer.username },
+      create: { viewerUsername: viewer.username, idolId: viewer.viasIdolIds },
+      update: { idolId: viewer.viasIdolIds },
+    });
+
+    return convertFromDataModel(result, biasResult.idolId);
   }
 
   private async create(viewer: Viewer): Promise<Viewer> {
