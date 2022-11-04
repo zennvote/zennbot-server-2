@@ -61,7 +61,7 @@ test('아이돌의 담당 프로듀서 리스트를 조회할 수 있어야 한�
   test.false(isBusinessError(result));
   if (isBusinessError(result)) return test.fail();
 
-  const sorted = result.sort((a, b) => a.username.localeCompare(b.username));
+  const sorted = result.viewers.sort((a, b) => a.username.localeCompare(b.username));
   test.like(sorted[0], { username: '라떼락대' });
   test.like(sorted[1], { username: '리하즈' });
 });
