@@ -43,15 +43,6 @@ model User {
   @@map("user")
 }
 
-model Viewer {
-  id        Int        @id @default(autoincrement())
-  twitchId  String     @unique
-  username  String     @unique
-  accountId Int
-  Song      Song[]
-  biasIdols BiasIdol[]
-}
-
 model Song {
   id           Int       @id @default(autoincrement())
   title        String
@@ -59,15 +50,9 @@ model Song {
   requestorId  Int
   requestType  String
   displayOrder Int
-
-  requestor Viewer @relation(fields: [requestorId], references: [id])
 }
 
 model BiasIdol {
-  viewerId Int
-  idolId   Int
-
-  viewer Viewer @relation(fields: [viewerId], references: [id])
-
-  @@id([viewerId, idolId])
+  viewerUsername String @id
+  idolId         Int[]
 }
