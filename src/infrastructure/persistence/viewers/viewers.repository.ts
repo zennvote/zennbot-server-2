@@ -89,7 +89,13 @@ export class ViewersRepository implements ViewersRepositoryInterface {
 
     const result = await this.sheets.updateSheets(this.sheetsInfo, viewer.id, viewer);
 
-    return convertFromDataModel(result, viewer.viasIdolIds);
+    const biasResult = await this.prisma.biasIdol.upsert({
+      where: { viewerUsername: viewer.username },
+      create: { viewerUsername: viewer.username, idolId: viewer.viasIdolIds },
+      update: { idolId: viewer.viasIdolIds },
+    });
+
+    return convertFromDataModel(result, biasResult.idolId);
   }
 
   private async create(viewer: Viewer): Promise<Viewer> {

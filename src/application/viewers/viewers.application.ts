@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { BusinessError } from 'src/util/business-error';
+import { BusinessError, isBusinessError } from 'src/util/business-error';
 
 import { ViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.repository';
 
@@ -22,5 +22,16 @@ export class ViewersApplication {
     if (!viewer) return new BusinessError('no-viewer');
 
     return viewer;
+  }
+
+  public async setBiasIdols(username: string, idolIds: number[]) {
+    const viewer = await this.queryViewerByUsername(username);
+    if (isBusinessError(viewer)) return viewer;
+
+    viewer.setBiasIdols(idolIds);
+
+    const persisted = await this.viewersRepository.save(viewer);
+
+    return persisted;
   }
 }

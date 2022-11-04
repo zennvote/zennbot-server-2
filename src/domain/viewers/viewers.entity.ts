@@ -47,6 +47,10 @@ export class Viewer extends Entity {
     });
   }
 
+  public setBiasIdols(ids: number[]) {
+    this.mutable.viasIdolIds = ids;
+  }
+
   private getRequestType(isFreemode: boolean) {
     if (isFreemode) return RequestType.freemode;
     if (this.ticket > 0) return RequestType.ticket;
