@@ -10,6 +10,13 @@ export class ViewersApplication {
     private readonly viewersRepository: ViewersRepository,
   ) {}
 
+  public async queryViewerByUsername(username: string) {
+    const viewer = await this.viewersRepository.findOneByUsername(username);
+    if (!viewer) return new BusinessError('no-viewer');
+
+    return viewer;
+  }
+
   public async queryViewer(twitchId: string, username: string) {
     const viewer = await this.viewersRepository.findOne(twitchId, username);
     if (!viewer) return new BusinessError('no-viewer');
