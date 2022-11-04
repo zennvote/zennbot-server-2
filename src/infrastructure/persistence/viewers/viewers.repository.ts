@@ -44,29 +44,27 @@ export class ViewersRepository implements ViewersRepositoryInterface {
       await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
 
-    const biasIdolQuery = await this.prisma.biasIdol.findMany({
-      where: { viewerId: row.index },
-      select: { idolId: true },
+    const biasIdolQuery = await this.prisma.biasIdol.findUnique({
+      where: { viewerUsername: row.username },
     });
-    const biasIdolIds = biasIdolQuery.map((query) => query.idolId);
 
-    return convertFromDataModel(row, biasIdolIds);
+    return convertFromDataModel(row, biasIdolQuery?.idolId ?? []);
   }
 
   async findByBiasIdols(idolId: number): Promise<Viewer[]> {
     const viewerQuery = await this.prisma.biasIdol.findMany({
-      where: { idolId },
-      include: {
-        viewer: { include: { biasIdols: true } },
-      },
+      where: { idolId: { has: idolId } },
     });
 
     const rows = await this.sheets.getSheets(this.sheetsInfo);
     const filtered = viewerQuery
-      .map((query) => convertFromDataModel(
-        rows[query.viewerId],
-        query.viewer.biasIdols.map((bias) => bias.idolId),
-      ));
+      .map((query) => {
+        const viewer = rows.find((viewer) => viewer.username === query.viewerUsername);
+        if (!viewer) return viewer;
+
+        return convertFromDataModel(viewer, query.idolId);
+      })
+      .filter((viewer): viewer is Viewer => viewer !== undefined);
 
     return filtered;
   }
