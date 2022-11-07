@@ -63,6 +63,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
   async findByBiasIdols(idolId: number): Promise<Viewer[]> {
     const viewerQuery = await this.prisma.biasIdol.findMany({
       where: { idolId },
+      orderBy: { createdAt: 'asc' },
     });
 
     const rows = await this.sheets.getSheets(this.sheetsInfo);
