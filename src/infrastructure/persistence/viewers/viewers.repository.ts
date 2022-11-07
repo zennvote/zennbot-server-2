@@ -44,11 +44,9 @@ export class ViewersRepository implements ViewersRepositoryInterface {
       await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
 
-    const biasIdolQuery = await this.prisma.biasIdol.findUnique({
-      where: { viewerUsername: row.username },
-    });
+    const biasIdolIds = await this.getBiasIdolIds(username);
 
-    return convertFromDataModel(row, biasIdolQuery?.idolId ?? []);
+    return convertFromDataModel(row, biasIdolIds);
   }
 
   async findOneByUsername(username: string): Promise<Viewer | null> {
@@ -57,16 +55,14 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     const row = rows.find((row) => row.username === username);
     if (!row) return null;
 
-    const biasIdolQuery = await this.prisma.biasIdol.findUnique({
-      where: { viewerUsername: row.username },
-    });
+    const biasIdolIds = await this.getBiasIdolIds(username);
 
-    return convertFromDataModel(row, biasIdolQuery?.idolId ?? []);
+    return convertFromDataModel(row, biasIdolIds);
   }
 
   async findByBiasIdols(idolId: number): Promise<Viewer[]> {
     const viewerQuery = await this.prisma.biasIdol.findMany({
-      where: { idolId: { has: idolId } },
+      where: { idolId },
     });
 
     const rows = await this.sheets.getSheets(this.sheetsInfo);
@@ -75,7 +71,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
         const viewer = rows.find((viewer) => viewer.username === query.viewerUsername);
         if (!viewer) return viewer;
 
-        return convertFromDataModel(viewer, query.idolId);
+        return convertFromDataModel(viewer, [idolId]);
       })
       .filter((viewer): viewer is Viewer => viewer !== undefined);
 
@@ -88,20 +84,40 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     }
 
     const result = await this.sheets.updateSheets(this.sheetsInfo, viewer.id, viewer);
-
-    const biasResult = await this.prisma.biasIdol.upsert({
-      where: { viewerUsername: viewer.username },
-      create: { viewerUsername: viewer.username, idolId: viewer.viasIdolIds },
-      update: { idolId: viewer.viasIdolIds },
+    await this.prisma.biasIdol.deleteMany({
+      where: {
+        viewerUsername: viewer.username,
+        NOT: {
+          idolId: { in: viewer.viasIdolIds },
+        },
+      },
+    });
+    await this.prisma.biasIdol.createMany({
+      data: viewer.viasIdolIds.map((idolId) => ({ viewerUsername: viewer.username, idolId })),
+      skipDuplicates: true,
     });
 
-    return convertFromDataModel(result, biasResult.idolId);
+    return convertFromDataModel(result, viewer.viasIdolIds);
   }
 
   private async create(viewer: Viewer): Promise<Viewer> {
     const result = await this.sheets.appendRow(this.sheetsInfo, viewer);
 
-    return convertFromDataModel(result, []);
+    await this.prisma.biasIdol.createMany({
+      data: viewer.viasIdolIds.map((idolId) => ({ viewerUsername: viewer.username, idolId })),
+    });
+
+    return convertFromDataModel(result, viewer.viasIdolIds);
+  }
+
+  private async getBiasIdolIds(username: string) {
+    const biasIdolQuery = await this.prisma.biasIdol.findMany({
+      where: { viewerUsername: username },
+      orderBy: { createdAt: 'asc' },
+    });
+    const biasIdolIds = biasIdolQuery.map((query) => query.idolId);
+
+    return biasIdolIds;
   }
 }
 

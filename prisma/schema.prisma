@@ -53,6 +53,9 @@ model Song {
 }
 
 model BiasIdol {
-  viewerUsername String @id
-  idolId         Int[]
+  viewerUsername String
+  idolId         Int
+  createdAt      DateTime @default(now())
+
+  @@unique([viewerUsername, idolId])
 }
