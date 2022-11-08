@@ -30,6 +30,6 @@ export class IdolsController {
     const { idol, viewers } = result;
     if (viewers.length === 0) return payload.send(`${idol.fullName}의 담당 프로듀서가 없습니다!`);
 
-    payload.send(`${idol.fullName}의 담당 프로듀서는 ${viewers.map((viewer) => viewer.username).join(', ')} 입니다!`);
+    payload.send(`${idol.fullName}의 담당 프로듀서는 ${viewers.map((viewer) => viewer.username).join(', ')}입니다!`);
   }
 }
