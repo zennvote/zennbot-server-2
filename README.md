@@ -46,6 +46,51 @@
 [![Docker][Docker]][Docker-url]
 
 
+## 프로젝트 구성
+현재 기존 아키텍쳐와 신규 아키텍쳐가 동시에 존재합니다. 모든 레거시 아키텍쳐를 신규 아키텍쳐로 점진적 이관하려고 합니다.
+
+### 신규 아키텍쳐
+실행 흐름을 `domain` | `application` | `infrastructure` 의 세가지 레이어로 구분했습니다.
+이 외에 본 프로젝트의 유즈케이스와는 크게 관련 없는 코드들은 `libs` 및 `utils`에서 관리합니다.
+
+```
+▼ domain
+  ▼ songs
+    - songs.entity.ts
+      해당 도메인 모듈에 필요한 엔티티 정의를 담고 있습니다.
+    - songs.service.ts
+      해당 도메인 모듈의 도메인 서비스를 담고 있습니다.
+    - songs.repository.ts
+      해당 도메인 모듈의 영속화를 위한 레포지토리 인터페이스를 담고 있습니다.
+    - songs.ava.ts
+      해당 도메인 모듈에 대한 테스트 코드를 담고 있습니다.
+  ▼ viewers
+  ▼ ...
+▼ application
+  ▼ songs
+    ▼ specs
+      - request-song.ava.ts
+        해당 어플리케이션의 각 유즈케이스에 대한 테스트 코드를 담고 있습니다.
+    - songs.application.ts
+      해당 어플리케이션의 유즈케이스를 담는 어플리케이션 서비스를 담고 있습니다.
+  ▼ viewers
+  ▼ ...
+▼ infrastructure
+  ▼ persistence
+    ▼ songs
+      - songs.repository.ts
+        도메인 레이어에 정의된 레포지토리 인터페이스의 구현체를 담고 있습니다.
+      - songs.mock.ts
+        도메인 레이어의 레포지토리 인터페이스를 테스트를 위한 mock 데이터를 반환하도록 구현한 구현체를 담고 있습니다
+    ▼ viewers
+    ▼ ...
+  ▼ presentation
+    ▼ songs
+      - 
+    ▼ viewers
+    ▼ ...
+```
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
