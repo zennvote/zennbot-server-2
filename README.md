@@ -1,76 +1,90 @@
-![Production Deploy](https://github.com/zennvote/zennbot-server-2/workflows/Production%20Deploy/badge.svg)
-![codecov](https://codecov.io/gh/zennvote/zennbot-server-2/branch/main/graph/badge.svg)
+<a name="readme-top"></a>
 
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<br />
+<div align="center">
+  <a href="https://github.com/zennvote/zennbot-server-2">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
 
-## Description
+<h3 align="center">젠프로봇</h3>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+  <p align="center">
+    젠프로덕션의 챗봇 어플리케이션을 위한 API Server입니다.
+    <br />
+    <a href="https://github.com/zennvote/zennbot-server-2/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/zennvote/zennbot-server-2/issues">Request Feature</a>
+  </p>
+</div>
 
-## Installation
 
-```bash
-$ npm install
-```
+## 프로젝트 소개
 
-## Running the app
+[![Zennbot Screen Shot][product-screenshot]](https://zennbot.net/)
+젠프로덕션 음악방송에서 사용되는 챗봇 및 대시보드 어플리케이션입니다. 
 
-```bash
-# development
-$ npm run start
+구글 시트로 관리되던 사용자 포인트 정보를 이용하여 신청곡 신청 및 포인트 차감, 지급 등을 자동화합니다.
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
-```
 
-## Test
+## 사용 기술
 
-```bash
-# unit tests
-$ npm run test
+[![TypeScript][TypeScript]][TypeScript-url] [![NestJs][NestJs]][NestJs-url] [![Prisma][Prisma]][Prisma-url]
 
-# e2e tests
-$ npm run test:e2e
+[![avajs][avajs]][avajs-url] [![Jest][Jest]][Jest-url]
 
-# test coverage
-$ npm run test:cov
-```
+[![PostgreSQL][PostgreSQL]][PostgreSQL-url] [![Google Sheets][Google Sheets]][Google Sheets-url]
 
-## Support
+[![GithubActions][GithubActions]][GithubActions-url]
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+[![Docker][Docker]][Docker-url]
 
-## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
 
-Nest is [MIT licensed](LICENSE).
+<!-- CONTACT -->
+## Contact
+
+Project Link: [https://github.com/zennvote/zennbot-server-2](https://github.com/zennvote/zennbot-server-2)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/zennvote/zennbot-server-2.svg?style=for-the-badge
+[contributors-url]: https://github.com/zennvote/zennbot-server-2/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/zennvote/zennbot-server-2.svg?style=for-the-badge
+[forks-url]: https://github.com/zennvote/zennbot-server-2/network/members
+[stars-shield]: https://img.shields.io/github/stars/zennvote/zennbot-server-2.svg?style=for-the-badge
+[stars-url]: https://github.com/zennvote/zennbot-server-2/stargazers
+[issues-shield]: https://img.shields.io/github/issues/zennvote/zennbot-server-2.svg?style=for-the-badge
+[issues-url]: https://github.com/zennvote/zennbot-server-2/issues
+
+[product-screenshot]: images/screenshot-zennbot.png
+
+[TypeScript]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white
+[TypeScript-url]: https://nestjs.com/
+[NestJs]: https://img.shields.io/badge/NestJs-000000?style=for-the-badge&logo=NestJS&logoColor=E0234E
+[NestJs-url]: https://nestjs.com/
+[Prisma]: https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=Prisma&logoColor=white
+[Prisma-url]: https://nestjs.com/
+[PostgreSQL]: https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=PostgreSQL&logoColor=white
+[PostgreSQL-url]: https://nestjs.com/
+[Google Sheets]: https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=Google%20Sheets&logoColor=white
+[Google Sheets-url]: https://nestjs.com/
+[GithubActions]: https://img.shields.io/badge/Github%20Actions-181717?style=for-the-badge&logo=Github%20Actions&logoColor=2088FF
+[GithubActions-url]: https://nestjs.com/
+[avajs]: https://img.shields.io/badge/avajs-4B4B77?style=for-the-badge&logo=avajs&logoColor=white
+[avajs-url]: https://nestjs.com/
+[Jest]: https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=Jest&logoColor=white
+[Jest-url]: https://nestjs.com/
+[Docker]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white
+[Docker-url]: https://nestjs.com/
