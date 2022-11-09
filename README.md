@@ -47,16 +47,6 @@
 
 
 
-
-<!-- CONTACT -->
-## Contact
-
-Project Link: [https://github.com/zennvote/zennbot-server-2](https://github.com/zennvote/zennbot-server-2)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/zennvote/zennbot-server-2.svg?style=for-the-badge
