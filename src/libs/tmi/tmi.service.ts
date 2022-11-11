@@ -23,7 +23,7 @@ export class TmiService {
         const message = fullMessage.startsWith('!젠 ') || fullMessage.startsWith('=젠 ') ? fullMessage.replace('젠 ', '') : fullMessage;
 
         const [unformattedCommand, ...args] = message.split(' ');
-        const command = unformattedCommand.slice(1);
+        const command = unformattedCommand.slice(1).toLowerCase();
 
         const loggingSend = (response: string) => {
           this.logger.http(`TMI Command - ${command}`, {
