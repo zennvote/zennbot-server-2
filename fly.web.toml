@@ -1,0 +1,53 @@
+# fly.toml file generated for zennbot-web on 2023-01-25T17:03:56+09:00
+
+app = "zennbot-web"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  image = "zennbot-web:latest"
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
+
+  COOKIE_DOMAIN = ".zennbot.net"
+  JWT_EXPIRES_IN = "60s"
+  JWT_REFRESH_EXPIRES_IN = "90d"
+  
+  SHEETS_ID = "1XuWOrZ1rA-7O5RAFKvJ__wIue4u_WTRyyOZpFXIP7Ko"
+  IDOL_SHEETS_ID = "1bXEDmNs4aE_Twf7IweIEnq8RfTWuS-aPRizYi08lpYM"
+
+  TMI_CHANNEL = "producerzenn"
+  TMI_CHANNEL_ID = "147522708"
+  TMI_USERNAME = "TMI_USERNAME"
+
+[experimental]
+  auto_rollback = true
+
+[[services]]
+  http_checks = []
+  internal_port = 3000
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 0
+    timeout = "2s"

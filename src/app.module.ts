@@ -62,8 +62,7 @@ import { HttpLoggerMiddleware } from './util/http-logger-middleware';
         ttl: 0,
       } : {
         store: redisStore,
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
+        url: process.env.REDIS_URL,
         isGlobal: true,
         ttl: 0,
       },
