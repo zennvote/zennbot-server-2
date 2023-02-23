@@ -1,6 +1,6 @@
 import { SinonSandbox } from 'sinon';
 
-import { Song } from 'src/domain/songs/songs.entity';
+import { Song } from 'src/domain/songs/entities/songs.entity';
 import { SongsRepository } from 'src/domain/songs/songs.repository';
 
 export class MockSongsRepository implements SongsRepository {

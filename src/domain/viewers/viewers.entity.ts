@@ -1,6 +1,6 @@
 import { BusinessError } from 'src/util/business-error';
 
-import { RequestType, Song } from 'src/domain/songs/songs.entity';
+import { RequestType, Song } from 'src/domain/songs/entities/songs.entity';
 import { SongsService } from 'src/domain/songs/songs.service';
 import { Entity, EntityProps } from 'src/domain/types/entity';
 

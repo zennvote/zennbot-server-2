@@ -3,7 +3,7 @@ import { Song as SongDataModel } from '@prisma/client';
 
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 
-import { RequestType, Song } from 'src/domain/songs/songs.entity';
+import { RequestType, Song } from 'src/domain/songs/entities/songs.entity';
 import { SongsRepository as SongsRepositoryInterface } from 'src/domain/songs/songs.repository';
 
 @Injectable()

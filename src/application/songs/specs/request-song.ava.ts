@@ -12,7 +12,7 @@ import { MockSongsRepository } from 'src/infrastructure/persistence/songs/songs.
 import { MockViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.mock';
 
 import { IsGoldenbellEnabled, IsRequestEnabled } from 'src/domain/settings/settings-store';
-import { RequestType, Song, SongProps } from 'src/domain/songs/songs.entity';
+import { RequestType, Song, SongProps } from 'src/domain/songs/entities/songs.entity';
 import { songFactory } from 'src/domain/songs/songs.factory';
 import { Viewer, ViewerProps } from 'src/domain/viewers/viewers.entity';
 import { viewerFactory } from 'src/domain/viewers/viewers.factory';
