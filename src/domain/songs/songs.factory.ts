@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import { Factory } from 'fishery';
 
 import { RequestType, Song, SongProps } from './songs.entity';
@@ -7,9 +9,9 @@ export const songFactory = Factory.define<SongProps, Record<string, never>, Song
     onCreate((props) => new Song(props));
 
     return {
-      id: sequence,
+      id: randomUUID(),
       title: `test song ${sequence}`,
-      requestorId: -1,
+      requestorId: randomUUID(),
       requestType: RequestType.manual,
       ...params,
     };

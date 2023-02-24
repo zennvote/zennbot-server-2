@@ -7,7 +7,7 @@ export const viewerFactory = Factory.define<ViewerProps, Record<string, never>, 
     onCreate((props) => new Viewer(props));
 
     return {
-      id: sequence,
+      id: `${sequence}`,
       twitchId: `테스트시청자${sequence}`,
       username: `testviewer${sequence}`,
       ticket: 0,
