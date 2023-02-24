@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AuthRepository } from 'src/app/auth/auth.repository';
@@ -8,7 +10,7 @@ import { UsersService } from './users.service';
 
 const getTestUser = () => {
   const user = new User();
-  user.id = 1;
+  user.id = randomUUID();
   user.username = 'testuser1';
   return user;
 };

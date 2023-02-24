@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import { Prisma } from '@prisma/client';
 import { Factory } from 'fishery';
 
@@ -14,8 +16,8 @@ class UserFactory extends Factory<User> {
 }
 
 export const userFactory = UserFactory.define(
-  ({ sequence, params }) => {
-    const id = params.id ?? sequence;
+  ({ params }) => {
+    const id = params.id ?? randomUUID();
     const user = new User();
 
     user.id = id;
