@@ -1,5 +1,5 @@
 export class UserDataModel {
-  id!: number;
+  id!: string;
 
   username!: string;
 

@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -9,7 +8,7 @@ datasource db {
 }
 
 model Attendance {
-  id            Int      @id @default(autoincrement())
+  id            String   @id @default(uuid())
   twitchId      String   @db.VarChar
   attendedAt    DateTime @db.Timestamp(6)
   broadcastedAt String   @db.VarChar
@@ -21,7 +20,7 @@ model Attendance {
 }
 
 model Manager {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid())
   twitchId String @unique @db.VarChar
 
   @@map("manager")
@@ -36,7 +35,7 @@ model Setting {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid())
   username String @unique @db.VarChar
   password String @db.VarChar
 
@@ -44,7 +43,7 @@ model User {
 }
 
 model Song {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(uuid())
   title        String
   consumedAt   DateTime?
   requestorId  Int

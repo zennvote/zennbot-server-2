@@ -80,11 +80,11 @@ export class ViewersRepository implements ViewersRepositoryInterface {
   }
 
   async save(viewer: Viewer): Promise<Viewer> {
-    if (!viewer.persisted) {
+    if ((viewer.numaricId ?? -1) < -1) {
       return this.create(viewer);
     }
 
-    const result = await this.sheets.updateSheets(this.sheetsInfo, viewer.id, viewer);
+    const result = await this.sheets.updateSheets(this.sheetsInfo, viewer.numaricId, viewer);
     await this.prisma.biasIdol.deleteMany({
       where: {
         viewerUsername: viewer.username,
@@ -128,7 +128,7 @@ const convertFromDataModel = (row: ViewerDataModel, viasIdolIds: number[]) => {
   }
 
   return new Viewer({
-    id: row.index,
+    id: `${row.index}`,
     twitchId: row.twitchId,
     username: row.username,
     ticket: parseInt(row.ticket, 10),

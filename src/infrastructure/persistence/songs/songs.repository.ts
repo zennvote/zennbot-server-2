@@ -13,17 +13,15 @@ export class SongsRepository implements SongsRepositoryInterface {
   ) {}
 
   async save(song: Song): Promise<Song> {
-    if (!song.persisted) return this.create(song);
-
     const existing = await this.prisma.song.findUnique({ where: { id: song.id } });
-    if (!existing) throw new Error('saving song not found');
+    if (!existing) return this.create(song);
 
     const consumedAt = song.consumed ? (existing.consumedAt ?? new Date()) : null;
 
     const result = await this.prisma.song.update({
       data: {
         title: song.title,
-        requestorId: song.requestorId,
+        requestorId: parseInt(song.requestorId, 10),
         requestType: song.requestType,
         consumedAt,
         displayOrder: song.consumed ? -1 : undefined,
@@ -43,7 +41,7 @@ export class SongsRepository implements SongsRepositoryInterface {
     const result = await this.prisma.song.create({
       data: {
         title: song.title,
-        requestorId: song.requestorId,
+        requestorId: parseInt(song.requestorId, 10),
         requestType: song.requestType,
         displayOrder,
         consumedAt: song.consumed ? new Date() : null,
@@ -77,6 +75,6 @@ const convertFromDataModel = (datamodel: SongDataModel) => new Song({
   id: datamodel.id,
   title: datamodel.title,
   consumed: datamodel.consumedAt !== null,
-  requestorId: datamodel.requestorId,
+  requestorId: `${datamodel.requestorId}`,
   requestType: datamodel.requestType as RequestType,
 });

@@ -22,7 +22,7 @@ export class IdolsApplication {
     if (idols.length > 1) return new BusinessError('multiple-idol');
 
     const [idol] = idols;
-    const viewers = await this.viewersRepository.findByBiasIdols(idol.id);
+    const viewers = await this.viewersRepository.findByBiasIdols(idol.numaricId);
 
     return { idol, viewers };
   }

@@ -1,26 +1,42 @@
+import { randomUUID } from 'crypto';
+
 import { BusinessError } from 'src/util/business-error';
 
 import { RequestType, Song } from 'src/domain/songs/entities/songs.entity';
 import { SongsService } from 'src/domain/songs/songs.service';
-import { Entity, EntityProps } from 'src/domain/types/entity';
+import { Entity } from 'src/domain/types/entity';
 
-const requiredKey = ['id', 'username', 'ticket', 'ticketPiece', 'viasIdolIds'] as const;
-const optionalKey = ['twitchId', 'prefix'] as const;
-
-const constructorKey = [...requiredKey, ...optionalKey] as const;
-export type ViewerProps = EntityProps<Viewer, typeof requiredKey, typeof optionalKey>;
+export type ViewerProps = {
+  id: string;
+  twitchId?: string;
+  username: string;
+  ticket: number;
+  ticketPiece: number;
+  prefix?: string;
+  viasIdolIds: number[];
+}
 
 export class Viewer extends Entity {
-  public readonly id!: number;
   public readonly twitchId?: string;
-  public readonly username!: string;
-  public readonly ticket!: number;
-  public readonly ticketPiece!: number;
+  public readonly username: string;
+  public readonly ticket: number;
+  public readonly ticketPiece: number;
   public readonly prefix?: string;
-  public readonly viasIdolIds!: number[];
+  public readonly viasIdolIds: number[];
 
   constructor(props: ViewerProps) {
-    super(props, constructorKey);
+    super(props.id);
+
+    this.twitchId = props.twitchId;
+    this.username = props.username;
+    this.ticket = props.ticket;
+    this.ticketPiece = props.ticketPiece;
+    this.prefix = props.prefix;
+    this.viasIdolIds = props.viasIdolIds;
+  }
+
+  public get numaricId() {
+    return Number(this.id);
   }
 
   public async requestSong(title: string, isFreemode: boolean, songsService: SongsService) {
@@ -40,7 +56,7 @@ export class Viewer extends Entity {
     }
 
     return new Song({
-      id: -1,
+      id: randomUUID(),
       title,
       requestorId: this.id,
       requestType,

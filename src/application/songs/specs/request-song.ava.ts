@@ -73,7 +73,6 @@ test('신청곡 신청 및 결제가 완료되어야 한다', async (test) => {
   if (isBusinessError(result)) return test.fail();
 
   test.true(result instanceof Song);
-  test.true(result.persisted);
 
   // Test Persistence
   const saveSong =
@@ -85,6 +84,7 @@ test('신청곡 신청 및 결제가 완료되어야 한다', async (test) => {
   test.like<Partial<SongProps>>(
     saveSong.firstCall.args[0],
     {
+      id: result.id,
       title: 'test song',
       requestorId: viewer.id,
       requestType: RequestType.ticket,
