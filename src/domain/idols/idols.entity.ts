@@ -1,33 +1,57 @@
-import { Entity, EntityProps } from 'src/domain/types/entity';
+import { Entity } from 'src/domain/types/entity';
 
-const requiredKey = [
-  'id', 'lastName', 'birthday', 'age', 'height', 'weight', 'hometown', 'introduction',
-] as const;
-const optionalKey = [
-  'firstName', 'company', 'unit', 'type', 'threeSize', 'cv',
-] as const;
-
-const constructorKey = [...requiredKey, ...optionalKey] as const;
-export type IdolProps = EntityProps<Idol, typeof requiredKey, typeof optionalKey>;
+export type IdolProps = {
+  id: string;
+  firstName?: string;
+  lastName: string;
+  company?: string;
+  unit?: string;
+  type?: string;
+  birthday: string;
+  age: string;
+  height: string;
+  weight?: string;
+  threeSize?: string;
+  hometown: string;
+  cv?: string;
+  introduction: string;
+}
 
 export class Idol extends Entity {
-  public readonly id!: number;
   public readonly firstName?: string;
-  public readonly lastName!: string;
+  public readonly lastName: string;
   public readonly company?: string;
   public readonly unit?: string;
   public readonly type?: string;
-  public readonly birthday!: string;
-  public readonly age!: string;
-  public readonly height!: string;
+  public readonly birthday: string;
+  public readonly age: string;
+  public readonly height: string;
   public readonly weight?: string;
   public readonly threeSize?: string;
-  public readonly hometown!: string;
+  public readonly hometown: string;
   public readonly cv?: string;
-  public readonly introduction!: string;
+  public readonly introduction: string;
 
   constructor(props: IdolProps) {
-    super(props, constructorKey);
+    super(props.id);
+
+    this.firstName = props.firstName;
+    this.lastName = props.lastName;
+    this.company = props.company;
+    this.unit = props.unit;
+    this.type = props.type;
+    this.birthday = props.birthday;
+    this.age = props.age;
+    this.height = props.height;
+    this.weight = props.weight;
+    this.threeSize = props.threeSize;
+    this.hometown = props.hometown;
+    this.cv = props.cv;
+    this.introduction = props.introduction;
+  }
+
+  get numaricId() {
+    return Number(this.id);
   }
 
   get fullName() {

@@ -86,7 +86,7 @@ const convertFromDataModel = (row: IdolDataModel) => {
   }
 
   return new Idol({
-    id: row.index,
+    id: `${row.index}`,
     firstName: row.firstName,
     lastName: row.lastName,
     company: row.company,

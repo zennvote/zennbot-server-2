@@ -18,7 +18,7 @@ export const idolsFactory = IdolsFactory.define(
     onCreate((props) => new Idol(props));
 
     return {
-      id: sequence,
+      id: `${sequence}`,
       firstName: '아마미',
       lastName: '하루카',
       company: '765',

@@ -1,6 +1,6 @@
 import { BusinessError } from 'src/util/business-error';
 
-import { Entity, EntityProps } from 'src/domain/types/entity';
+import { Entity } from 'src/domain/types/entity';
 
 export enum RequestType {
   ticket = '티켓',
@@ -9,20 +9,27 @@ export enum RequestType {
   manual = 'manual',
 }
 
-const requiredKey = ['id', 'title', 'requestorId', 'requestType'] as const;
-const optionalKey = ['consumed'] as const;
-const constructorKey = [...requiredKey, ...optionalKey] as const;
-export type SongProps = EntityProps<Song, typeof requiredKey, typeof optionalKey>;
+export type SongProps = {
+  id: string;
+  title: string;
+  consumed?: boolean;
+  requestorId: string;
+  requestType: RequestType;
+};
 
 export class Song extends Entity {
-  public readonly id!: number;
-  public readonly title!: string;
-  public readonly consumed!: boolean;
-  public readonly requestorId!: number;
-  public readonly requestType!: RequestType;
+  public readonly title: string;
+  public readonly consumed: boolean;
+  public readonly requestorId: string;
+  public readonly requestType: RequestType;
 
   constructor(props: SongProps) {
-    super({ consumed: false, ...props }, constructorKey);
+    super(props.id);
+
+    this.title = props.title;
+    this.consumed = props.consumed ?? false;
+    this.requestorId = props.requestorId;
+    this.requestType = props.requestType;
   }
 
   consume() {
