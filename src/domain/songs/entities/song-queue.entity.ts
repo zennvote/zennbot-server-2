@@ -58,7 +58,7 @@ export class SongQueue extends Entity {
     return song;
   }
 
-  payForRequestAndGetRequestType(requestor: SongRequestor) {
+  private payForRequestAndGetRequestType(requestor: SongRequestor) {
     if (this.isGoldenBellEnabled) return RequestType.freemode;
 
     const payment = requestor.payForRequest();
