@@ -7,14 +7,14 @@ import { RequestType } from './songs.entity';
 export type SongRequestorProps = {
   id: string;
   username: string;
-  twitchId: string;
+  twitchId?: string;
   ticket: number;
   ticketPiece: number;
 };
 
 export class SongRequestor extends Entity {
   public readonly username: string;
-  public readonly twitchId: string;
+  public readonly twitchId?: string;
   public readonly ticket: number;
   public readonly ticketPiece: number;
 
@@ -25,6 +25,10 @@ export class SongRequestor extends Entity {
     this.twitchId = props.twitchId;
     this.ticket = props.ticket;
     this.ticketPiece = props.ticketPiece;
+  }
+
+  get numaricId() {
+    return parseInt(this.id, 10) ?? -1;
   }
 
   payForRequest() {
