@@ -32,11 +32,11 @@ export class SongRequestorRepository implements SongRequestorRepositoryInterface
     private readonly sheets: SheetsService,
   ) {}
 
-  async get(twitchId: string, username: string): Promise<SongRequestor> {
+  async get(twitchId: string, username: string) {
     const rows = await this.sheets.getSheets(this.sheetsInfo);
 
     const row = rows.find((row) => row.twitchId === twitchId || row.username === username);
-    if (!row) throw new Error('not found');
+    if (!row) return null;
 
     if (row.username !== username || row.twitchId !== twitchId) {
       await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
