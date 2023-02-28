@@ -1,44 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
-import { BusinessError, isBusinessError } from 'src/util/business-error';
+import { isBusinessError } from 'src/util/business-error';
 
-import { SettingsRepository } from 'src/infrastructure/persistence/settings/settings.repository';
-import { SongsRepository } from 'src/infrastructure/persistence/songs/songs.repository';
-import { ViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.repository';
-
-import * as Settings from 'src/domain/settings/settings-store';
-import { SettingsService } from 'src/domain/settings/settings.service';
-import { SongsService } from 'src/domain/songs/songs.service';
+import { SONG_QUEUE_REPOSITORY, SongQueueRepository } from 'src/domain/songs/repositories/song-queue.repository';
+import { SONG_REQUESTOR_REPOSITORY, SongRequestorRepository } from 'src/domain/songs/repositories/song-requestor.repository';
+import { SONG_REPOSITORY, SongsRepository } from 'src/domain/songs/repositories/songs.repository';
 
 @Injectable()
 export class SongsApplication {
-  private readonly songsService: SongsService;
-  private readonly settingsService: SettingsService;
-
   constructor(
-    private readonly viewersRepository: ViewersRepository,
-    private readonly songsRepository: SongsRepository,
-    settingsRepository: SettingsRepository,
+    @Inject(SONG_REPOSITORY) private readonly songsRepository: SongsRepository,
+    @Inject(SONG_QUEUE_REPOSITORY) private readonly songQueueRepository: SongQueueRepository,
+    @Inject(SONG_REQUESTOR_REPOSITORY)
+    private readonly songRequestorRepository: SongRequestorRepository,
   ) {
-    this.songsService = new SongsService(songsRepository);
-    this.settingsService = new SettingsService(settingsRepository);
   }
 
   public async requestSong(twitchId: string, username: string, title: string) {
-    const isRequestEnabled = await this.settingsService.getSetting(Settings.IsRequestEnabled);
-    if (!isRequestEnabled) return new BusinessError('request-not-enabled');
+    const songQueue = await this.songQueueRepository.get();
+    const requestor = await this.songRequestorRepository.get(username, twitchId);
 
-    const viewer = await this.viewersRepository.findOne(twitchId, username);
-    if (viewer === null) return new BusinessError('no-viewer');
-
-    const isGoldenbellEnabled = await this.settingsService.getSetting(Settings.IsGoldenbellEnabled);
-
-    const song = await viewer.requestSong(title, isGoldenbellEnabled, this.songsService);
+    const song = songQueue.request(title, requestor);
     if (isBusinessError(song)) return song;
 
     const [persisted] = await Promise.all([
       await this.songsRepository.save(song),
-      await this.viewersRepository.save(viewer),
+      await this.songQueueRepository.save(songQueue),
+      await this.songRequestorRepository.save(requestor),
     ]);
 
     return persisted;
