@@ -11,6 +11,6 @@ export class SongsService {
 
     return [...cooltimeSongs, ...requestedSongs]
       .slice(-4)
-      .some((song) => song.requestorId === viewer.id);
+      .some((song) => song.requestorName === viewer.username);
   }
 }

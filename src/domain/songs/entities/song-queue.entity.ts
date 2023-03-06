@@ -42,10 +42,10 @@ export class SongQueue extends Entity {
     return consumed;
   }
 
-  request(title: string, requestorId: string, requestor: SongRequestor) {
+  request(title: string, requestor: SongRequestor) {
     if (this.isRequestEnabled === false) return new BusinessError('request-disabled');
 
-    const isInCooltime = this.consumedSongs.some((song) => song.requestorId === requestorId);
+    const isInCooltime = this.consumedSongs.some((song) => song.requestorName === requestor.username);
     if (isInCooltime) return new BusinessError('in-cooltime');
 
     const requestType = this.payForRequestAndGetRequestType(requestor);
@@ -54,7 +54,7 @@ export class SongQueue extends Entity {
     const song = new Song({
       id: randomUUID(),
       title,
-      requestorId,
+      requestorId: requestor.username,
       requestType,
     });
 

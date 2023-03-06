@@ -15,7 +15,7 @@ export class SongsRepository implements SongsRepositoryInterface {
   async save(song: Song): Promise<Song> {
     const body: Omit<Prisma.SongCreateInput, 'id'> = {
       title: song.title,
-      requestorId: song.requestorId,
+      requestorId: song.requestorName,
       requestType: song.requestType,
     };
 

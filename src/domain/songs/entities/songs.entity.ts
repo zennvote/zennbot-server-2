@@ -20,7 +20,7 @@ export type SongProps = {
 export class Song extends Entity {
   public readonly title: string;
   public readonly consumed: boolean;
-  public readonly requestorId: string;
+  public readonly requestorName: string;
   public readonly requestType: RequestType;
 
   constructor(props: SongProps) {
@@ -28,7 +28,7 @@ export class Song extends Entity {
 
     this.title = props.title;
     this.consumed = props.consumed ?? false;
-    this.requestorId = props.requestorId;
+    this.requestorName = props.requestorId;
     this.requestType = props.requestType;
   }
 
