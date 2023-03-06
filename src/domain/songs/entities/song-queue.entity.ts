@@ -54,7 +54,7 @@ export class SongQueue extends Entity {
     const song = new Song({
       id: randomUUID(),
       title,
-      requestorId: requestor.username,
+      requestorName: requestor.username,
       requestType,
     });
 

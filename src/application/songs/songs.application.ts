@@ -20,7 +20,7 @@ export class SongsApplication {
     const requestor = await this.songRequestorRepository.get(twitchId, username);
     if (requestor === null) return new BusinessError('requestor-not-found');
 
-    const song = songQueue.request(title, twitchId, requestor);
+    const song = songQueue.request(title, requestor);
     if (isBusinessError(song)) return song;
 
     const [persisted] = await Promise.all([

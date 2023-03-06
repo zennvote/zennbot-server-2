@@ -58,7 +58,7 @@ export class Viewer extends Entity {
     return new Song({
       id: randomUUID(),
       title,
-      requestorId: this.id,
+      requestorName: this.username,
       requestType,
     });
   }

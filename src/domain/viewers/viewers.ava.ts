@@ -4,11 +4,9 @@ import anyTest, { TestFn } from 'ava';
 import * as sinon from 'sinon';
 import { SinonSandbox } from 'sinon';
 
-import { isBusinessError } from 'src/util/business-error';
-
 import { MockSongsRepository } from 'src/infrastructure/persistence/songs/songs.mock';
 
-import { SongsRepository } from 'src/domain/songs/songs.repository';
+import { SongsRepository } from 'src/domain/songs/repositories/songs.repository';
 
 type TestContext = {
   sandbox: SinonSandbox;

@@ -15,7 +15,7 @@ export class SongsRepository implements SongsRepositoryInterface {
   async save(song: Song): Promise<Song> {
     const body: Omit<Prisma.SongCreateInput, 'id'> = {
       title: song.title,
-      requestorId: song.requestorName,
+      requestorName: song.requestorName,
       requestType: song.requestType,
     };
 
@@ -35,7 +35,7 @@ export class SongsRepository implements SongsRepositoryInterface {
     return new Song({
       id: datamodel.id,
       title: datamodel.title,
-      requestorId: datamodel.requestorId,
+      requestorName: datamodel.requestorName,
       requestType: datamodel.requestType as RequestType,
     });
   }

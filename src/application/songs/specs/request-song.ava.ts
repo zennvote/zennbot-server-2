@@ -140,7 +140,7 @@ test('골든벨일 경우 포인트가 부족해도 신청 가능해야 한다.'
 
 test('쿨타임인 경우 실패해야 한다.', async (test) => {
   const { application, requestor } = test.context;
-  const cooltimeSong = await songFactory.create({ requestorId: requestor.twitchId });
+  const cooltimeSong = await songFactory.create({ requestorName: requestor.username });
   test.context.songQueue.consumedSongs.push(cooltimeSong);
 
   const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');

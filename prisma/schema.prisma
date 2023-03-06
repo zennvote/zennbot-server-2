@@ -43,10 +43,10 @@ model User {
 }
 
 model Song {
-  id          String @id @default(uuid())
-  title       String
-  requestorId String
-  requestType String
+  id            String @id @default(uuid())
+  title         String
+  requestorName String
+  requestType   String
 }
 
 model SongQueue {

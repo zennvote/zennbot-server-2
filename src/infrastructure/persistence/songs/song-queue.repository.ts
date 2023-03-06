@@ -52,7 +52,7 @@ export class SongQueueRepository implements SongQueueRepositoryInterface {
       song instanceof Song ? song : new Song({
         id: song.id,
         title: song.title,
-        requestorId: `${song.requestorId}`,
+        requestorName: `${song.requestorName}`,
         requestType: song.requestType as RequestType,
       })
     ));

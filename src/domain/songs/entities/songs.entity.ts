@@ -13,7 +13,7 @@ export type SongProps = {
   id: string;
   title: string;
   consumed?: boolean;
-  requestorId: string;
+  requestorName: string;
   requestType: RequestType;
 };
 
@@ -28,7 +28,7 @@ export class Song extends Entity {
 
     this.title = props.title;
     this.consumed = props.consumed ?? false;
-    this.requestorName = props.requestorId;
+    this.requestorName = props.requestorName;
     this.requestType = props.requestType;
   }
 
