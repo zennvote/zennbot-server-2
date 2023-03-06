@@ -31,11 +31,4 @@ export class Song extends Entity {
     this.requestorName = props.requestorName;
     this.requestType = props.requestType;
   }
-
-  consume() {
-    if (this.consumed === true) {
-      return new BusinessError('already-consumed');
-    }
-    this.mutable.consumed = true;
-  }
 }
