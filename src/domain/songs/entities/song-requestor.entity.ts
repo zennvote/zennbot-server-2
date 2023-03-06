@@ -2,7 +2,7 @@ import { BusinessError } from 'src/util/business-error';
 
 import { Entity } from 'src/domain/types/entity';
 
-import { RequestType } from './songs.entity';
+import { Song, RequestType } from './songs.entity';
 
 export type SongRequestorProps = {
   id: string;
@@ -41,5 +41,14 @@ export class SongRequestor extends Entity {
       return RequestType.ticketPiece;
     }
     return new BusinessError('not-enough-point');
+  }
+
+  refundForSong(song: Song) {
+    if (song.requestType === RequestType.ticket) {
+      this.mutable.ticket += 1;
+    }
+    if (song.requestType === RequestType.ticketPiece) {
+      this.mutable.ticketPiece += 3;
+    }
   }
 }

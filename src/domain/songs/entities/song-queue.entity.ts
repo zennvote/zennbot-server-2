@@ -63,6 +63,49 @@ export class SongQueue extends Entity {
     return song;
   }
 
+  appendManualSong(title: string) {
+    const song = new Song({
+      id: randomUUID(),
+      title,
+      requestorName: '프로듀서_젠',
+      requestType: RequestType.manual,
+    });
+    this.requestedSongs.push(song);
+
+    return song;
+  }
+
+  reindex(ids: string[]) {
+    const sortedIds = ids.sort();
+    if (sortedIds.length !== this.requestedSongs.length) return new BusinessError('invalid-ids');
+
+    const sortedRequestedSongIds = this.requestedSongs.map((song) => song.id).sort();
+    if (sortedIds.join() !== sortedRequestedSongIds.join()) return new BusinessError('invalid-ids');
+
+    const newRequestedSongs = ids
+      .map((id) => this.requestedSongs.find((song) => song.id === id))
+      .filter((song): song is Song => !!song);
+
+    this.mutable.requestedSongs = newRequestedSongs;
+  }
+
+  deleteSongByIndex(index: number) {
+    if (index < 0 || index >= this.requestedSongs.length) return new BusinessError('out-of-range');
+
+    const [song] = this.requestedSongs.splice(index, 1);
+    if (!song) return new BusinessError('out-of-range');
+
+    return song;
+  }
+
+  resetSongs() {
+    this.mutable.requestedSongs = [];
+  }
+
+  resetCooltimes() {
+    this.mutable.consumedSongs = [];
+  }
+
   private payForRequestAndGetRequestType(requestor: SongRequestor) {
     if (this.isGoldenBellEnabled) return RequestType.freemode;
 

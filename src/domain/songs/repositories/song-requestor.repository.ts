@@ -4,5 +4,6 @@ export const SONG_REQUESTOR_REPOSITORY = 'SONG_REQUESTOR_REPOSITORY';
 
 export interface SongRequestorRepository {
   get(twitchId: string, username: string): Promise<SongRequestor | null>;
+  getByUsername(username: string): Promise<SongRequestor | null>;
   save(songRequestor: SongRequestor): Promise<SongRequestor>;
 }
