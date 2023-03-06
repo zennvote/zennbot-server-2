@@ -84,6 +84,7 @@ module.exports = {
         },
       },
     ],
+    'max-len': ['error', { 'code': 150 }],
     'no-case-declarations': 'off',
     'max-classes-per-file': 'off',
     'no-underscore-dangle': 'off',
