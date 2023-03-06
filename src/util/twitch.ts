@@ -10,6 +10,7 @@ export const getSubscription = async (channel: string, channelId: string, twitch
 
   const {
     data: [{ data }],
+    status,
   } = await axios.post(
     twitchGqlUrl,
     [
@@ -34,8 +35,13 @@ export const getSubscription = async (channel: string, channelId: string, twitch
     { headers },
   );
 
+  if (status >= 400) {
+    console.log('Looks like we got an error from Twitch', status);
+  }
+
   const { tier: tierString } = data?.targetUser?.relationship?.subscriptionBenefit ?? {};
   if (!tierString) {
+    console.log('Looks like we got an wrong value from Twitch', data);
     return null;
   }
 
