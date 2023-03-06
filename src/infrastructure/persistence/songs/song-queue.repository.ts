@@ -3,10 +3,8 @@ import { SongQueue as SongQueueDataModel, Song as SongDataModel } from '@prisma/
 
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 
-import { RequestType } from 'src/app/songs/songs.entity';
-
 import { SongQueue } from 'src/domain/songs/entities/song-queue.entity';
-import { Song } from 'src/domain/songs/entities/songs.entity';
+import { RequestType, Song } from 'src/domain/songs/entities/songs.entity';
 import { SONG_QUEUE_REPOSITORY, SongQueueRepository as SongQueueRepositoryInterface } from 'src/domain/songs/repositories/song-queue.repository';
 
 @Injectable()
