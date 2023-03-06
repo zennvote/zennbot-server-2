@@ -3,7 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
 
 import { SongRequestor } from 'src/domain/songs/entities/song-requestor.entity';
-import { SONG_REQUESTOR_REPOSITORY, SongRequestorRepository as SongRequestorRepositoryInterface } from 'src/domain/songs/repositories/song-requestor.repository';
+import {
+  SONG_REQUESTOR_REPOSITORY,
+  SongRequestorRepository as SongRequestorRepositoryInterface,
+} from 'src/domain/songs/repositories/song-requestor.repository';
 
 type SongRequestorDataModel = {
   index: number;
@@ -41,6 +44,15 @@ export class SongRequestorRepository implements SongRequestorRepositoryInterface
     if (row.username !== username || row.twitchId !== twitchId) {
       await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
+
+    return this.convertFromDataModel(row);
+  }
+
+  async getByUsername(username: string): Promise<SongRequestor | null> {
+    const rows = await this.sheets.getSheets(this.sheetsInfo);
+
+    const row = rows.find((row) => row.username === username);
+    if (!row) return null;
 
     return this.convertFromDataModel(row);
   }

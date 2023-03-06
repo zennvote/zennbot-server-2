@@ -11,5 +11,9 @@ export class MockSongRequestorRepository implements SongRequestorRepository {
     songRequestorFactory.create({ twitchId, username })
   ));
 
+  public getByUsername = this.sinon.fake(async (username: string) => (
+    songRequestorFactory.create({ username })
+  ));
+
   public save = this.sinon.fake(async (songRequestor: SongRequestor) => songRequestor);
 }
