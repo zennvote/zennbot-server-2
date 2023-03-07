@@ -27,7 +27,7 @@ export const getSubscription = async (channel: string, channelId: string, twitch
         extensions: {
           persistedQuery: {
             version: 1,
-            sha256Hash: '9afddab81b8b216f9370f3f96662d4cefe9eb5312dc4c133ace70fa0a24ec2af',
+            sha256Hash: '823772cac91efa0a24f86a80463f37f0377cb216d7ce57a4ab90b61d1e01de8b',
           },
         },
       },
