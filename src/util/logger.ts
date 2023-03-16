@@ -7,15 +7,26 @@ type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug';
 
 @Injectable()
 export class MainLogger extends ConsoleLogger {
-  private winstonLogger = winston.createLogger({
-    level: 'info',
-    format: winston.format.json(),
-    defaultMeta: { service: 'user-service' },
-    transports: [
-      new DailyRotateFile({ filename: 'logs/error-%DATE%.log', level: 'error' }),
-      new DailyRotateFile({ filename: 'logs/combined-%DATE%.log', level: 'debug' }),
-    ],
-  });
+  private winstonLogger: winston.Logger;
+
+  constructor(context?: string, transports: winston.transport[] = []) {
+    if (context) {
+      super(context);
+    } else {
+      super();
+    }
+
+    this.winstonLogger = winston.createLogger({
+      level: 'info',
+      format: winston.format.json(),
+      defaultMeta: { service: 'user-service' },
+      transports: [
+        new DailyRotateFile({ filename: 'logs/error-%DATE%.log', level: 'error' }),
+        new DailyRotateFile({ filename: 'logs/combined-%DATE%.log', level: 'debug' }),
+        ...transports,
+      ],
+    });
+  }
 
   log(message: any, ...params: any[]) {
     super.log(message, ...params);
