@@ -34,6 +34,7 @@
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/platform-socket.io": "^8.3.1",
+    "@nestjs/schedule": "^2.2.0",
     "@nestjs/swagger": "^5.2.1",
     "@nestjs/websockets": "^8.3.1",
     "@prisma/client": "^4.11.0",
