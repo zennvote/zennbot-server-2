@@ -24,7 +24,7 @@ export class ViewersApplication {
     return viewer;
   }
 
-  public async setBiasIdols(username: string, idolIds: number[]) {
+  public async setBiasIdols(username: string, idolIds: string[]) {
     const viewer = await this.queryViewerByUsername(username);
     if (isBusinessError(viewer)) return viewer;
 

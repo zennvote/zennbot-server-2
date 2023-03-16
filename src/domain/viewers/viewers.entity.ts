@@ -13,7 +13,7 @@ export type ViewerProps = {
   ticket: number;
   ticketPiece: number;
   prefix?: string;
-  viasIdolIds: number[];
+  viasIdolIds: string[];
 }
 
 export class Viewer extends Entity {
@@ -22,7 +22,7 @@ export class Viewer extends Entity {
   public readonly ticket: number;
   public readonly ticketPiece: number;
   public readonly prefix?: string;
-  public readonly viasIdolIds: number[];
+  public readonly viasIdolIds: string[];
 
   constructor(props: ViewerProps) {
     super(props.id);
@@ -63,7 +63,7 @@ export class Viewer extends Entity {
     });
   }
 
-  public setBiasIdols(ids: number[]) {
+  public setBiasIdols(ids: string[]) {
     this.mutable.viasIdolIds = ids;
   }
 

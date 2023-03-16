@@ -46,7 +46,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
 
     const biasIdolIds = await this.getBiasIdolIds(username);
 
-    return convertFromDataModel(row, biasIdolIds);
+    return convertFromDataModel(row, biasIdolIds.map((id) => `${id}`));
   }
 
   async findOneByUsername(username: string): Promise<Viewer | null> {
@@ -57,7 +57,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
 
     const biasIdolIds = await this.getBiasIdolIds(username);
 
-    return convertFromDataModel(row, biasIdolIds);
+    return convertFromDataModel(row, biasIdolIds.map((id) => `${id}`));
   }
 
   async findByBiasIdols(idolId: number): Promise<Viewer[]> {
@@ -72,7 +72,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
         const viewer = rows.find((viewer) => viewer.username === query.viewerUsername);
         if (!viewer) return viewer;
 
-        return convertFromDataModel(viewer, [idolId]);
+        return convertFromDataModel(viewer, [`${idolId}`]);
       })
       .filter((viewer): viewer is Viewer => viewer !== undefined);
 
@@ -89,12 +89,15 @@ export class ViewersRepository implements ViewersRepositoryInterface {
       where: {
         viewerUsername: viewer.username,
         NOT: {
-          idolId: { in: viewer.viasIdolIds },
+          idolId: { in: viewer.viasIdolIds.map((idolId) => parseInt(idolId, 10)) },
         },
       },
     });
     await this.prisma.biasIdol.createMany({
-      data: viewer.viasIdolIds.map((idolId) => ({ viewerUsername: viewer.username, idolId })),
+      data: viewer.viasIdolIds.map((idolId) => ({
+        viewerUsername: viewer.username,
+        idolId: parseInt(idolId, 10),
+      })),
       skipDuplicates: true,
     });
 
@@ -105,7 +108,10 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     const result = await this.sheets.appendRow(this.sheetsInfo, viewer);
 
     await this.prisma.biasIdol.createMany({
-      data: viewer.viasIdolIds.map((idolId) => ({ viewerUsername: viewer.username, idolId })),
+      data: viewer.viasIdolIds.map((idolId) => ({
+        viewerUsername: viewer.username,
+        idolId: parseInt(idolId, 10),
+      })),
     });
 
     return convertFromDataModel(result, viewer.viasIdolIds);
@@ -122,7 +128,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
   }
 }
 
-const convertFromDataModel = (row: ViewerDataModel, viasIdolIds: number[]) => {
+const convertFromDataModel = (row: ViewerDataModel, viasIdolIds: string[]) => {
   if (!row.username || !row.ticket || !row.ticketPiece) {
     throw new Error(`Essential row was empty: ${JSON.stringify(row)}`);
   }
