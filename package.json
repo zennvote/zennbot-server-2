@@ -120,7 +120,8 @@
     ],
     "coveragePathIgnorePatterns": [
       "src/migrations/*",
-      "src/.*\\.deprecatedspec\\.ts"
+      "src/.*\\.deprecatedspec\\.ts",
+      "src/.*\\.ava\\.ts"
     ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
