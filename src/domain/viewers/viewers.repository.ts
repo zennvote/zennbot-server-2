@@ -1,5 +1,7 @@
 import { Viewer } from './viewers.entity';
 
+export const VIEWERS_REPOSITORY = 'VIEWERS_REPOSITORY';
+
 export interface ViewersRepository {
   findOne(twitchId: string, username: string): Promise<Viewer | null>;
   findOneByUsername(username: string): Promise<Viewer | null>;

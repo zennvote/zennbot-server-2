@@ -30,8 +30,8 @@ test.beforeEach(async (test) => {
   test.context.viewersRepository = new MockViewersRepository(sandbox);
 
   test.context.application = new IdolsApplication(
-    test.context.idolsRepository as any,
-    test.context.viewersRepository as any,
+    test.context.idolsRepository,
+    test.context.viewersRepository,
   );
 
   await setupDefaultCase(test);

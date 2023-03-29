@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { BusinessError } from 'src/util/business-error';
 
-import { IdolsRepository } from 'src/infrastructure/persistence/idols/idols.repository';
-import { ViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.repository';
+import { IdolsRepository, IDOLS_REOPSITORY } from 'src/domain/idols/idols.repository';
+import { ViewersRepository, VIEWERS_REPOSITORY } from 'src/domain/viewers/viewers.repository';
 
 @Injectable()
 export class IdolsApplication {
   constructor(
-    private readonly idolsRepository: IdolsRepository,
-    private readonly viewersRepository: ViewersRepository,
+    @Inject(IDOLS_REOPSITORY) private readonly idolsRepository: IdolsRepository,
+    @Inject(VIEWERS_REPOSITORY) private readonly viewersRepository: ViewersRepository,
   ) {}
 
   public async queryIdols() {
