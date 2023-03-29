@@ -76,7 +76,7 @@ export class SongQueue extends Entity {
   }
 
   reindex(ids: string[]) {
-    const sortedIds = ids.sort();
+    const sortedIds = [...ids].sort();
     if (sortedIds.length !== this.requestedSongs.length) return new BusinessError('invalid-ids');
 
     const sortedRequestedSongIds = this.requestedSongs.map((song) => song.id).sort();

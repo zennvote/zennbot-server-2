@@ -60,12 +60,12 @@ export class SongsApplication {
   public async reindexSongs(ids: string[]) {
     const songQueue = await this.songQueueRepository.get();
 
-    songQueue.reindex(ids);
-    if (isBusinessError(songQueue)) return songQueue;
+    const result = songQueue.reindex(ids);
+    if (isBusinessError(result)) return result;
 
-    const result = await this.songQueueRepository.save(songQueue);
+    const persisted = await this.songQueueRepository.save(songQueue);
 
-    return result.requestedSongs;
+    return persisted.requestedSongs;
   }
 
   public async consumeSong() {

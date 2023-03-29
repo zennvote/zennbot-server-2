@@ -5,9 +5,8 @@ import * as sinon from 'sinon';
 
 import { isBusinessError } from 'src/util/business-error';
 
-import Song from 'src/app/songs/songs.entity';
-
 import { SongQueue } from 'src/domain/songs/entities/song-queue.entity';
+import { Song } from 'src/domain/songs/entities/songs.entity';
 import { songFactory, songQueueFactory } from 'src/domain/songs/songs.factory';
 
 import { baseSetup, BaseTestContenxt } from './application-initializer';
