@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 
 import { BusinessError } from 'src/util/business-error';
 
-import { RequestType, Song } from 'src/domain/songs/songs.entity';
+import { RequestType, Song } from 'src/domain/songs/entities/songs.entity';
 import { SongsService } from 'src/domain/songs/songs.service';
 import { Entity } from 'src/domain/types/entity';
 
@@ -58,7 +58,7 @@ export class Viewer extends Entity {
     return new Song({
       id: randomUUID(),
       title,
-      requestorId: this.id,
+      requestorName: this.username,
       requestType,
     });
   }

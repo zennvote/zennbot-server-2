@@ -37,7 +37,7 @@ module.exports = {
       'ignorePackages',
       { 'js': 'never', 'jsx': 'never', 'ts': 'never', 'tsx': 'never' }
     ],
-    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/*.*spec.ts', '**/*.ava.ts', '**/*.mock.ts'] }],
+    'import/no-extraneous-dependencies': ['error', { 'devDependencies': ['**/*.*spec.ts', '**/*.ava.ts', '**/*.mock.ts', '**/specs/*' ] }],
     'import/prefer-default-export': 'off',
     'import/no-cycle': 'off',
     'import/order': [
@@ -84,6 +84,7 @@ module.exports = {
         },
       },
     ],
+    'max-len': ['error', { 'code': 150 }],
     'no-case-declarations': 'off',
     'max-classes-per-file': 'off',
     'no-underscore-dangle': 'off',

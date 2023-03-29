@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Song as SongDataModel } from '@prisma/client';
+import { Song as SongDataModel, Prisma } from '@prisma/client';
 
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 
-import { RequestType, Song } from 'src/domain/songs/songs.entity';
-import { SongsRepository as SongsRepositoryInterface } from 'src/domain/songs/songs.repository';
+import { RequestType, Song } from 'src/domain/songs/entities/songs.entity';
+import { SONG_REPOSITORY, SongsRepository as SongsRepositoryInterface } from 'src/domain/songs/repositories/songs.repository';
 
 @Injectable()
 export class SongsRepository implements SongsRepositoryInterface {
@@ -13,68 +13,35 @@ export class SongsRepository implements SongsRepositoryInterface {
   ) {}
 
   async save(song: Song): Promise<Song> {
-    const existing = await this.prisma.song.findUnique({ where: { id: song.id } });
-    if (!existing) return this.create(song);
+    const body: Omit<Prisma.SongCreateInput, 'id'> = {
+      title: song.title,
+      requestorName: song.requestorName,
+      requestType: song.requestType,
+    };
 
-    const consumedAt = song.consumed ? (existing.consumedAt ?? new Date()) : null;
-
-    const result = await this.prisma.song.update({
-      data: {
-        title: song.title,
-        requestorId: parseInt(song.requestorId, 10),
-        requestType: song.requestType,
-        consumedAt,
-        displayOrder: song.consumed ? -1 : undefined,
-      },
+    const result = await this.prisma.song.upsert({
       where: { id: song.id },
-    });
-
-    return convertFromDataModel(result);
-  }
-
-  async create(song: Song): Promise<Song> {
-    const displayOrderQuery = await this.prisma.song.aggregate({
-      _max: { displayOrder: true },
-    });
-    const displayOrder = (displayOrderQuery._max.displayOrder ?? 0) + 1;
-
-    const result = await this.prisma.song.create({
-      data: {
-        title: song.title,
-        requestorId: parseInt(song.requestorId, 10),
-        requestType: song.requestType,
-        displayOrder,
-        consumedAt: song.consumed ? new Date() : null,
+      create: {
+        id: song.id,
+        ...body,
       },
+      update: body,
     });
 
-    return convertFromDataModel(result);
+    return this.convertFromDataModel(result);
   }
 
-  async getRequestedSongs(): Promise<Song[]> {
-    const result = await this.prisma.song.findMany({
-      where: { consumedAt: null },
-      orderBy: { displayOrder: 'asc' },
+  private convertFromDataModel(datamodel: SongDataModel) {
+    return new Song({
+      id: datamodel.id,
+      title: datamodel.title,
+      requestorName: datamodel.requestorName,
+      requestType: datamodel.requestType as RequestType,
     });
-
-    return result.map(convertFromDataModel);
-  }
-
-  async getCooltimeSongs(): Promise<Song[]> {
-    const result = await this.prisma.song.findMany({
-      where: { NOT: { consumedAt: null } },
-      take: 4,
-      orderBy: { consumedAt: 'desc' },
-    });
-
-    return result.map(convertFromDataModel).reverse();
   }
 }
 
-const convertFromDataModel = (datamodel: SongDataModel) => new Song({
-  id: datamodel.id,
-  title: datamodel.title,
-  consumed: datamodel.consumedAt !== null,
-  requestorId: `${datamodel.requestorId}`,
-  requestType: datamodel.requestType as RequestType,
-});
+export const SongsRepositoryProvider = {
+  provide: SONG_REPOSITORY,
+  useClass: SongsRepository,
+};

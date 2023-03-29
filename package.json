@@ -114,15 +114,14 @@
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
+    "preset": "ts-jest",
     "collectCoverageFrom": [
       "**/{!(*.module),}.(t|j)s"
     ],
     "coveragePathIgnorePatterns": [
       "src/migrations/*",
-      "src/.*\\.deprecatedspec\\.ts"
+      "src/.*\\.deprecatedspec\\.ts",
+      "src/.*\\.ava\\.ts"
     ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
@@ -131,7 +130,12 @@
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
       "jest-extended/all"
-    ]
+    ],
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true
+      }
+    }
   },
   "ava": {
     "timeout": "2m",

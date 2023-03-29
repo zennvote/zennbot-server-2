@@ -1,201 +1,150 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import anyTest, { ExecutionContext, TestFn } from 'ava';
+import anyTest, { TestFn } from 'ava';
 import * as sinon from 'sinon';
-import { SinonSandbox } from 'sinon';
 
 import { isBusinessError } from 'src/util/business-error';
 
-import { MockSettingsRepository } from 'src/infrastructure/persistence/settings/settings.mock';
-import { MockSongsRepository } from 'src/infrastructure/persistence/songs/songs.mock';
-import { MockViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.mock';
+import { SongQueue } from 'src/domain/songs/entities/song-queue.entity';
+import { SongRequestor } from 'src/domain/songs/entities/song-requestor.entity';
+import { RequestType } from 'src/domain/songs/entities/songs.entity';
+import { songFactory, songQueueFactory, songRequestorFactory } from 'src/domain/songs/songs.factory';
 
-import { IsGoldenbellEnabled, IsRequestEnabled } from 'src/domain/settings/settings-store';
-import { RequestType, Song, SongProps } from 'src/domain/songs/songs.entity';
-import { songFactory } from 'src/domain/songs/songs.factory';
-import { Viewer, ViewerProps } from 'src/domain/viewers/viewers.entity';
-import { viewerFactory } from 'src/domain/viewers/viewers.factory';
+import { baseSetup, BaseTestContenxt } from './application-initializer';
 
-import { SongsApplication } from '../songs.application';
-
-type TestContext = {
-  sandbox: SinonSandbox;
-  viewersRepository: MockViewersRepository;
-  songsRepository: MockSongsRepository;
-  settingsRepository: MockSettingsRepository;
-  application: SongsApplication;
-  viewer: Viewer;
+type TestContext = BaseTestContenxt & {
+  songQueue: SongQueue;
+  requestor: SongRequestor;
 };
+
 const test = anyTest as TestFn<TestContext>;
 
 test.beforeEach(async (test) => {
-  const sandbox = sinon.createSandbox();
+  baseSetup(test);
 
-  test.context.sandbox = sandbox;
-  test.context.viewersRepository = new MockViewersRepository(sandbox);
-  test.context.songsRepository = new MockSongsRepository(sandbox);
-  test.context.settingsRepository = new MockSettingsRepository(sandbox);
+  test.context.songQueue = await songQueueFactory.create();
+  test.context.songQueueRepository.get = sinon.fake(async () => test.context.songQueue);
 
-  test.context.application = new SongsApplication(
-    test.context.viewersRepository as any,
-    test.context.songsRepository as any,
-    test.context.settingsRepository as any,
-  );
-
-  await setupDefaultCase(test);
-});
-
-test.afterEach((test) => {
-  test.context.sandbox.restore();
-});
-
-const setupDefaultCase = async (test: ExecutionContext<TestContext>) => {
-  const { sandbox } = test.context;
-
-  const viewer = await viewerFactory.create({ ticket: 10 });
-
-  test.context.viewer = viewer;
-
-  test.context.viewersRepository.findOne = sandbox.fake(async () => test.context.viewer);
-  test.context.songsRepository.save = sandbox.fake(async (song) => {
-    (song.id as any) = 3;
-    return song;
+  test.context.requestor = await songRequestorFactory.create({
+    ticket: 10,
+    ticketPiece: 17,
   });
-};
+  test.context.songRequestorRepository.get = sinon.fake(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (twitchId: string, username: string) => test.context.requestor,
+  );
+});
 
 test('신청곡 신청 및 결제가 완료되어야 한다', async (test) => {
-  const { application, viewer } = test.context;
+  const { application, songQueue, requestor } = test.context;
 
-  const result = await application.requestSong(viewer.twitchId!, viewer.username, 'test song');
+  const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');
 
-  test.false(isBusinessError(result));
   if (isBusinessError(result)) return test.fail();
 
-  test.true(result instanceof Song);
+  test.is(result.title, 'Test Song Title');
+  test.is(result.requestType, RequestType.ticket);
+  test.is(songQueue.requestedSongs.length, 1);
+  test.is(result.id, songQueue.requestedSongs[0].id);
+  test.is(requestor.ticket, 9);
 
-  // Test Persistence
-  const saveSong =
-    test.context.songsRepository.save as sinon.SinonSpy<[Song], Promise<Song>>;
-  const saveViewer =
-    test.context.viewersRepository.save as sinon.SinonSpy<[Viewer], Promise<Viewer>>;
-
-  test.true(saveSong.called);
-  test.like<Partial<SongProps>>(
-    saveSong.firstCall.args[0],
-    {
-      id: result.id,
-      title: 'test song',
-      requestorId: viewer.id,
-      requestType: RequestType.ticket,
-    },
-  );
-  test.true(saveViewer.called);
-  test.like<Partial<ViewerProps>>(
-    saveViewer.firstCall.args[0],
-    { id: viewer.id, ticket: 9 },
-  );
+  test.is(test.context.songsRepository.save.callCount, 1);
+  test.is(test.context.songsRepository.save.firstCall.args[0].id, result.id);
+  test.is(test.context.songQueueRepository.save.callCount, 1);
+  test.is(test.context.songQueueRepository.save.firstCall.args[0].id, songQueue.id);
+  test.is(test.context.songRequestorRepository.save.callCount, 1);
+  test.is(test.context.songRequestorRepository.save.firstCall.args[0].id, requestor.id);
 });
 
 test('조각을 통한 신청곡 신청 및 결제가 완료되어야 한다', async (test) => {
-  const { application } = test.context;
+  const { application, songQueue, requestor } = test.context;
+  (test.context.requestor.ticket as any) = 0;
 
-  const viewer = await viewerFactory.create({ ticketPiece: 10 });
-  test.context.viewer = viewer;
+  const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');
 
-  const result = await application.requestSong(viewer.twitchId!, viewer.username, 'test song');
-
-  test.false(isBusinessError(result));
   if (isBusinessError(result)) return test.fail();
 
+  test.is(result.title, 'Test Song Title');
   test.is(result.requestType, RequestType.ticketPiece);
+  test.is(songQueue.requestedSongs.length, 1);
+  test.is(requestor.ticket, 0);
+  test.is(requestor.ticketPiece, 14);
 });
 
 test('골든벨일 시 포인트 소모 없이 신청되어야 한다', async (test) => {
-  const { application } = test.context;
+  const { application, songQueue, requestor } = test.context;
+  (test.context.songQueue.isGoldenBellEnabled as any) = true;
 
-  const viewer = await viewerFactory.create({
-    ticket: 3,
-    ticketPiece: 10,
-  });
-  test.context.viewer = viewer;
-  test.context.settingsRepository.MockSettings[IsGoldenbellEnabled] = true;
+  const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');
 
-  const result = await application.requestSong(viewer.twitchId!, viewer.username, 'test song');
-
-  test.false(isBusinessError(result));
   if (isBusinessError(result)) return test.fail();
 
+  test.is(result.title, 'Test Song Title');
   test.is(result.requestType, RequestType.freemode);
-  test.is(viewer.ticket, 3);
-  test.is(viewer.ticketPiece, 10);
+  test.is(songQueue.requestedSongs.length, 1);
+  test.is(requestor.ticket, 10);
+  test.is(requestor.ticketPiece, 17);
 });
 
 test('신청 비활성화 시 실패해야 한다', async (test) => {
-  const { application, viewer } = test.context;
+  const { application, requestor } = test.context;
+  (test.context.songQueue.isRequestEnabled as any) = false;
 
-  test.context.settingsRepository.MockSettings[IsRequestEnabled] = false;
+  const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');
 
-  const result = await application.requestSong(viewer.twitchId!, viewer.username, 'test song');
-
-  test.true(isBusinessError(result));
   if (!isBusinessError(result)) return test.fail();
 
-  test.is(result.error, 'request-not-enabled');
+  test.is(result.error, 'request-disabled');
 });
 
 test('존재하지 않는 시청자의 경우 실패해야 한다.', async (test) => {
-  const { sandbox, application } = test.context;
+  const { application } = test.context;
+  (test.context.songRequestorRepository.get as any) = sinon.fake(async () => null);
 
-  test.context.viewersRepository.findOne = sandbox.fake.resolves(null);
+  const result = await application.requestSong('test', 'test', 'Test Song Title');
 
-  const result = await application.requestSong('no-user', 'no-user', 'test song');
-
-  test.true(isBusinessError(result));
   if (!isBusinessError(result)) return test.fail();
 
-  test.is(result.error, 'no-viewer');
+  test.is(result.error, 'requestor-not-found');
 });
 
 test('포인트가 부족한 경우 실패해야 한다.', async (test) => {
-  const { sandbox, application } = test.context;
+  const { application, requestor } = test.context;
+  (test.context.requestor.ticket as any) = 0;
+  (test.context.requestor.ticketPiece as any) = 0;
 
-  const viewer = await viewerFactory.create();
-  test.context.viewersRepository.findOne = sandbox.fake.resolves(viewer);
+  const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');
 
-  const result = await application.requestSong(viewer.twitchId!, viewer.username, 'test song');
-
-  test.true(isBusinessError(result));
   if (!isBusinessError(result)) return test.fail();
 
   test.is(result.error, 'not-enough-point');
 });
 
 test('골든벨일 경우 포인트가 부족해도 신청 가능해야 한다.', async (test) => {
-  const { sandbox, application } = test.context;
+  const { application, requestor, songQueue } = test.context;
+  (test.context.requestor.ticket as any) = 0;
+  (test.context.requestor.ticketPiece as any) = 0;
+  (test.context.songQueue.isGoldenBellEnabled as any) = true;
 
-  const viewer = await viewerFactory.create();
-  test.context.viewersRepository.findOne = sandbox.fake.resolves(viewer);
-  test.context.settingsRepository.MockSettings[IsGoldenbellEnabled] = true;
+  const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');
 
-  const result = await application.requestSong(viewer.twitchId!, viewer.username, 'test song');
-
-  test.false(isBusinessError(result));
   if (isBusinessError(result)) return test.fail();
 
+  test.is(result.title, 'Test Song Title');
   test.is(result.requestType, RequestType.freemode);
+  test.is(songQueue.requestedSongs.length, 1);
+  test.is(requestor.ticket, 0);
+  test.is(requestor.ticketPiece, 0);
 });
 
 test('쿨타임인 경우 실패해야 한다.', async (test) => {
-  const { sandbox, application, viewer } = test.context;
+  const { application, requestor } = test.context;
+  const cooltimeSong = await songFactory.create({ requestorName: requestor.username });
+  test.context.songQueue.consumedSongs.push(cooltimeSong);
 
-  test.context.songsRepository.getCooltimeSongs = sandbox.fake.resolves(
-    [await songFactory.create({ requestorId: viewer.id })],
-  );
+  const result = await application.requestSong(requestor.twitchId!, requestor.username, 'Test Song Title');
 
-  const result = await application.requestSong(viewer.twitchId!, viewer.username, 'test song');
-
-  test.true(isBusinessError(result));
   if (!isBusinessError(result)) return test.fail();
 
   test.is(result.error, 'in-cooltime');

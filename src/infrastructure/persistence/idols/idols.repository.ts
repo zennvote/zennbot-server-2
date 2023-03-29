@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
 
 import { Idol } from 'src/domain/idols/idols.entity';
-import { IdolsRepository as IdolsRepositoryInterface } from 'src/domain/idols/idols.repository';
+import { IdolsRepository as IdolsRepositoryInterface, IDOLS_REOPSITORY } from 'src/domain/idols/idols.repository';
 
 type IdolDataModel = {
   index: number;
@@ -101,4 +101,9 @@ const convertFromDataModel = (row: IdolDataModel) => {
     cv: row.cv,
     introduction: row.introduction,
   });
+};
+
+export const IdolsRepositoryProvider = {
+  provide: IDOLS_REOPSITORY,
+  useClass: IdolsRepository,
 };

@@ -13,14 +13,14 @@ export type SongProps = {
   id: string;
   title: string;
   consumed?: boolean;
-  requestorId: string;
+  requestorName: string;
   requestType: RequestType;
 };
 
 export class Song extends Entity {
   public readonly title: string;
   public readonly consumed: boolean;
-  public readonly requestorId: string;
+  public readonly requestorName: string;
   public readonly requestType: RequestType;
 
   constructor(props: SongProps) {
@@ -28,14 +28,7 @@ export class Song extends Entity {
 
     this.title = props.title;
     this.consumed = props.consumed ?? false;
-    this.requestorId = props.requestorId;
+    this.requestorName = props.requestorName;
     this.requestType = props.requestType;
-  }
-
-  consume() {
-    if (this.consumed === true) {
-      return new BusinessError('already-consumed');
-    }
-    this.mutable.consumed = true;
   }
 }

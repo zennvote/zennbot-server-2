@@ -4,7 +4,7 @@ import { PrismaService } from 'src/libs/prisma/prisma.service';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
 
 import { Viewer } from 'src/domain/viewers/viewers.entity';
-import { ViewersRepository as ViewersRepositoryInterface } from 'src/domain/viewers/viewers.repository';
+import { ViewersRepository as ViewersRepositoryInterface, VIEWERS_REPOSITORY } from 'src/domain/viewers/viewers.repository';
 
 type ViewerDataModel = {
   index: number;
@@ -142,4 +142,9 @@ const convertFromDataModel = (row: ViewerDataModel, viasIdolIds: string[]) => {
     prefix: row.prefix,
     viasIdolIds,
   });
+};
+
+export const ViewersRepositoryProvider = {
+  provide: VIEWERS_REPOSITORY,
+  useClass: ViewersRepository,
 };

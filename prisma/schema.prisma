@@ -43,12 +43,18 @@ model User {
 }
 
 model Song {
-  id           String    @id @default(uuid())
-  title        String
-  consumedAt   DateTime?
-  requestorId  Int
-  requestType  String
-  displayOrder Int
+  id            String @id @default(uuid())
+  title         String
+  requestorName String
+  requestType   String
+}
+
+model SongQueue {
+  id                  String   @id @default(uuid())
+  requestedSongs      String[]
+  consumedSongs       String[]
+  isRequestEnabled    Boolean
+  isGoldenBellEnabled Boolean
 }
 
 model BiasIdol {
