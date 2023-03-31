@@ -17,12 +17,9 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "test:ava": "ava",
-    "test:ava:cov": "c8 ava",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "prisma migrate dev && ava",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate"
   },
@@ -123,8 +120,7 @@
     ],
     "coveragePathIgnorePatterns": [
       "src/migrations/*",
-      "src/.*\\.deprecatedspec\\.ts",
-      "src/.*\\.ava\\.ts"
+      "src/.*\\.deprecatedspec\\.ts"
     ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
