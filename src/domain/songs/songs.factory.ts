@@ -16,7 +16,7 @@ export const songFactory = Factory.define<SongProps, Blank, Song>(
       id: randomUUID(),
       title: `test song ${sequence}`,
       requestorName: `testuser${sequence}`,
-      requestType: RequestType.manual,
+      requestType: RequestType.ticket,
       ...params,
     };
   },
