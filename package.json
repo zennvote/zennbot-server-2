@@ -139,38 +139,5 @@
         "isolatedModules": true
       }
     }
-  },
-  "ava": {
-    "timeout": "2m",
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register",
-      "tsconfig-paths/register"
-    ],
-    "files": [
-      "src/**/*.ava.ts"
-    ]
-  },
-  "c8": {
-    "reporter": [
-      "html",
-      "json"
-    ],
-    "all": true,
-    "include": [
-      "src/application",
-      "src/domain",
-      "src/infrastructure"
-    ],
-    "exclude": [
-      "**/*.factory.ts",
-      "**/*.mock.ts",
-      "**/*.ava.ts",
-      "**/*.*spec.ts",
-      "src/domain/types",
-      "src/domain/**/*.repository.ts"
-    ]
   }
 }
