@@ -3,7 +3,6 @@ import { randomUUID } from 'crypto';
 import { BusinessError } from 'src/util/business-error';
 
 import { RequestType, Song } from 'src/domain/songs/entities/songs.entity';
-import { SongsService } from 'src/domain/songs/songs.service';
 import { Entity } from 'src/domain/types/entity';
 
 export type ViewerProps = {
@@ -39,38 +38,7 @@ export class Viewer extends Entity {
     return Number(this.id);
   }
 
-  public async requestSong(title: string, isFreemode: boolean, songsService: SongsService) {
-    const isInCooltime = await songsService.isViewerInCooltime(this);
-    if (isInCooltime) return new BusinessError('in-cooltime');
-
-    if (!isFreemode && (this.ticket < 1 && this.ticketPiece < 3)) return new BusinessError('not-enough-point');
-
-    const requestType = this.getRequestType(isFreemode);
-    switch (requestType) {
-      case RequestType.ticket:
-        this.mutable.ticket -= 1;
-        break;
-      case RequestType.ticketPiece:
-        this.mutable.ticketPiece -= 3;
-        break;
-    }
-
-    return new Song({
-      id: randomUUID(),
-      title,
-      requestorName: this.username,
-      requestType,
-    });
-  }
-
   public setBiasIdols(ids: string[]) {
     this.mutable.viasIdolIds = ids;
-  }
-
-  private getRequestType(isFreemode: boolean) {
-    if (isFreemode) return RequestType.freemode;
-    if (this.ticket > 0) return RequestType.ticket;
-
-    return RequestType.ticketPiece;
   }
 }
