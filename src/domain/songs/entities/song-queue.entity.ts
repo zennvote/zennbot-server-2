@@ -45,7 +45,8 @@ export class SongQueue extends Entity {
   request(title: string, requestor: SongRequestor) {
     if (this.isRequestEnabled === false) return new BusinessError('request-disabled');
 
-    const isInCooltime = this.consumedSongs.some((song) => song.requestorName === requestor.username);
+    const cooltimeTargetSongs = [...this.consumedSongs, ...this.requestedSongs].slice(-4);
+    const isInCooltime = cooltimeTargetSongs.some((song) => song.requestorName === requestor.username);
     if (isInCooltime) return new BusinessError('in-cooltime');
 
     const requestType = this.payForRequestAndGetRequestType(requestor);

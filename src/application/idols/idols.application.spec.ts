@@ -66,7 +66,7 @@ describe('idols.application', () => {
       const result = await application.queryBiasProducer('유이');
 
       expect(result).not.toBeInstanceOf(BusinessError);
-      if (isBusinessError(result)) return fail();
+      if (isBusinessError(result)) throw new Error(result.error);
 
       expect(result.viewers).toHaveLength(2);
       expect(result.viewers[0].username).toBe('라떼락대');
@@ -83,7 +83,7 @@ describe('idols.application', () => {
       const result = await application.queryBiasProducer('나오');
 
       expect(result).toBeInstanceOf(BusinessError);
-      if (!isBusinessError(result)) return fail();
+      if (!isBusinessError(result)) throw new Error();
 
       expect(result.error).toBe('multiple-idol');
     });
@@ -94,7 +94,7 @@ describe('idols.application', () => {
       const result = await application.queryBiasProducer('no-idol');
 
       expect(result).toBeInstanceOf(BusinessError);
-      if (!isBusinessError(result)) return fail();
+      if (!isBusinessError(result)) throw new Error();
 
       expect(result.error).toBe('no-idol');
     });

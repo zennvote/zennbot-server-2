@@ -15,6 +15,3 @@ jobs:
 
     - name: Run jest test
       run: yarn test
-
-    - name: Run ava test
-      run: yarn test:ava

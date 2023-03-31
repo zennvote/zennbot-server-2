@@ -7,11 +7,11 @@ import { songRequestorFactory } from 'src/domain/songs/songs.factory';
 export class MockSongRequestorRepository implements SongRequestorRepository {
   constructor(public readonly sinon: SinonSandbox) {}
 
-  public get = this.sinon.fake(async (twitchId: string, username: string) => (
+  public get = this.sinon.fake(async (twitchId: string, username: string): Promise<SongRequestor | null> => (
     songRequestorFactory.create({ twitchId, username })
   ));
 
-  public getByUsername = this.sinon.fake(async (username: string) => (
+  public getByUsername = this.sinon.fake(async (username: string): Promise<SongRequestor | null> => (
     songRequestorFactory.create({ username })
   ));
 

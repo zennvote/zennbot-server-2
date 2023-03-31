@@ -21,7 +21,7 @@ jobs:
       run: yarn
 
     - name: Run test and make coverage
-      run: yarn test:ava:cov
+      run: yarn test:cov
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
