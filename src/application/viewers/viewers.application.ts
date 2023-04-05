@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { BusinessError, isBusinessError } from 'src/util/business-error';
 
-import { ViewersRepository } from 'src/infrastructure/persistence/viewers/viewers.repository';
+import { ViewersRepository, VIEWERS_REPOSITORY } from 'src/domain/viewers/viewers.repository';
 
 @Injectable()
 export class ViewersApplication {
   constructor(
-    private readonly viewersRepository: ViewersRepository,
+    @Inject(VIEWERS_REPOSITORY) private readonly viewersRepository: ViewersRepository,
   ) {}
 
   public async queryViewerByUsername(username: string) {
