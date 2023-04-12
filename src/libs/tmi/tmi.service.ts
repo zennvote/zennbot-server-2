@@ -17,7 +17,7 @@ export class TmiService {
       }
 
       const sendAt = tags['tmi-sent-ts'] ? new Date(parseInt(tags['tmi-sent-ts'], 10)) : new Date();
-      const send = (message: string) => this.client.raw(`@reply-parent-msg-id=${tags.id} PRIVMSG ${channel} :${message}`);
+      const send = (message: string) => this.client.say(channel, message);
 
       if (fullMessage.startsWith('!') || fullMessage.startsWith('=')) {
         const message = fullMessage.startsWith('!젠 ') || fullMessage.startsWith('=젠 ') ? fullMessage.replace('젠 ', '') : fullMessage;
