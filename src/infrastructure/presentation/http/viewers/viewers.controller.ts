@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller, Get, NotFoundException, Param, ParseIntPipe, Post, ValidationPipe,
+  Controller, Get, NotFoundException, Param, Post,
 } from '@nestjs/common';
 
 import { isBusinessError } from 'src/util/business-error';
