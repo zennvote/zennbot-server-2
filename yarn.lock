@@ -1253,10 +1253,10 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@tmi-nestjs/core@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@tmi-nestjs/core/-/core-0.1.5.tgz#5c5d04909250a0cb6321146ae871767ee55d48d0"
-  integrity sha512-Deto757acyYDH0AF4IIRmzyqrFQReOXBUPiP9HSGOBx/MiSXYan1EO9dxu340/eJ4E4DPpZXczXPxxqXOxzfSw==
+"@tmi-nestjs/core@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@tmi-nestjs/core/-/core-0.1.6.tgz#9a6eb6526b8068b782000242e2642da4def989f0"
+  integrity sha512-y1m+pT3khigmIo972WXPpAn891e25fNkP8rYp1dz+iwaGKmuP140Ayc0phmr0M1ro0aTO8nBOBU3sb+Nak/SQQ==
   dependencies:
     "@nestjs/common" "^9.4.0"
     "@nestjs/core" "^9.4.0"
