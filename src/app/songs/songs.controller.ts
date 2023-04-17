@@ -15,15 +15,12 @@ import {
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { map } from 'rxjs';
 
-import { OnCommand } from 'src/libs/tmi/tmi.decorators';
-import { CommandPayload } from 'src/libs/tmi/tmi.types';
-
 import { isBusinessError } from 'src/util/business-error';
 
 import { JwtAuthGuard } from 'src/app/auth/guards/jwt-auth.guard';
 
 import { SongsApplication } from './songs.application';
-import Song, { RequestType } from './songs.entity';
+import Song from './songs.entity';
 
 @Controller('songs')
 export class SongsController {
@@ -47,46 +44,6 @@ export class SongsController {
     return this.songsApplication
       .getCooltimeSongsObserver()
       .pipe(map((data) => JSON.stringify(data)));
-  }
-
-  @OnCommand('신청')
-  async requestSongCommand(payload: CommandPayload) {
-    if (payload.args.length <= 0) {
-      return payload.send('곡명을 입력해주세요!');
-    }
-
-    const title = payload.args.join(' ');
-    const twitchId = payload.tags.username;
-    const username = payload.tags['display-name'];
-
-    if (!twitchId || !username) {
-      return;
-    }
-
-    const result = await this.songsApplication.requestSong(title, twitchId, username);
-    if (isBusinessError(result)) {
-      switch (result.error) {
-        case 'request-disabled':
-          return payload.send('현재 신청곡을 받고있지 않습니다!');
-        case 'viewer-not-exists':
-          return payload.send('존재하지 않는 사용자입니다! 신규 등록을 요청해주세요');
-        case 'in-cooltime':
-          return payload.send('아직 곡을 신청할 수 없어요! 이전에 신청한 곡 이후로 최소 4개의 곡이 신청되어야 해요.');
-        case 'no-points':
-          return payload.send('포인트가 부족해요! !젠 조각 명령어로 보유 포인트를 확인해주세요~');
-        default:
-          return;
-      }
-    }
-
-    const { requestType } = result;
-    if (requestType === RequestType.freemode) {
-      return payload.send(`🔔 골든벨🔔 ${username}님의 곡이 무료로 신청되었어요!`);
-    }
-
-    const usedPointsString = requestType === RequestType.ticket ? '1장을' : '3개를';
-
-    return payload.send(`${username}님의 ${requestType} ${usedPointsString} 사용하여 곡을 신청했어요!`);
   }
 
   @UseGuards(JwtAuthGuard)
