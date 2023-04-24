@@ -5,7 +5,6 @@ import { ViewersApplication } from 'src/application/viewers/viewers.application'
 import { ViewersController } from './viewers.controller';
 
 @Module({
-  controllers: [ViewersController],
-  providers: [ViewersApplication],
+  providers: [ViewersController, ViewersApplication],
 })
 export class ViewersModule {}

@@ -3,6 +3,7 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { TmiModule } from '@tmi-nestjs/core';
 import * as redisStore from 'cache-manager-redis-store';
 import * as Joi from 'joi';
 
@@ -22,7 +23,7 @@ import { HttpControllerModules } from './infrastructure/presentation/http/http.c
 import { TmiControllerModules } from './infrastructure/presentation/tmi/tmi.controller';
 import { PrismaModule } from './libs/prisma/prisma.module';
 import { SheetsModule } from './libs/sheets/sheets.module';
-import { TmiModule } from './libs/tmi/tmi.module';
+import { TmiModule as LegacyTmiModule } from './libs/tmi/tmi.module';
 import { HttpLoggerMiddleware } from './util/http-logger-middleware';
 
 @Module({
@@ -50,6 +51,13 @@ import { HttpLoggerMiddleware } from './util/http-logger-middleware';
       }),
     }),
     TmiModule.forRoot({
+      identity: {
+        username: process.env.TMI_USERNAME,
+        password: process.env.TMI_PASSWORD,
+      },
+      channels: [process.env.TMI_CHANNEL ?? ''],
+    }),
+    LegacyTmiModule.forRoot({
       identity: {
         username: process.env.TMI_USERNAME,
         password: process.env.TMI_PASSWORD,
