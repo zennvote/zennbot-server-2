@@ -1,4 +1,4 @@
-import { Entity } from '../types/entity';
+import { Entity } from '../../types/entity';
 
 export type AttendanceProps = {
   twitchId: string;
@@ -7,7 +7,7 @@ export type AttendanceProps = {
   broadcastedAt?: string;
 };
 
-export class Attendace extends Entity {
+export class Attendance extends Entity {
   public readonly twitchId: string;
   public readonly attendedAt: Date;
   public readonly tier: number;
@@ -20,7 +20,7 @@ export class Attendace extends Entity {
     this.attendedAt = props.attendedAt;
     this.tier = props.tier ?? 0;
     this.broadcastedAt = props.broadcastedAt
-      ?? Attendace.calculateBroadcatedAt(props.attendedAt);
+      ?? Attendance.calculateBroadcatedAt(props.attendedAt);
   }
 
   public static calculateBroadcatedAt(attendedAt: Date) {
