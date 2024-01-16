@@ -1,4 +1,4 @@
-FROM node:16.10.0 AS builder
+FROM node:20.11.0 AS builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY . .
 RUN yarn build
 
 
-FROM node:16.4.2
+FROM node:20.11.0
 
 ENV TZ=Asia/Seoul
 
