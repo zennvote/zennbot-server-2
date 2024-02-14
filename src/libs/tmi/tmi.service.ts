@@ -16,10 +16,6 @@ export class TmiService {
     this.handleSubscriberChat();
   }
 
-  sendMessaage(channel: string, message: string) {
-    this.client.say(channel, message);
-  }
-
   private logChat() {
     this.client.on('message', (channel, tags, message, self) => {
       if (self) return;
