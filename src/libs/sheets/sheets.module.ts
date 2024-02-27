@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { google } from 'googleapis';
 
+import { SheetsConsoleApp } from './sheets.command';
 import { SheetsService } from './sheets.service';
 import { SHEETS_CLIENT } from './sheets.types';
 
@@ -41,7 +42,7 @@ export class SheetsModule {
 
     return {
       module: SheetsModule,
-      providers: [SheetsService, clientFactory],
+      providers: [SheetsService, clientFactory, SheetsConsoleApp],
       exports: [SheetsService],
     };
   }

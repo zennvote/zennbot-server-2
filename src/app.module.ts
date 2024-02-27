@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as redisStore from 'cache-manager-redis-store';
 import * as Joi from 'joi';
+import { ConsoleModule } from 'nestjs-console';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -77,6 +78,7 @@ import { HttpLoggerMiddleware } from './util/http-logger-middleware';
       credentials: process.env.SHEETS_CREDENTIALS,
       token: process.env.SHEETS_TOKEN,
     }),
+    ConsoleModule,
     UsersModule,
     AuthModule,
     SettingsModule,
