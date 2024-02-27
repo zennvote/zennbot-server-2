@@ -71,4 +71,18 @@ export class TmiChzzkService {
       this.eventEmitter.emit(`command.${command}`, payload);
     });
   }
+
+  private handleLogChat() {
+    this.chatClient.on('chat', (chat) => {
+      this.logger.http(`Chat #${chat.time}`, {
+        channel: 'deprecated',
+        tags: {
+          'user-id': chat.profile.userIdHash,
+          username: chat.profile.nickname,
+          'display-name': chat.profile.nickname,
+        },
+        message: chat.message,
+      });
+    });
+  }
 }
