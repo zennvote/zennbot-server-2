@@ -1,7 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { Client, Options } from 'tmi.js';
 
-import { TmiService } from './tmi.service';
+import { TmiChzzkService } from './tmi-chzzk.service';
+import { TmiTwitchService } from './tmi-twitch.service';
 import { TMI_CLIENT } from './tmi.types';
 
 @Module({})
@@ -20,7 +21,7 @@ export class TmiModule {
 
     return {
       module: TmiModule,
-      providers: [clientFactory, TmiService],
+      providers: [clientFactory, TmiTwitchService, TmiChzzkService],
     };
   }
 }
