@@ -7,7 +7,7 @@ import { MainLogger } from 'src/util/logger';
 import { CommandPayload, TMI_CLIENT } from './tmi.types';
 
 @Injectable()
-export class TmiService {
+export class TmiTwitchService {
   private readonly logger = new MainLogger('TmiLogger');
 
   constructor(@Inject(TMI_CLIENT) private client: Client, private eventEmitter: EventEmitter2) {
