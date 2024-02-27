@@ -28,6 +28,17 @@ export class TmiChzzkService {
     });
     this.botId = configService.get<string>('CHZZK_BOT_ID') ?? '';
 
+    this.chatClient.on('connect', (data) => {
+      this.logger.log(`Connected to chat: ${data}`);
+    });
+    this.chatClient.on('reconnect', (data) => {
+      this.logger.log(`Reconnected to chat: ${data}`);
+    });
+    this.chatClient.on('disconnect', (data) => {
+      this.logger.log(`Disconnected from chat: ${data}`);
+      this.chatClient.reconnect();
+    });
+
     this.handleCommand();
 
     this.chatClient.connect();
