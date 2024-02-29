@@ -36,7 +36,7 @@ export class TmiTwitchService {
       if (self) return;
       if (!message.startsWith('!')) return;
 
-      const send = (message: string) => this.client.say(channel, message);
+      const send = (message: string | string[]) => this.client.say(channel, Array.isArray(message) ? message.join(' ') : message);
       if (message.startsWith('!젠 ')) {
         // eslint-disable-next-line no-param-reassign
         message = message.replace('젠 ', '');
