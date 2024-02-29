@@ -49,7 +49,24 @@ export class TmiChzzkService {
       if (chat.profile.userIdHash === this.botId) return;
       if (!chat.message.startsWith('!')) return;
 
-      const send = (message: string) => this.chatClient.sendChat(message);
+      // eslint-disable-next-line no-promise-executor-return
+      const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+      const send = async (message: string | string[]) => {
+        if (Array.isArray(message)) {
+          if (message.length === 0) return;
+          if (message.length === 1) return this.chatClient.sendChat(message[0]);
+
+          return message.reduce<Promise<void>>(async (acc, cur, i) => {
+            if (i === 0) return Promise.resolve(this.chatClient.sendChat(cur));
+
+            await acc;
+            await wait(200);
+            return this.chatClient.sendChat(cur);
+          }, Promise.resolve());
+        }
+
+        return this.chatClient.sendChat(message);
+      };
       const message = chat.message.startsWith('!젠 ')
         ? chat.message.replace('젠 ', '')
         : chat.message;

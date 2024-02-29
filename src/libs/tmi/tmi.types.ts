@@ -7,7 +7,7 @@ export interface CommandPayload {
   tags: ChatUserstate;
   args: string[];
   message: string;
-  send: (message: string) => void;
+  send: (message: string | string[]) => void;
 }
 
 export interface SubscriberChatPayload {
