@@ -11,7 +11,7 @@ import { ViewersService } from './viewers.service';
 
 @Controller('viewers')
 export class ViewersController {
-  constructor(private readonly viewersService: ViewersService) {}
+  constructor(private readonly viewersService: ViewersService) { }
 
   @Get()
   @ApiOkResponse({ type: [Viewer] })
@@ -45,9 +45,10 @@ export class ViewersController {
   @ManagerChatGuard()
   @OnCommand('지급')
   async givePointCommand(payload: CommandPayload) {
-    const [inputType, name, inputPoint] = payload.args;
+    const [inputType, inputPoint, ...nameWords] = payload.args;
+    const name = nameWords.join(' ');
 
-    if (payload.args.length < 2 || Number.isNaN(inputType) || (inputType !== '곡' && inputType !== '조각')) {
+    if (payload.args.length < 3 || Number.isNaN(inputType) || (inputType !== '곡' && inputType !== '조각')) {
       return payload.send('잘못된 명령어 형식입니다. 다시 한번 확인해주세요!');
     }
 
