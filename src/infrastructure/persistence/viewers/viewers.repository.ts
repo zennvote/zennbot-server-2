@@ -42,7 +42,8 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     if (!row) return null;
 
     if (row.username !== username || row.twitchId !== twitchId) {
-      await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
+      // TODO: ID 불일치에 대한 갱신을 중단. twitchId가 chzzk migration metadata로 사용되고 있음.
+      // await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
 
     const biasIdolIds = await this.getBiasIdolIds(username);

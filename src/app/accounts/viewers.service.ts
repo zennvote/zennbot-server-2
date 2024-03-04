@@ -20,7 +20,8 @@ export class ViewersService {
 
     if (twitchIdViewer) {
       if (twitchIdViewer.username !== username) {
-        this.viewersRepository.update({ index: twitchIdViewer.index }, { username });
+        // TODO: ID 불일치에 대한 갱신을 중단. twitchId가 chzzk migration metadata로 사용되고 있음.
+        // this.viewersRepository.update({ index: twitchIdViewer.index }, { username });
       }
       return twitchIdViewer;
     }
