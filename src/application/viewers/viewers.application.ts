@@ -25,13 +25,12 @@ export class ViewersApplication {
   }
 
   public async requestMigrationToChzzk(
-    twitchId: string,
     twitchUsername: string,
     chzzkId: string,
     chzzkUsername: string,
   ) {
-    const viewer = await this.queryViewer(twitchId, twitchUsername);
-    if (isBusinessError(viewer)) return viewer;
+    const viewer = await this.viewersRepository.findOneByUsername(twitchUsername);
+    if (!viewer) return new BusinessError('no-viewer');
 
     const migration = viewer.requestMigrationToChzzk(chzzkId, chzzkUsername);
     if (isBusinessError(migration)) return migration;

@@ -25,9 +25,9 @@ describe('viewers.application', () => {
   describe('requestMigrationToChzzk', () => {
     it('치지직 마이그레이션을 신청할 수 있어야 한다.', async () => {
       const viewer = await viewerFactory.create({ twitchId: 'twitch-id', username: 'twitch-username' });
-      viewersRepository.findOne = sandbox.fake(async () => viewer);
+      viewersRepository.findOneByUsername = sandbox.fake(async () => viewer);
 
-      const result = await viewersApplication.requestMigrationToChzzk('twitch-id', 'twitch-username', 'chzzk-id', 'chzzk-username');
+      const result = await viewersApplication.requestMigrationToChzzk('twitch-username', 'chzzk-id', 'chzzk-username');
       expect(isBusinessError(result)).toBeFalse();
       if (isBusinessError(result)) return;
 
@@ -48,16 +48,16 @@ describe('viewers.application', () => {
 
     it('치지직 마이그레이션이 완료된 유저는 마이그레이션을 신청할 수 없어야 한다.', async () => {
       const viewer = await viewerFactory.create({ twitchId: '!!chzzk{}', username: 'twitch-username' });
-      viewersRepository.findOne = sandbox.fake(async () => viewer);
+      viewersRepository.findOneByUsername = sandbox.fake(async () => viewer);
 
-      const result = await viewersApplication.requestMigrationToChzzk('!!chzzk{}', 'twitch-username', 'chzzk-id', 'chzzk-username');
+      const result = await viewersApplication.requestMigrationToChzzk('twitch-username', 'chzzk-id', 'chzzk-username');
 
       expect(isBusinessError(result)).toBeTrue();
       expect(result).toHaveProperty('error', 'already-migrated');
     });
 
     it('존재하지 않는 유저는 마이그레이션을 신청할 수 없어야 한다.', async () => {
-      const result = await viewersApplication.requestMigrationToChzzk('twitch-id', 'twitch-username', 'chzzk-id', 'chzzk-username');
+      const result = await viewersApplication.requestMigrationToChzzk('twitch-username', 'chzzk-id', 'chzzk-username');
 
       expect(isBusinessError(result)).toBeTrue();
       expect(result).toHaveProperty('error', 'no-viewer');
