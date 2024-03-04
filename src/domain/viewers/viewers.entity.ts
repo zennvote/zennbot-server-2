@@ -42,20 +42,19 @@ export class Viewer extends Entity {
   }
 
   public migrateToChzzk(migration: ViewerChzzkMigrationRequest) {
-    if (!this.twitchId || !this.twitchId.startsWith('!!chzzk')) {
-      throw new Error('Already migrated to chzzk');
+    if (!this.twitchId || this.twitchId.startsWith('!!chzzk')) {
+      return new BusinessError('already-migrated');
     }
 
-    const migrationLog = `!!chzzk${JSON.stringify(migration)}`;
+    migration.markAsMigrated();
 
+    const migrationLog = `!!chzzk${JSON.stringify(migration)}`;
     this.mutable.twitchId = migrationLog;
     this.mutable.username = migration.chzzkUsername;
-
-    migration.markAsMigrated();
   }
 
   public requestMigrationToChzzk(chzzkId: string, chzzkUsername: string) {
-    if (this.twitchId && !this.twitchId.startsWith('!!chzzk')) {
+    if (this.twitchId && this.twitchId.startsWith('!!chzzk')) {
       return new BusinessError('already-migrated');
     }
 

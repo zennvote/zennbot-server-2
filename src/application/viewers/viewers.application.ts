@@ -51,7 +51,8 @@ export class ViewersApplication {
     const viewer = await this.queryViewer(migration.twitchId, migration.twitchUsername);
     if (isBusinessError(viewer)) return viewer;
 
-    viewer.migrateToChzzk(migration);
+    const result = viewer.migrateToChzzk(migration);
+    if (isBusinessError(result)) return result;
 
     const persisted = await Promise.all([
       this.viewersRepository.save(viewer),
