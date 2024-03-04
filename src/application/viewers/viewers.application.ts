@@ -8,7 +8,7 @@ import { ViewersRepository, VIEWERS_REPOSITORY } from 'src/domain/viewers/viewer
 export class ViewersApplication {
   constructor(
     @Inject(VIEWERS_REPOSITORY) private readonly viewersRepository: ViewersRepository,
-  ) {}
+  ) { }
 
   public async queryViewerByUsername(username: string) {
     const viewer = await this.viewersRepository.findOneByUsername(username);
@@ -22,6 +22,43 @@ export class ViewersApplication {
     if (!viewer) return new BusinessError('no-viewer');
 
     return viewer;
+  }
+
+  public async requestMigrationToChzzk(
+    twitchUsername: string,
+    chzzkId: string,
+    chzzkUsername: string,
+  ) {
+    const viewer = await this.viewersRepository.findOneByUsername(twitchUsername);
+    if (!viewer) return new BusinessError('no-viewer');
+
+    const migration = viewer.requestMigrationToChzzk(chzzkId, chzzkUsername);
+    if (isBusinessError(migration)) return migration;
+
+    const persisted = await Promise.all([
+      this.viewersRepository.save(viewer),
+      this.viewersRepository.saveMigration(migration),
+    ]);
+
+    return persisted;
+  }
+
+  public async acceptMigrationToChzzk(migrationId: string) {
+    const migration = await this.viewersRepository.findOneMigration(migrationId);
+    if (!migration) return new BusinessError('no-migration');
+
+    const viewer = await this.queryViewer(migration.twitchId, migration.twitchUsername);
+    if (isBusinessError(viewer)) return viewer;
+
+    const result = viewer.migrateToChzzk(migration);
+    if (isBusinessError(result)) return result;
+
+    const persisted = await Promise.all([
+      this.viewersRepository.save(viewer),
+      this.viewersRepository.saveMigration(migration),
+    ]);
+
+    return persisted;
   }
 
   public async setBiasIdols(username: string, idolIds: string[]) {

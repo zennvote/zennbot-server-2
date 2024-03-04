@@ -33,7 +33,7 @@ export class SongRequestorRepository implements SongRequestorRepositoryInterface
 
   constructor(
     private readonly sheets: SheetsService,
-  ) {}
+  ) { }
 
   async get(twitchId: string, username: string) {
     const rows = await this.sheets.getSheets(this.sheetsInfo);
@@ -42,7 +42,8 @@ export class SongRequestorRepository implements SongRequestorRepositoryInterface
     if (!row) return null;
 
     if (row.username !== username || row.twitchId !== twitchId) {
-      await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
+      // TODO: ID 불일치에 대한 갱신을 중단. twitchId가 chzzk migration metadata로 사용되고 있음.
+      // await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
 
     return this.convertFromDataModel(row);

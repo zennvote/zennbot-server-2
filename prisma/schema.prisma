@@ -64,3 +64,12 @@ model BiasIdol {
 
   @@unique([viewerUsername, idolId])
 }
+
+model ViewerChzzkMigrationRequest {
+  id             String  @id @default(uuid())
+  twitchId       String  @unique
+  twitchUsername String  @unique
+  chzzkId        String
+  chzzkUsername  String
+  migrated       Boolean @default(false)
+}

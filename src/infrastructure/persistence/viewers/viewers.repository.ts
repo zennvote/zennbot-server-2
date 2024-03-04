@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 import { SheetsService } from 'src/libs/sheets/sheets.service';
 
+import { ViewerChzzkMigrationRequest } from 'src/domain/viewers/viewer-chzzk-migration-request.entity';
 import { Viewer } from 'src/domain/viewers/viewers.entity';
 import { ViewersRepository as ViewersRepositoryInterface, VIEWERS_REPOSITORY } from 'src/domain/viewers/viewers.repository';
 
@@ -32,7 +33,7 @@ export class ViewersRepository implements ViewersRepositoryInterface {
   constructor(
     private readonly prisma: PrismaService,
     private readonly sheets: SheetsService,
-  ) {}
+  ) { }
 
   async findOne(twitchId: string, username: string): Promise<Viewer | null> {
     const rows = await this.sheets.getSheets(this.sheetsInfo);
@@ -41,7 +42,8 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     if (!row) return null;
 
     if (row.username !== username || row.twitchId !== twitchId) {
-      await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
+      // TODO: ID 불일치에 대한 갱신을 중단. twitchId가 chzzk migration metadata로 사용되고 있음.
+      // await this.sheets.updateSheets(this.sheetsInfo, row.index, { twitchId, username });
     }
 
     const biasIdolIds = await this.getBiasIdolIds(username);
@@ -102,6 +104,39 @@ export class ViewersRepository implements ViewersRepositoryInterface {
     });
 
     return convertFromDataModel(result, viewer.viasIdolIds);
+  }
+
+  async saveMigration(migration: ViewerChzzkMigrationRequest): Promise<ViewerChzzkMigrationRequest> {
+    const persisted = await this.prisma.viewerChzzkMigrationRequest.upsert({
+      where: { id: migration.id },
+      create: {
+        id: migration.id,
+        twitchId: migration.twitchId,
+        twitchUsername: migration.twitchUsername,
+        chzzkId: migration.chzzkId,
+        chzzkUsername: migration.chzzkUsername,
+        migrated: migration.migrated,
+      },
+      update: {
+        twitchId: migration.twitchId,
+        twitchUsername: migration.twitchUsername,
+        chzzkId: migration.chzzkId,
+        chzzkUsername: migration.chzzkUsername,
+        migrated: migration.migrated,
+      },
+    });
+
+    return new ViewerChzzkMigrationRequest(persisted);
+  }
+
+  async findOneMigration(migrationId: string): Promise<ViewerChzzkMigrationRequest | null> {
+    const persisted = await this.prisma.viewerChzzkMigrationRequest.findUnique({
+      where: { id: migrationId },
+    });
+
+    if (!persisted) return null;
+
+    return new ViewerChzzkMigrationRequest(persisted);
   }
 
   private async create(viewer: Viewer): Promise<Viewer> {
