@@ -46,7 +46,7 @@ jobs:
       run: docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:${{ github.sha }}
 
     - name: Push Image to ECR
-      run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web
+      run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web --all-tags
 
     - name: Deploy to Fly.io
       run: flyctl -c fly.web.toml deploy --local-only
