@@ -2687,9 +2687,9 @@ chrome-trace-event@^1.0.2:
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
 chzzk@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/chzzk/-/chzzk-1.4.1.tgz#fd21b4801e29e8c9f3cfce7a867a6c0665be091f"
-  integrity sha512-IjZpBKU+63lKkRENjRJ+x1A3vDavJ/etpNEoMPasCJfwH9VKK7pQf4AnKwCu+HSIAfQhih9F1rzA7S+mgpm6bg==
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/chzzk/-/chzzk-1.8.0.tgz#cf07a7b90a2360f31ec7c9681d3fcc28831f9533"
+  integrity sha512-p4PAI0dl+WM40H7m416a3a2RSP5CJP7zu8fLaXkFHvZRFcscQ9ERLkit7Wt3laQQVjLSgagxI7hoRcQEmir0VA==
   dependencies:
     isomorphic-ws "^5.0.0"
     ws "^8.15.1"
