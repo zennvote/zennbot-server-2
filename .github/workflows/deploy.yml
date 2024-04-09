@@ -37,13 +37,14 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build Image
-      run: docker build -t zennbot-web .
+      run: docker build -t zennbot-web:latest .
 
     - name: Tag Image
-      run: docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
+      run: docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest \
+           docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:${{ github.sha }}
 
     - name: Push Image to ECR
-      run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
+      run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web
 
     - name: Deploy to Fly.io
       run: flyctl -c fly.web.toml deploy --local-only
