@@ -10,7 +10,7 @@ env:
   ECS_SERVICE: image-deploy
 
 jobs:
-  build:
+  builds:
     name: Build Image
     runs-on: ubuntu-latest
     - name: Checkout
