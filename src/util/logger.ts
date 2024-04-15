@@ -20,7 +20,10 @@ export class MainLogger extends ConsoleLogger {
 
     const productionTransports = process.env.NODE_ENV === 'production'
       ? [
-        new LokiTransport({ host: process.env.LOKI_URL ?? 'http://loki:3100' }),
+        new LokiTransport({
+          host: process.env.LOKI_URL ?? 'http://loki:3100',
+          level: 'verbose',
+        }),
       ]
       : [];
 
