@@ -87,7 +87,6 @@ const productionImports = process.env.NODE_ENV === 'production'
     SettingsModule,
     IdolsModule,
     AttendancesModule,
-    GameModule,
     PrismaModule,
     RepositoryModule,
     ...HttpControllerModules,
