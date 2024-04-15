@@ -1,0 +1,97 @@
+name: Production Build
+
+on: workflow_dispatch
+
+env:
+  ECS_CLUSTER: zennbot-ecs
+  ECS_SERVICE: image-deploy
+
+jobs:
+  deploy:
+    name: Build Image
+    runs-on: ubuntu-latest
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: branch-name
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+        
+    - name: Add sha to env
+      run: echo -e $'\n'VERSION=${{ github.sha }} >> .env
+
+    - name: Login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Image
+      run: docker build -t zennbot-web:latest .
+
+    - name: Tag Image - Latest
+      run: docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:latest
+
+    - name: Tag Image - Git Version
+      run: docker tag zennbot-web:latest 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web:${{ github.sha }}
+
+    - name: Push Image to ECR
+      run: docker push 998737244507.dkr.ecr.ap-northeast-2.amazonaws.com/zennbot-web --all-tags
+
+    - name: Send Success Message
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        DISCORD_EMBEDS: |
+          [{
+            "title": ":sparkles: Build Success! :sparkles:",
+            "fields": [
+              {
+                "name": "Repository",
+                "value": "${{ github.repository }}",
+                "inline": true
+              },
+              {
+                "name": "Branch",
+                "value": "${{ steps.branch-name.outputs.branch }}",
+                "inline": true
+              }
+            ],
+            "footer": {
+              "text": "commit by ${{ github.actor }}",
+              "icon_url": "${{ github.event.sender.avatar_url }}"
+            }
+          }]
+      uses: Ilshidur/action-discord@master
+
+    - name: Send Fail Message
+      if: failure()
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        DISCORD_EMBEDS: |
+          [{
+            "title": ":octagonal_sign: Project Build Failed! :octagonal_sign:",
+            "description": "Check it: https://github.com/${{ github.repository }}/actions",
+            "fields": [
+              {
+                "name": "Repository",
+                "value": "${{ github.repository }}",
+                "inline": true
+              },
+              {
+                "name": "Branch",
+                "value": "${{ steps.branch-name.outputs.branch }}",
+                "inline": true
+              }
+            ],
+            "footer": {
+              "text": "commit by ${{ github.actor }}",
+              "icon_url": "${{ github.event.sender.avatar_url }}"
+            }
+          }]
+      uses: Ilshidur/action-discord@master
