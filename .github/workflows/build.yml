@@ -10,9 +10,11 @@ env:
   ECS_SERVICE: image-deploy
 
 jobs:
-  builds:
+  build:
     name: Build Image
     runs-on: ubuntu-latest
+
+    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
