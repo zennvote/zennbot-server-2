@@ -1,13 +1,16 @@
 name: Production Build
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 
 env:
   ECS_CLUSTER: zennbot-ecs
   ECS_SERVICE: image-deploy
 
 jobs:
-  deploy:
+  build:
     name: Build Image
     runs-on: ubuntu-latest
     - name: Checkout
