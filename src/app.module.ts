@@ -4,6 +4,7 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import * as redisStore from 'cache-manager-redis-store';
+import { LokiLoggerModule } from 'nestjs-loki-logger';
 import * as Joi from 'joi';
 import { ConsoleModule } from 'nestjs-console';
 
@@ -26,8 +27,23 @@ import { SheetsModule } from './libs/sheets/sheets.module';
 import { TmiModule } from './libs/tmi/tmi.module';
 import { HttpLoggerMiddleware } from './util/http-logger-middleware';
 
+const productionImports = process.env.NODE_ENV === 'production'
+  ? [
+    LokiLoggerModule.forRoot({
+      lokiUrl: process.env.LOKI_URL ?? 'http://loki:3100/',
+      labels: {
+        'env': 'production',
+        'app': 'zennbot-server',
+      },
+      logToConsole: true,
+      gzip: true,
+    }),
+  ]
+  : [];
+
 @Module({
   imports: [
+    ...productionImports,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
