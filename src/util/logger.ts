@@ -1,5 +1,6 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { isString } from 'class-validator';
+import { LokiLogger } from 'nestjs-loki-logger';
 import * as winston from 'winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
 
@@ -8,6 +9,7 @@ type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug';
 @Injectable()
 export class MainLogger extends ConsoleLogger {
   private winstonLogger: winston.Logger;
+  private lokiLogger: LokiLogger;
 
   constructor(context?: string, transports: winston.transport[] = []) {
     if (context) {
@@ -26,6 +28,8 @@ export class MainLogger extends ConsoleLogger {
         ...transports,
       ],
     });
+
+    this.lokiLogger = new LokiLogger(context);
   }
 
   log(message: any, ...params: any[]) {
@@ -64,6 +68,7 @@ export class MainLogger extends ConsoleLogger {
     const timeString = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 
     this.winstonLogger[level](`${timeString} : ${message}`, { context, meta, time });
+    this.lokiLogger[level](`${timeString} : ${message}`, context, { context, meta, time });
   }
 
   private getContextAndMessages(args: unknown[]) {
