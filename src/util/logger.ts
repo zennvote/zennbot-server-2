@@ -2,7 +2,8 @@ import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { isString } from 'class-validator';
 import * as winston from 'winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
-import LokiTransport from 'winston-loki';
+
+const LokiTransport = require('winston-loki');
 
 type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug';
 
