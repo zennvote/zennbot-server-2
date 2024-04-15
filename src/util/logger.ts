@@ -22,7 +22,7 @@ export class MainLogger extends ConsoleLogger {
       ? [
         new LokiTransport({
           host: process.env.LOKI_URL ?? 'http://loki:3100',
-          level: 'verbose',
+          level: 'debug',
         }),
       ]
       : [];
