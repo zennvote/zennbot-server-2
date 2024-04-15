@@ -26,8 +26,6 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
-    "@logtail/node": "^0.3.3",
-    "@logtail/winston": "^0.3.3",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.3.12",
