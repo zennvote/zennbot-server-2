@@ -3,6 +3,7 @@ import { isString } from 'class-validator';
 import * as winston from 'winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const LokiTransport = require('winston-loki');
 
 type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug';
@@ -18,15 +19,6 @@ export class MainLogger extends ConsoleLogger {
       super();
     }
 
-    const productionTransports = process.env.NODE_ENV === 'production'
-      ? [
-        new LokiTransport({
-          host: process.env.LOKI_URL ?? 'http://loki:3100',
-          level: 'debug',
-        }),
-      ]
-      : [];
-
     this.winstonLogger = winston.createLogger({
       level: 'info',
       format: winston.format.json(),
@@ -34,10 +26,19 @@ export class MainLogger extends ConsoleLogger {
       transports: [
         new DailyRotateFile({ filename: 'logs/error-%DATE%.log', level: 'error' }),
         new DailyRotateFile({ filename: 'logs/combined-%DATE%.log', level: 'debug' }),
-        ...productionTransports,
         ...transports,
       ],
     });
+
+    if (process.env.NODE_ENV !== 'production') {
+      this.winstonLogger.add(
+        new LokiTransport({
+          host: process.env.LOKI_URL ?? 'http://loki:3100',
+          json: true,
+          lables: { job: 'zennbot-server-production' },
+        }),
+      );
+    }
   }
 
   log(message: any, ...params: any[]) {
@@ -51,6 +52,7 @@ export class MainLogger extends ConsoleLogger {
   }
 
   http(message: any, ...params: any[]) {
+    super.debug(message, ...params);
     this.printLog('http', message, ...params);
   }
 
