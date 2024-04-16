@@ -19,6 +19,14 @@ export class MainLogger extends ConsoleLogger {
       super();
     }
 
+    const lokiTransport = new LokiTransport({
+      host: process.env.LOKI_URL ?? 'http://loki:3100',
+      json: true,
+      lables: { job: 'zennbot-server-production' },
+    });
+
+    const productionTransports = process.env.NODE_ENV === 'production' ? [lokiTransport] : [];
+
     this.winstonLogger = winston.createLogger({
       level: 'info',
       format: winston.format.json(),
@@ -26,19 +34,10 @@ export class MainLogger extends ConsoleLogger {
       transports: [
         new DailyRotateFile({ filename: 'logs/error-%DATE%.log', level: 'error' }),
         new DailyRotateFile({ filename: 'logs/combined-%DATE%.log', level: 'debug' }),
+        ...productionTransports,
         ...transports,
       ],
     });
-
-    if (process.env.NODE_ENV === 'production') {
-      this.winstonLogger.add(
-        new LokiTransport({
-          host: process.env.LOKI_URL ?? 'http://loki:3100',
-          json: true,
-          lables: { job: 'zennbot-server-production' },
-        }),
-      );
-    }
   }
 
   log(message: any, ...params: any[]) {
