@@ -1,13 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChzzkChat, ChzzkClient } from 'chzzk';
+
+import { MainLogger } from 'src/util/logger';
 
 import { CommandPayload } from './tmi.types';
 
 @Injectable()
 export class TmiChzzkService {
-  private readonly logger = new Logger('TmiChzzkLogger');
+  private readonly logger = new MainLogger('TmiChzzkLogger');
 
   private readonly botId: string;
   private readonly client: ChzzkClient;

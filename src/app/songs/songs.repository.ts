@@ -1,8 +1,8 @@
-import {
-  CACHE_MANAGER, Inject, Injectable, Logger,
-} from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { Subject } from 'rxjs';
+
+import { MainLogger } from 'src/util/logger';
 
 import Song from './songs.entity';
 
@@ -11,7 +11,7 @@ const CooltimeSongsKey = 'songs:cooltime-songs';
 
 @Injectable()
 export class SongsRepository {
-  private readonly logger = new Logger(SongsRepository.name);
+  private readonly logger = new MainLogger(SongsRepository.name);
 
   private readonly requestedSongsSubject = new Subject<Song[]>();
 

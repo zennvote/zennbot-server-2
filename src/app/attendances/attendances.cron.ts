@@ -1,13 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosError } from 'axios';
 
+import { MainLogger } from 'src/util/logger';
 import * as twitch from 'src/util/twitch';
 
 @Injectable()
 export class AttendancesTaskService {
-  private readonly logger = new Logger(AttendancesTaskService.name);
+  private readonly logger = new MainLogger(AttendancesTaskService.name);
 
   constructor(
     private readonly configService: ConfigService,
