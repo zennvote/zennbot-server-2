@@ -21,7 +21,6 @@ export class MainLogger extends ConsoleLogger {
 
     const lokiTransport = new LokiTransport({
       host: process.env.LOKI_URL ?? 'http://loki:3100',
-      json: true,
       lables: { job: 'zennbot-server-production' },
     });
 
