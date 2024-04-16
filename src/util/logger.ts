@@ -30,7 +30,7 @@ export class MainLogger extends ConsoleLogger {
       ],
     });
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'production') {
       this.winstonLogger.add(
         new LokiTransport({
           host: process.env.LOKI_URL ?? 'http://loki:3100',
