@@ -20,7 +20,7 @@ export class TmiTwitchService {
     this.client.on('message', (channel, tags, message, self) => {
       if (self) return;
 
-      this.logger.http(`Chat #${tags.id}`, {
+      this.logger.http(`TWITCH CHAT #${tags.id}`, {
         channel,
         tags,
         message,

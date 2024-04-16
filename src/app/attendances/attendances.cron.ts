@@ -24,7 +24,6 @@ export class AttendancesTaskService {
       const subscription = await twitch.getSubscription(channel, channelId, 'producerzenn');
       if (subscription !== 1 && subscription !== 2 && subscription !== 3) {
         this.logger.error(`twitch subscription api returned invalid value: ${subscription}`);
-        return;
       }
     } catch (error) {
       if (error instanceof AxiosError) {

@@ -1,6 +1,10 @@
 import axios from 'axios';
 
+import { MainLogger } from './logger';
+
 const twitchGqlUrl = 'https://gql.twitch.tv/gql';
+
+const logger = new MainLogger('twitch-gql');
 
 export const getSubscription = async (channel: string, channelId: string, twitchId: string) => {
   const headers = {
@@ -36,12 +40,12 @@ export const getSubscription = async (channel: string, channelId: string, twitch
   );
 
   if (status >= 400) {
-    console.log('Looks like we got an error from Twitch', status);
+    logger.error('Looks like we got an error from Twitch', status);
   }
 
   const { tier: tierString } = data?.targetUser?.relationship?.subscriptionBenefit ?? {};
   if (!tierString) {
-    console.log('Looks like we got an wrong value from Twitch', data);
+    logger.error('Looks like we got an wrong value from Twitch', data);
     return null;
   }
 

@@ -34,6 +34,7 @@ export class SheetsConsoleApp {
       refresh_token: client.credentials.refresh_token,
     });
 
+    // eslint-disable-next-line no-console
     console.log(payload);
   }
 

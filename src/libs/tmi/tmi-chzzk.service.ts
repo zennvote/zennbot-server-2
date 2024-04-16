@@ -1,15 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChzzkChat, ChzzkClient } from 'chzzk';
-
-import { MainLogger } from 'src/util/logger';
 
 import { CommandPayload } from './tmi.types';
 
 @Injectable()
 export class TmiChzzkService {
-  private readonly logger = new MainLogger('TmiChzzkLogger');
+  private readonly logger = new Logger('TmiChzzkLogger');
 
   private readonly botId: string;
   private readonly client: ChzzkClient;
@@ -40,6 +38,7 @@ export class TmiChzzkService {
     });
 
     this.handleCommand();
+    this.handleLogChat();
 
     this.chatClient.connect();
   }
@@ -85,14 +84,14 @@ export class TmiChzzkService {
         send,
       };
 
-      this.chatClient.on('raw', (raw) => this.logger.debug(JSON.stringify(raw)));
+      this.chatClient.on('raw', (raw) => this.logger.debug('CHZZK RECV', raw));
       this.eventEmitter.emit(`command.${command}`, payload);
     });
   }
 
   private handleLogChat() {
     this.chatClient.on('chat', (chat) => {
-      this.logger.http(`Chat #${chat.time}`, {
+      this.logger.debug(`CHZZK CHAT #${chat.time}`, {
         channel: 'deprecated',
         tags: {
           'user-id': chat.profile.userIdHash,
