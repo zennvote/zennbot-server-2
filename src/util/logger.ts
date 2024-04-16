@@ -12,10 +12,9 @@ export class MainLogger extends ConsoleLogger {
   private lokiUrl = process.env.LOKI_URL ?? 'http://loki:3100';
 
   constructor(context?: string, transports: winston.transport[] = []) {
+    super();
     if (context) {
       super(context);
-    } else {
-      super();
     }
 
     this.winstonLogger = winston.createLogger({
@@ -67,7 +66,7 @@ export class MainLogger extends ConsoleLogger {
     const timeString = time.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 
     this.winstonLogger[level](`${timeString} : ${message}`, { context, meta, time });
-    axios.post(`${process.env.LOKI_URL}/loki/api/v1/push`, {
+    axios.post(`${this.lokiUrl}/loki/api/v1/push`, {
       streams: [
         {
           stream: { level, context, ...meta },
