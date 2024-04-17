@@ -1,15 +1,16 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
-import axios from 'axios';
 import { isString } from 'class-validator';
 import * as winston from 'winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const LokiTransport = require('winston-loki');
 
 type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'verbose' | 'debug';
 
 @Injectable()
 export class MainLogger extends ConsoleLogger {
   private winstonLogger: winston.Logger;
-  private lokiUrl = process.env.LOKI_URL ?? 'http://loki:3100';
 
   constructor(context?: string, transports: winston.transport[] = []) {
     if (context) {
@@ -18,6 +19,13 @@ export class MainLogger extends ConsoleLogger {
       super();
     }
 
+    const lokiTransport = new LokiTransport({
+      host: process.env.LOKI_URL ?? 'http://loki:3100',
+      lables: { job: 'zennbot-server-production' },
+    });
+
+    const productionTransports = process.env.NODE_ENV === 'production' ? [lokiTransport] : [];
+
     this.winstonLogger = winston.createLogger({
       level: 'info',
       format: winston.format.json(),
@@ -25,6 +33,7 @@ export class MainLogger extends ConsoleLogger {
       transports: [
         new DailyRotateFile({ filename: 'logs/error-%DATE%.log', level: 'error' }),
         new DailyRotateFile({ filename: 'logs/combined-%DATE%.log', level: 'debug' }),
+        ...productionTransports,
         ...transports,
       ],
     });
@@ -64,17 +73,9 @@ export class MainLogger extends ConsoleLogger {
     const { context, messages } = this.getContextAndMessages([originalMessage, ...params]);
     const [message, ...meta] = messages;
     const time = new Date();
-    const timeString = time.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+    const timeString = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 
     this.winstonLogger[level](`${timeString} : ${message}`, { context, meta, time });
-    axios.post(`${process.env.LOKI_URL}/loki/api/v1/push`, {
-      streams: [
-        {
-          stream: { level, context, ...meta },
-          values: [[time.getTime(), `${timeString} : ${message}`]],
-        },
-      ],
-    });
   }
 
   private getContextAndMessages(args: unknown[]) {
