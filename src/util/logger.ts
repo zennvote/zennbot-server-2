@@ -70,7 +70,7 @@ export class MainLogger extends ConsoleLogger {
       streams: [
         {
           stream: { level, context, ...meta },
-          values: [[time.getTime() * 1000000, `${timeString} : ${message}`]],
+          values: [[time.getTime(), `${timeString} : ${message}`]],
         },
       ],
     });
