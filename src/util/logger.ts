@@ -12,8 +12,10 @@ export class MainLogger extends ConsoleLogger {
   private lokiUrl = process.env.LOKI_URL ?? 'http://loki:3100';
 
   constructor(context?: string, transports: winston.transport[] = []) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    super(context!);
+    super();
+    if (context) {
+      super(context);
+    }
 
     this.winstonLogger = winston.createLogger({
       level: 'info',
