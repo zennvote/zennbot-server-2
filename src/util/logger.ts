@@ -67,13 +67,7 @@ export class MainLogger extends ConsoleLogger {
     axios.post(`${this.lokiUrl}/loki/api/v1/push`, {
       streams: [
         {
-          stream: {
-            level,
-            context,
-            env: process.env.NODE_ENV,
-            job: 'zennbot-server',
-            meta: JSON.stringify(meta),
-          },
+          stream: { level, context, meta: JSON.stringify(meta) },
           values: [[`${time.getTime()}000000`, `${timeString} : ${message}`]],
         },
       ],
