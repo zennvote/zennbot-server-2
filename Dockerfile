@@ -2,6 +2,9 @@ FROM node:20.11.0 AS builder
 
 WORKDIR /app
 
+ENV TZ=Asia/Seoul
+ENV NODE_ENV=production
+
 COPY prisma ./prisma/
 COPY package.json ./
 COPY yarn.lock ./
