@@ -26,7 +26,6 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
-    "@google-cloud/local-auth": "^3.0.1",
     "@nestjs/cli": "^9.3.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
@@ -81,6 +80,7 @@
     "winston-loki": "^6.1.0"
   },
   "devDependencies": {
+    "@google-cloud/local-auth": "2.1.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^9.3.12",
     "@types/bcrypt": "^5.0.0",
