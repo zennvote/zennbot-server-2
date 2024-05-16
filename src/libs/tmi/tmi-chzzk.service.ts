@@ -86,6 +86,7 @@ export class TmiChzzkService {
         send,
       };
 
+      this.chatClient.on('raw', (raw) => this.logger.debug('CHZZK RECV', raw));
       this.eventEmitter.emit(`command.${command}`, payload);
     });
   }
