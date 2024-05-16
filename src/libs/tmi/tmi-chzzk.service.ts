@@ -47,6 +47,7 @@ export class TmiChzzkService {
 
   private handleCommand() {
     this.chatClient.on('chat', (chat) => {
+      if (!chat.message) return;
       if (chat.profile.userIdHash === this.botId) return;
       if (!chat.message.startsWith('!')) return;
 
