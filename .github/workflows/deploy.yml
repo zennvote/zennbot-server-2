@@ -28,10 +28,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
-
-    - name: Add NODE_ENV to env
-      run: echo -e $'\n'NODE_ENV=production >> .env
-
+        
     - name: Add sha to env
       run: echo -e $'\n'VERSION=${{ github.sha }} >> .env
 
