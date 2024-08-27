@@ -1,4 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body, Controller, ForbiddenException, Post,
+} from '@nestjs/common';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
@@ -9,6 +11,7 @@ export class UsersController {
 
   @Post()
   async create(@Body() body: CreateUserDto) {
-    return this.usersService.create(body.username, body.password);
+    throw new ForbiddenException('Creating New User is currently disabled');
+    // return this.usersService.create(body.username, body.password);
   }
 }
